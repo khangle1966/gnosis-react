@@ -12,6 +12,7 @@ import { ReviewModule } from './review/review.module';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { UsergoogleModule } from './usergoogle/usergoogle.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -28,6 +29,7 @@ import { ConfigModule } from '@nestjs/config';
     QuizBankModule,
     ReviewModule,
     AuthModule,
+    UsergoogleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
