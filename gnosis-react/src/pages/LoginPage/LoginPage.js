@@ -4,8 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './Login.module.scss'; // Assuming this is where your provided CSS is stored
 import googleLogo from '../../assets/images/google1.png'; // Make sure the path is correct
 import logo from '../../assets/images/logo1.png'; // Make sure the path is correct
-import { login } from '../../redux/action/loginActions'
-import { GoogleLogin } from '@leecheuk/react-google-login';
+import { login } from '../../redux/action/loginActions';
+import { useGoogleLogin } from '@react-oauth/google';
+import { loginWithGoogleAction } from '../../redux/action/loginActions';
+
+
 const Login = () => {
     const isLoggedIn = useSelector(state => state.login.isLoggedIn);
     const [email, setEmail] = useState('');
@@ -20,6 +23,7 @@ const Login = () => {
         }
     }, [isLoggedIn, navigate]);
 
+
     const handleLogin = async (e) => {
 
         e.preventDefault();
@@ -27,12 +31,14 @@ const Login = () => {
 
     };
 
-    const loginWithGoogle = async () => {
-        console.log("Logging in with Google...");
-        // Implement Google Sign-In logic here
-    };
+    const loginWithGoogle = useGoogleLogin({
+        onSuccess: async (response) => {
+            dispatch(loginWithGoogleAction(response.access_token)); // Sử dụng action để xử lý login
+        },
+    });
 
     return (
+
         <div className={styles.container}>
             <div className={styles.leftSection}>
                 {/* Background image is set via CSS */}
@@ -74,10 +80,11 @@ const Login = () => {
                     </form>
                     <div className={styles.separator}>or</div>
                     <div className={styles.formControl}>
-                        <button
+
+                        <button onClick={loginWithGoogle}
                             type="button"
                             className={styles.googleSignin}
-                            onClick={loginWithGoogle}
+
                         >
                             <img
                                 src={googleLogo}
