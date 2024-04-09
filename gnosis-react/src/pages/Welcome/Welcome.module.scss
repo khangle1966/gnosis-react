@@ -1,0 +1,261 @@
+// Welcome.module.scss
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
+:root {
+    --primary-color: #38761d; // Sửa lại màu này theo màu chính của bạn
+    --text-color: #ffffff; // Màu chữ trắng
+}
+
+.container {
+    display: flex;
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.left {
+    width: 50%;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 5%; // Khoảng cách từ bên trái màn hình
+    box-sizing: border-box;
+}
+
+.introduce {
+    // Giới hạn chiều rộng của khối văn bản để chữ nằm ngắn lại
+    max-width: 600px; // Hoặc bạn có thể điều chỉnh con số này cho phù hợp với thiết kế của bạn
+    margin: 0 auto; // Điều này sẽ căn giữa khối văn bản nếu khối .left rộng hơn max-width
+
+    h1 {
+        font-size: 3rem; // Giữ nguyên hoặc điều chỉnh tùy theo thiết kế của bạn
+        margin-bottom: 1rem; // Khoảng cách giữa tiêu đề và đoạn mô tả
+    }
+
+    p {
+        font-size: 1.25rem; // Giữ nguyên hoặc điều chỉnh tùy theo thiết kế của bạn
+        margin-bottom: 2rem; // Khoảng cách giữa đoạn mô tả và nút
+    }
+}
+
+.logoContainer {
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    transform: translate(-50%, -50%); // Căn giữa logo so với container
+    z-index: 10; // Đảm bảo logo nằm trên cùng
+}
+
+.logo {
+    height: auto; // Giữ tỉ lệ hình ảnh
+    width: 17rem; // Điều chỉnh chiều rộng cho phù hợp
+    // Các style khác cho logo nếu cần
+}
+
+button {
+    background-color: transparent;
+    color: var(--text-color);
+    border: 2px solid var(--text-color); // Đường viền cùng màu với chữ
+    padding: 0.5rem 2rem;
+    font-size: 1rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+
+    &:hover {
+        background-color: var(--text-color);
+        color: var(--primary-color);
+    }
+}
+
+
+.footer {
+    position: absolute;
+    bottom: 3rem;
+    left: 10%;
+
+    p {
+        font-size: 1rem;
+    }
+}
+
+.right {
+    width: 50%;
+    background-color: #fdfdf6; // Bỏ nền màu cho phần bên phải nếu không cần
+
+    .container_subject {
+        width: 60%;
+        height: 70%;
+        margin-top: 15%;
+        margin-left: 25%;
+        display: flex;
+        flex-direction: column;
+        align-self: flex-end;
+        justify-content: center;
+
+
+        .subject {
+            display: flex;
+            justify-content: center;
+            padding: 2rem;
+
+        }
+
+        .slider {
+            position: relative;
+            width: 80%;
+            overflow: hidden;
+
+            .images {
+                width: 100%;
+                display: flex;
+            }
+
+            .images img {
+                width: 100%;
+                border-radius: 5%;
+                transition: all 0.15s ease;
+                box-shadow: rgb(38, 57, 77) 0px 20px 15px -15px;
+            }
+
+            .images input {
+                display: none;
+            }
+
+            .dots {
+                display: flex;
+                justify-content: center;
+                margin: 5px;
+            }
+
+            .dots label {
+                height: 15px;
+                width: 15px;
+                border-radius: 50%;
+                border: solid black 2px;
+                cursor: pointer;
+                transition: all 0.15s ease;
+                margin: 10px 0px 0px 20px;
+            }
+
+            .dots label div:not(:last-child) {
+                margin-right: 40px;
+            }
+
+            .dots label:hover {
+                background: #5D9645;
+            }
+
+            #img1:checked~.m1 {
+                margin-left: 0;
+            }
+
+            #img2:checked~.m2 {
+                margin-left: -100%;
+            }
+
+            #img3:checked~.m3 {
+                margin-left: -200%;
+            }
+
+            #img4:checked~.m4 {
+                margin-left: -300%;
+            }
+
+            .navigation_auto {
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                margin: 5px;
+            }
+
+            .navigation_auto div {
+                height: 15px;
+                width: 15px;
+                border-radius: 50%;
+                border: solid black 2px;
+                cursor: pointer;
+                transition: all 0.15s ease;
+                margin: 5px;
+            }
+
+            .navigation_auto div:not(:last-child) {
+                margin-right: 40px;
+            }
+
+            #img1:checked~.navigation_auto .auto-btn1 {
+                background: #5D9645;
+            }
+
+            #img2:checked~.navigation_auto .auto-btn2 {
+                background: #5D9645;
+            }
+
+            #img3:checked~.navigation_auto .auto-btn3 {
+                background: #5D9645;
+            }
+
+            #img4:checked~.navigation_auto .auto-btn4 {
+                background: #5D9645;
+            }
+
+        }
+
+
+    }
+}
+
+.footer_white {
+
+    position: static;
+    margin-top: 2rem;
+    padding: 1rem;
+
+    .hotline {
+        display: flex;
+        justify-content: center;
+        position: static;
+
+
+
+
+    }
+
+    .Social {
+        display: flex;
+        justify-content: center;
+        position: static;
+
+
+    }
+
+}
+
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+    }
+
+    .left,
+    .right {
+        width: 100%;
+        padding: 0;
+        text-align: center;
+    }
+
+    .left {
+        padding: 0 2rem; // Thêm padding cho mobile
+    }
+
+    .footer {
+        position: static;
+        margin-top: 2rem;
+        padding: 1rem;
+    }
+
+
+}
