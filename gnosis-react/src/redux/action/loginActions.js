@@ -26,12 +26,18 @@ export const login = (email, password) => {
     };
 }
 
-export const loginWithGoogleAction = (accessToken) => async (dispatch) => {
+export const loginWithGoogleAction = (access_token) => async (dispatch) => {
     try {
         dispatch({ type: 'LOGIN_REQUEST' });
-        const res = await axios.post('http://localhost:3000/auth/google-login', { accessToken });
+        const res = await axios.post('http://localhost:3000/auth/google-login', { access_token }, {
+
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
         dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
-        localStorage.setItem('token', res.data.token); // Lưu token vào localStorage
+        localStorage.setItem('idToken', res.data.access_token); // Lưu token vào localStorage
     } catch (error) {
         dispatch({
             type: 'LOGIN_FAILURE',
@@ -42,7 +48,7 @@ export const loginWithGoogleAction = (accessToken) => async (dispatch) => {
 
 export const logout = () => {
     return dispatch => {
-        localStorage.removeItem('token'); // Xóa token từ localStorage
+        localStorage.removeItem('access_token'); // Xóa token từ localStorage
         dispatch({ type: 'LOGOUT' }); // Dispatch action LOGOUT
     };
 };

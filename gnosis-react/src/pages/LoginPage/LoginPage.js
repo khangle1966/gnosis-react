@@ -16,7 +16,6 @@ const Login = () => {
     const dispatch = useDispatch();
     const { loading, error } = useSelector(state => state.login);
     const navigate = useNavigate();
-
     useEffect(() => {
         if (isLoggedIn) {
             navigate('/home'); // Chuyển hướng nếu đã đăng nhập
@@ -33,7 +32,7 @@ const Login = () => {
 
     const loginWithGoogle = useGoogleLogin({
         onSuccess: async (response) => {
-            dispatch(loginWithGoogleAction(response.access_token)); // Sử dụng action để xử lý login
+            dispatch(loginWithGoogleAction(response.access_token)); // Đảm bảo rằng đây là access_token
         },
     });
 

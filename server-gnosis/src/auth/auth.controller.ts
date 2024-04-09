@@ -20,24 +20,14 @@ export class AuthController {
     }
 
     @Post('google-login')
-    async googleLogin(@Body() body: { idToken: string }) {
-        // Xác thực ID token với Google
-        const googleUser = await this.authService.verifyGoogleToken(body.idToken);
-        if (!googleUser) {
-            throw new UnauthorizedException('Invalid Google ID token');
-        }
-
-        // Kiểm tra người dùng đã tồn tại trong database hay chưa và xử lý tương ứng
-        // Nếu chưa tồn tại, có thể tạo một tài khoản mới với thông tin từ Google
+    async googleLogin(@Body('access_token') access_token: string) {
+        const googleUser = await this.authService.verifyGoogleToken(access_token);
         const user = await this.authService.findOrCreateUser(googleUser);
-
-        // Tạo token cho người dùng
-        const token = await this.authService.login(user);
+        const token = await this.authService.createTokenForUser(user);
         return {
             message: 'Google login success',
             user,
-            token, // Trả về token cho client
+            token,
         };
     }
-
 }
