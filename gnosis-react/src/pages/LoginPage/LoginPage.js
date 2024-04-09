@@ -77,7 +77,7 @@ const Login = () => {
                             <button type="submit" disabled={loading} className={styles.button}>Login</button>
                         </div>
                     </form>
-                    <div className={styles.separator}>or</div>
+                    <div className={styles.separator}>OR</div>
                     <div className={styles.formControl}>
 
                         <button onClick={loginWithGoogle}
