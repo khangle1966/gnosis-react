@@ -3,6 +3,7 @@ const initialState = {
     loading: false,
     user: null,
     error: ''
+   
 };
 
 const loginReducer = (state = initialState, action) => {
@@ -26,14 +27,14 @@ const loginReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
-            case 'LOGOUT':
-                return {
-                    ...state,
-                    isLoggedIn: false,
-                    loading: false,
-                    user: null, // Đặt lại thông tin người dùng
-                    error: '' // Xóa bất kỳ thông báo lỗi nào
-                };
+        case 'LOGOUT':
+            return {
+                ...state,
+                isLoggedIn: false,
+                loading: false,
+                user: null, // Đặt lại thông tin người dùng
+                error: '' // Xóa bất kỳ thông báo lỗi nào
+            };
         default:
             return state;
     }

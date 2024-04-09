@@ -7,8 +7,8 @@ import {
   Delete,
   Headers,
   HttpException,
-  Put,
   HttpStatus,
+  Put,
   Query,
 } from '@nestjs/common';
 import { UsergoogleService } from './usergoogle.service';
@@ -17,6 +17,7 @@ import { UpdateUsergoogleDto } from './dto/update-usergoogle.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { Usergoogle } from './entities/usergoogle.entity';
 import { ProfileService } from 'src/profile/profile.service';
+
 @Controller('v1/usergoogle')
 export class UsergoogleController {
   constructor(
@@ -26,29 +27,10 @@ export class UsergoogleController {
   ) { }
 
   @Post()
-  async create(@Headers() headers: any): Promise<Usergoogle> {
-    try {
-      const authHeader = headers.authorization;
-      const token = authHeader.replace('Bearer ', '');
-      const decodedToken = await this.authService.verifyGoogleToken(token);
-      const uid = decodedToken.uid;
-      const existedUser = await this.usergoogleService.findOne(uid);
-      if (existedUser) {
-        throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
-      }
-      const user: Usergoogle = {
-        uid,
-        email: decodedToken.email,
-        name: decodedToken.name,
-        picture: decodedToken.picture,
-        profile: null,
-      };
-      const createdUser = await this.usergoogleService.create(user);
-      return createdUser;
-    } catch (error) {
-      throw error;
-    }
+  async create(@Body() createUserDto: CreateUsergoogleDto) {
+    return this.usergoogleService.create(createUserDto);
   }
+
   @Get()
   async findAllUser() {
     try {
@@ -105,10 +87,5 @@ export class UsergoogleController {
     } catch (error) {
       throw error;
     }
-  }
-
-  @Get()
-  findAll() {
-    return this.usergoogleService.findAll();
   }
 }

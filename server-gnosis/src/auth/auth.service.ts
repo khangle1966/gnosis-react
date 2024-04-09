@@ -9,6 +9,7 @@ import * as jwksClient from 'jwks-rsa';
 import { Model } from 'mongoose';
 import { UsergoogleService } from 'src/usergoogle/usergoogle.service';
 import { Usergoogle } from 'src/usergoogle/entities/usergoogle.entity';
+import axios from 'axios'
 @Injectable()
 export class AuthService {
 
@@ -27,50 +28,28 @@ export class AuthService {
 
 
     async verifyGoogleToken(idToken: string): Promise<any> {
-        return new Promise((resolve, reject) => {
-            // Lấy kid từ header của token
-            const { header } = jwt.decode(idToken, { complete: true }) as any;
-
-            // Lấy RSA key
-            this.jwksClient.getSigningKey(header.kid, (err, key) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                // Xác thực token sử dụng key
-                const signingKey = key.getPublicKey();
-                jwt.verify(idToken, signingKey, { algorithms: ['RS256'] }, (error, decoded) => {
-                    if (error) {
-                        reject(error);
-                    } else {
-                        resolve(decoded);
-                    }
-                });
-            });
+        const userInfo = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
+            headers: {
+                Authorization: `Bearer ${idToken}`,
+            },
         });
+        return userInfo.data; // Trả về thông tin người dùng từ Google
     }
-    async findOrCreateUser(userProfile: any): Promise<any> {
-        // Giả sử userProfile có chứa một UID duy nhất từ Google
-        const { uid, email, name, picture } = userProfile;
 
-        let user = await this.usergoogleModel.findOne({ uid: uid });
-
+    async findOrCreateUser(googleUser: any): Promise<any> {
+        let user = await this.usergoogleModel.findOne({ email: googleUser.email });
         if (!user) {
-            // Người dùng không tồn tại, tạo mới
             user = new this.usergoogleModel({
-                uid,
-                email,
-                name,
-                picture,
-                // Bất kỳ thông tin nào khác bạn muốn lưu từ userProfile
+                uid: googleUser.sub, // UID từ Google
+                email: googleUser.email,
+                name: googleUser.name,
+                picture: googleUser.picture,
             });
-
             await user.save();
         }
-
         return user;
     }
+
     async validateUser(email: string, pass: string): Promise<any> {
         const user = await this.usersService.findOne(email);
         if (user && await bcrypt.compare(pass, user.password)) {
@@ -89,9 +68,8 @@ export class AuthService {
 
 
     async createTokenForUser(user: any): Promise<string> {
-        const payload = { email: user.email, sub: user.id };
+        const payload = { email: user.email, sub: user._id };
         return this.jwtService.sign(payload);
     }
-
 
 }

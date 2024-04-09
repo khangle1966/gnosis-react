@@ -6,5 +6,6 @@ export class CreateUserDto {
         public name: string,
         public picture: string,
         public profile: string,
+
     ) { }
 }
