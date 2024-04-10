@@ -1,0 +1,13 @@
+// HomeLayout.module.scss
+.homeLayout {
+    display: flex;
+    min-height: 100vh;
+
+    .sidebar {
+        width: 20%; // Chiếm 20% chiều rộng của viewport
+        background-color: #004d26; // Màu nền của sidebar
+        // Các styles khác cho sidebar
+    }
+
+
+}

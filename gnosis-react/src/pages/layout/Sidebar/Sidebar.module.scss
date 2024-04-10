@@ -1,0 +1,87 @@
+// Sidebar.module.scss
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    background-color: #006e1b; // Dark green color
+    color: white;
+    height: 100vh; // Full-height to the viewport
+    padding: 1.5rem;
+    box-sizing: border-box;
+    width: 15%;
+    min-width: 15%; // Đảm bảo rằng sidebar không quá nhỏ khi màn hình thu nhỏ
+
+    .FaAdminIcon {
+        color: red;
+
+    }
+
+    .logo {
+
+        padding-bottom: 3rem;
+        display: flex;
+        justify-content: center;
+        height: auto; // Giữ tỉ lệ hình ảnh
+        width: 90%; // Điều chỉnh chiều rộng cho phù hợp
+
+    }
+
+    .search {
+        margin-bottom: 20px;
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+        }
+    }
+
+    .menu {
+        width: fit-content;
+        cursor: pointer;
+
+        gap: 0.625rem;
+
+
+        .menuItem {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0 2rem;
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+
+            &:hover {
+                border-radius: 10px;
+                background-color: #023820; // Lighter green for hover state
+            }
+
+            svg {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .Seting {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0 2rem;
+        color: white;
+        text-decoration: none;
+        font-size: 1.2em;
+        margin-top: 14rem;
+
+        &:hover {
+            border-radius: 10px;
+            background-color: #023820; // Lighter green for hover state
+        }
+
+        svg {
+            margin-right: 10px;
+        }
+
+
+    }
+}

@@ -1,0 +1,222 @@
+.courseDetailPage {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+
+    background: #fdfdf6;
+
+
+
+    .breadcrumbs {
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+        color: rgb(4, 136, 4);
+        font-weight: bold;
+
+        &::after {
+            content: ''; // Loại bỏ nội dung của pseudo-element
+            position: absolute;
+            width: 100%;
+            height: 2px; // Độ dài của đường ngang
+            background-color: #bfbfbf;
+            margin-left: -13rem;
+            top: 8%; // Đặt pseudo-element ở giữa
+            transform: translateY(-50%); // Dịch chuyển pseudo-element về trên 50% của phần tử cha
+            z-index: 1; // Đảm bảo pseudo-element hiển thị trên phần tử con
+        }
+    }
+
+
+    .courseDetailContainer {
+        display: flex;
+        gap: 2rem;
+        align-items: flex-start; // Đảm bảo căn chỉnh các phần tử con theo đỉnh
+
+        .courseInfoSection {
+            margin-left: 10rem;
+            flex: 1;
+
+            &::after {
+                content: "";
+                position: absolute;
+                top: 99px;
+                margin-left: -7rem;
+                /* left: 58rem; */
+                bottom: 0;
+                width: 2px;
+                height: 42rem;
+                background-color: #bfbfbf;
+            }
+
+
+            .courseTitle {
+
+                font-size: 2rem;
+                color: #333;
+                margin-bottom: 0.5rem;
+
+
+            }
+
+            .courseMetadata {
+                display: flex;
+                align-items: center;
+                margin-bottom: 1rem;
+
+                .courseLanguage {
+                    font-size: 1rem;
+                    color: #666;
+                }
+
+                .courseRating {
+                    margin-left: 1rem;
+
+                    span {
+                        color: #ffd700;
+                    }
+                }
+
+                .coursePrice {
+                    font-size: 1.5rem;
+                    color: #2a9d8f;
+                    font-weight: bold;
+                    margin-left: auto;
+                }
+            }
+
+            .addToCartButton {
+                background-color: rgb(10, 109, 10);
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                cursor: pointer;
+                border-radius: 5px;
+                font-weight: bold;
+                margin-bottom: 1rem;
+                margin-top: 3rem;
+
+                height: 3rem;
+
+
+                &:hover {
+                    background-color: darken(rgb(10, 109, 10), 10%);
+                }
+
+                &::after {
+                    content: ''; // Loại bỏ nội dung của pseudo-element
+                    position: absolute;
+                    width: 100%;
+                    height: 2px; // Độ dài của đường ngang
+                    background-color: #bfbfbf;
+                    margin-left: -13rem;
+                    top: 39%; // Đặt pseudo-element ở giữa
+                    transform: translateY(-50%); // Dịch chuyển pseudo-element về trên 50% của phần tử cha
+                    z-index: 1; // Đảm bảo pseudo-element hiển thị trên phần tử con
+                }
+            }
+
+            .courseDescription {
+                h2 {
+                    font-size: 1.5rem;
+                    margin-top: 9rem;
+                }
+
+                p {
+                    font-size: 1rem;
+                    color: #666;
+                    line-height: 1.5;
+                }
+            }
+        }
+
+        .courseImageSection {
+            width: 40%;
+            height: 80%; // Điều chỉnh kích thước của phần tử chứa hình ảnh
+            display: flex;
+            align-items: center; // Căn chỉnh hình ảnh theo trung tâm dọc
+            justify-content: center; // Căn chỉnh hình ảnh theo trung tâm ngang
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            padding: 2rem; // Khoảng cách giữa hình ảnh và viền bao quanh
+
+
+
+            img {
+                width: 100%;
+                height: auto;
+            }
+
+
+
+        }
+
+    }
+
+    .courseDetailSkills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-top: 1rem;
+        position: relative;
+
+        /* Thêm thuộc tính position */
+
+        .certificateSection {
+
+            margin: 0;
+        }
+
+        .skillSection,
+        .certificateSection {
+
+            /* Thu nhỏ phần kỹ năng và chứng chỉ */
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            position: relative;
+
+            /* Thêm thuộc tính position */
+            h3 {
+                font-size: 1.2rem;
+                margin-bottom: 0.5rem;
+            }
+
+            ul {
+                list-style: none;
+                padding: 0;
+
+                li {
+                    padding: 0.5rem 0;
+                    font-size: 1rem;
+                }
+            }
+
+            p {
+                font-size: 1rem;
+                line-height: 1.5;
+            }
+
+            &::after {
+                content: '';
+                position: absolute;
+                right: -9px;
+                /* Điều chỉnh vị trí ngang */
+                top: 0;
+                bottom: 0;
+                width: 2px;
+                /* Điều chỉnh chiều rộng */
+                height: 12rem;
+                background-color: #bfbfbf;
+            }
+        }
+
+        .certificateSection {
+            &::after {
+                content: none;
+                /* Loại bỏ dấu | của chứng chỉ */
+            }
+        }
+    }
+}
