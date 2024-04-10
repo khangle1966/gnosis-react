@@ -1,4 +1,4 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import { Injectable, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '../user/user.service'; // Giả sử bạn đã có UserService
 import * as bcrypt from 'bcrypt';
@@ -10,6 +10,9 @@ import { v4 as uuidv4 } from 'uuid';
 import { Model } from 'mongoose';
 import { UsergoogleService } from 'src/usergoogle/usergoogle.service';
 import { Usergoogle } from 'src/usergoogle/entities/usergoogle.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { User } from '../user/entities/user.entity';
 import axios from 'axios'
 @Injectable()
 export class AuthService {
@@ -21,6 +24,7 @@ export class AuthService {
 
     constructor(
         @InjectModel('Usergoogle') private usergoogleModel: Model<Usergoogle>,
+
 
         private usergoogleService: UsergoogleService,
         private usersService: UserService,
@@ -36,7 +40,6 @@ export class AuthService {
         }
 
         // Mã hóa mật khẩu
-        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
         // Tạo uid tự động
         const uid = uuidv4();
@@ -45,7 +48,7 @@ export class AuthService {
         user = await this.usersService.create({
             ...createUserDto,
             uid,
-            password: hashedPassword,
+            password: createUserDto.password,
         });
 
         // Tạo token cho người dùng mới
@@ -76,14 +79,29 @@ export class AuthService {
         return user;
     }
 
-    async validateUser(email: string, pass: string): Promise<any> {
-        const user = await this.usersService.findOne(email);
-        if (user && await bcrypt.compare(pass, user.password)) {
-            const { password, ...result } = user;
-            return result;
+
+
+    async validateUser(email: string, plainTextPassword: string): Promise<any> {
+        try {
+            const user = await this.usersService.findOneByEmail(email);
+            if (!user) return null;
+
+            const passwordsMatch = await bcrypt.compare(plainTextPassword, user.password);
+            console.log(passwordsMatch);
+
+            if (passwordsMatch) {
+                const { password, ...result } = user;
+                return result; // Trả về người dùng không bao gồm mật khẩu
+            }
+
+            return null; // Trả về null nếu mật khẩu không khớp
+        } catch (error) {
+            // Xử lý bất kỳ lỗi nào phát sinh từ UsersService hoặc bcrypt.compare
+            throw new UnauthorizedException('Login failed');
         }
-        return null;
     }
+
+
     async login(user: any) {
         const payload = { username: user.username, sub: user.userId };
         return {

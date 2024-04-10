@@ -33,6 +33,7 @@ export class AuthController {
     }
     @Post('register')
     async register(@Body() createUserDto: CreateUserDto) {
+        console.log(createUserDto); // In dữ liệu nhận được để debug
         return this.authService.register(createUserDto);
     }
 }

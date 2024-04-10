@@ -4,9 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './Login.module.scss'; // Assuming this is where your provided CSS is stored
 import googleLogo from '../../assets/images/google1.png'; // Make sure the path is correct
 import logo from '../../assets/images/logo1.png'; // Make sure the path is correct
-import { login } from '../../redux/action/loginActions';
+import { login } from '../../redux/action/authActions';
 import { useGoogleLogin } from '@react-oauth/google';
-import { loginWithGoogleAction } from '../../redux/action/loginActions';
+import { loginWithGoogleAction } from '../../redux/action/authActions';
 
 
 const Login = () => {
