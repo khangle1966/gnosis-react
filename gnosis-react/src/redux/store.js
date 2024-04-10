@@ -1,9 +1,17 @@
 import { createStore, applyMiddleware, combineReducers } from 'redux';
 import { thunk } from 'redux-thunk';
-import loginReducer from './reducers/loginReducer';
+import authReducer from './reducers/authReducer';
+import { courseReducer, courseDetailReducer } from './reducers/courseReducer';
+
+
 
 const rootReducer = combineReducers({
-    login: loginReducer
+    auth: authReducer,
+
+    course: courseReducer,
+    courseDetail: courseDetailReducer,
+
+
 });
 
 const store = createStore(
@@ -12,3 +20,5 @@ const store = createStore(
 );
 
 export default store;
+
+

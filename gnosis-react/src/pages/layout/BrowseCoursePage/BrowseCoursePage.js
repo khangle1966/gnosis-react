@@ -2,28 +2,28 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../../../redux/action/courseActions';
-import { logout } from '../../../redux/action/authActions';
+
 import styles from './BrowseCoursePage.module.scss';
 
 const BrowseCoursePage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { courses, loading, error } = useSelector(state => state.courses);
+    const { courses, loading, error } = useSelector(state => state.course);
+
+    // const { courses, loading, error } = useSelector(state => state.courses);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
     useEffect(() => {
         if (!isLoggedIn) {
 
             navigate('/login');
+
         } else {
             dispatch(fetchCourses());
         }
     }, [isLoggedIn, navigate, dispatch]);
 
-    const handleLogout = () => {
-        dispatch(logout());
-        navigate('/login');
-    };
+
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`); // Replace this with your actual route
     };
@@ -48,14 +48,14 @@ const BrowseCoursePage = () => {
                 <button>English</button>
                 <button>Music</button>
                 <button>Cook</button>
-                
+
             </div>
             <div className={styles.course}>
                 {loading ? (
                     <div>Loading courses...</div>
                 ) : error ? (
                     <div>Error fetching courses: {error.message}</div>
-                ) : (
+                ) : courses ? (
                     <div className={styles.courseGrid}>
                         {courses.map(course => (
                             <div key={course._id} className={styles.courseCard}>
@@ -69,7 +69,7 @@ const BrowseCoursePage = () => {
                             </div>
                         ))}
                     </div>
-                )}
+                ) : null}
             </div>
             <div className={styles.pagination}>
                 {/* Placeholder for pagination */}

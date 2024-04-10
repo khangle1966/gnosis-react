@@ -1,4 +1,4 @@
-import { Injectable, } from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { UserService } from '../user/user.service'; // Giả sử bạn đã có UserService
 import * as bcrypt from 'bcrypt';
@@ -6,6 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 import * as jwt from 'jsonwebtoken';
 import * as jwksClient from 'jwks-rsa';
+import { v4 as uuidv4 } from 'uuid';
 import { Model } from 'mongoose';
 import { UsergoogleService } from 'src/usergoogle/usergoogle.service';
 import { Usergoogle } from 'src/usergoogle/entities/usergoogle.entity';
@@ -27,6 +28,31 @@ export class AuthService {
     ) { }
 
 
+    async register(createUserDto: CreateUserDto): Promise<any> {
+        // Kiểm tra xem người dùng đã tồn tại chưa
+        let user = await this.usersService.findOne(createUserDto.email);
+        if (user) {
+            throw new ConflictException('Người dùng đã tồn tại');
+        }
+
+        // Mã hóa mật khẩu
+        const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+
+        // Tạo uid tự động
+        const uid = uuidv4();
+
+        // Tạo người dùng mới với uid tự động
+        user = await this.usersService.create({
+            ...createUserDto,
+            uid,
+            password: hashedPassword,
+        });
+
+        // Tạo token cho người dùng mới
+        const token = await this.createTokenForUser(user);
+
+        return { user, token };
+    }
     async verifyGoogleToken(idToken: string): Promise<any> {
         const userInfo = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
             headers: {

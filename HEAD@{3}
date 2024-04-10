@@ -1,0 +1,14 @@
+[33m802c4b9[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m HEAD@{0}: reset: moving to HEAD~1
+[33m8423205[m HEAD@{1}: reset: moving to HEAD~1
+[33mf76d266[m[33m ([m[1;31morigin/master[m[33m)[m HEAD@{2}: pull origin master: Fast-forward
+[33m8423205[m HEAD@{3}: commit: update tum lum
+[33m802c4b9[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m HEAD@{4}: reset: moving to HEAD
+[33m802c4b9[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m)[m HEAD@{5}: pull origin master: Fast-forward
+[33m03a7f10[m HEAD@{6}: pull origin master: Merge made by the 'ort' strategy.
+[33medce655[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{7}: checkout: moving from main to master
+[33medce655[m[33m ([m[1;31morigin/main[m[33m, [m[1;32mmain[m[33m)[m HEAD@{8}: commit: xong landingpage
+[33mfe7c55b[m HEAD@{9}: commit: login with google update
+[33mb220732[m HEAD@{10}: commit: login with google
+[33mdbb2bb4[m HEAD@{11}: Branch: renamed refs/heads/master to refs/heads/main
+[33mdbb2bb4[m HEAD@{13}: commit: fix lai v1
+[33m96114d0[m HEAD@{14}: commit (initial): hi

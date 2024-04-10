@@ -10,15 +10,15 @@ import { loginWithGoogleAction } from '../../redux/action/loginActions';
 
 
 const Login = () => {
-    const isLoggedIn = useSelector(state => state.login.isLoggedIn);
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
-    const { loading, error } = useSelector(state => state.login);
+    const { loading, error } = useSelector(state => state.auth);
     const navigate = useNavigate();
     useEffect(() => {
         if (isLoggedIn) {
-            navigate('/home'); // Chuyển hướng nếu đã đăng nhập
+            navigate('/browsecourse'); // Chuyển hướng nếu đã đăng nhập
         }
     }, [isLoggedIn, navigate]);
 

@@ -11,17 +11,17 @@ import scienceImage from '../../assets/images/science.jpg';
 
 const Welcome = () => {
     const navigate = useNavigate();
-    const [activeSlide, setActiveSlide] = useState('img1');
+    // const [activeSlide, setActiveSlide] = useState('img1');
 
-    const slides = [
-        { image: webDeveloperImage, title: 'Web Developer' },
-        { image: englishImage, title: 'English' },
+    // const slides = [
+    //     { image: webDeveloperImage, title: 'Web Developer' },
+    //     { image: englishImage, title: 'English' },
 
-        { image: mathImage, title: 'Web Math' },
-        { image: scienceImage, title: 'Science' },
+    //     { image: mathImage, title: 'Web Math' },
+    //     { image: scienceImage, title: 'Science' },
 
-        // Thêm các slide khác ở đây
-    ];
+    //     // Thêm các slide khác ở đây
+    // ];
     const handleLogin = () => {
         // This should be the link to your login page
         navigate('/login');
@@ -39,7 +39,7 @@ const Welcome = () => {
                 <div className={styles.introduce}>
                     <h1>Learning is the eye of the mind</h1>
                     <p>Gnosis is an online learning platform that gives anyone, anywhere access to online courses</p>
-                    <button className={styles.getStartedButton}>Get Started</button>
+                    <button onClick={handleLogin} className={styles.getStartedButton}>Get Started</button>
                 </div>
                 <div className={styles.footer}>
                     <p>8 Nguyễn Văn Tráng, Phường Bến Thành, Quận 1, Tp. Hồ Chí Minh</p>

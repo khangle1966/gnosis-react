@@ -2,12 +2,13 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({ timestamps: true })
 export class User {
-    @Prop({ required: true, unique: true })
+    @Prop({ default: () => uuidv4(), unique: true })
     uid: string;
 
     @IsEmail()

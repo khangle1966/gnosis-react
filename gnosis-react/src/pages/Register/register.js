@@ -1,26 +1,53 @@
-import React, { useState } from 'react';
-import {useSelector } from 'react-redux';
+
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import { useSelector, useDispatch } from 'react-redux';
 import styles from './register.module.scss'; // Assuming this is where your provided CSS is stored
 import logo from '../../assets/images/logo1.png'; // Make sure the path is correct
-
+import googleLogo from '../../assets/images/google1.png'; // Make sure the path is correct
+import { loginWithGoogleAction } from '../../redux/action/authActions';
+import { useGoogleLogin } from '@react-oauth/google';
+import { register } from '../../redux/action/authActions';
 
 
 const Register = () => {
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setusername] = useState('');
-    
-    const { loading, error } = useSelector(state => state.login);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { loading, error } = useSelector(state => state.auth);
+    const { registerSuccessMessage } = useSelector(state => state.auth);
 
-    
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/browsecourse'); // Chuyển hướng nếu đã đăng nhập
+        }
+    }, [isLoggedIn, navigate]);
+    useEffect(() => {
+        if (registerSuccessMessage) {
+            alert(registerSuccessMessage); // Hiển thị thông báo sử dụng alert hoặc một thành phần thông báo tùy chỉnh
+            navigate('/login'); // Chuyển hướng về trang đăng nhập
+        }
+    }, [registerSuccessMessage, navigate]);
+
+    const loginWithGoogle = useGoogleLogin({
+        onSuccess: async (response) => {
+            dispatch(loginWithGoogleAction(response.access_token)); // Đảm bảo rằng đây là access_token
+        },
+    });
 
     const handleRegister = async (e) => {
 
-       console.log ("A")
+        e.preventDefault();
+        dispatch(register(username, email, password));
 
     };
 
-    
+
 
     return (
 
@@ -36,7 +63,7 @@ const Register = () => {
                 <div className={styles.loginForm}>
                     <form onSubmit={handleRegister}>
 
-                    <div className={styles.formControl}>
+                        <div className={styles.formControl}>
                             <input
                                 className={styles.input}
                                 type="username"
@@ -45,9 +72,9 @@ const Register = () => {
                                 onChange={(e) => setusername(e.target.value)}
                                 required
                             />
-                    </div>
+                        </div>
                         <div className={styles.formControl}>
-                       
+
                             <input
                                 className={styles.input}
                                 type="email"
@@ -76,12 +103,23 @@ const Register = () => {
                     <div className={styles.separator}>OR</div>
 
                     <div className={styles.formControl}>
-                            <button type="submit" disabled={loading} className={styles.googleSignin}>Sign in with Google</button>
-                        </div>
-                   
+                        <button onClick={loginWithGoogle}
+                            type="button"
+                            className={styles.googleSignin}
+
+                        >
+                            <img
+                                src={googleLogo}
+                                alt="Sign in with Google"
+                                style={{ marginRight: '1rem' }}
+                            />
+                            Sign in with Google
+                        </button>
+                    </div>
+
                 </div>
                 <div className={styles.footer}>
-                <p>Already have an account? <a href="/Login">Login here</a></p>
+                    <p>Already have an account? <a href="/Login">Login here</a></p>
                 </div>
             </div>
         </div>
