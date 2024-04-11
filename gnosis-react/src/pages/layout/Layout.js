@@ -11,6 +11,7 @@ const HomeLayout = () => {
             <div className={styles.content}>
                 <Outlet /> {/* Nội dung của nested routes sẽ được render ở đây */}
             </div>
+                
         </div>
     );
 };

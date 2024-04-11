@@ -1,57 +1,93 @@
-// Sidebar.module.scss
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+    // Sidebar.module.scss
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
 
-.sidebar {
-    display: flex;
-    flex-direction: column;
-    background-color: #006e1b; // Dark green color
-    color: white;
-    height: 100vh; // Full-height to the viewport
-    padding: 1.5rem;
-    box-sizing: border-box;
-    width: 15%;
-    min-width: 15%; // Đảm bảo rằng sidebar không quá nhỏ khi màn hình thu nhỏ
+    .sidebar {
+        position: sticky;
+        /* Giữ sidebar ở vị trí cố định */
+        top: 0;
+        /* Vị trí bắt đầu từ đầu trang */
+        overflow-y: auto;
+        /* Cho phép cuộn nếu nội dung dài hơn màn hình */
 
-    .FaAdminIcon {
-        color: red;
 
-    }
+        background-color: #006e1b; // Dark green color
+        color: white;
+        height: 100vh;
+        /* Chiều cao tối đa, có thể cuộn nếu cần */
 
-    .logo {
+        padding: 1.5rem;
 
-        padding-bottom: 3rem;
-        display: flex;
-        justify-content: center;
-        height: auto; // Giữ tỉ lệ hình ảnh
-        width: 90%; // Điều chỉnh chiều rộng cho phù hợp
+        width: 15%;
+        min-width: 15%; // Đảm bảo rằng sidebar không quá nhỏ khi màn hình thu nhỏ
+        overflow-y: auto;
+        /* Cho phép cuộn nếu nội dung dài hơn màn hình */
+        z-index: 1000;
 
-    }
 
-    .search {
-        margin-bottom: 20px;
+        /* Chiều cao tối đa, có thể cuộn nếu cần */
+        /* Đảm bảo sidebar luôn nằm trên các thành phần khác */
+        .FaAdminIcon {
+            color: red;
 
-        input {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
         }
-    }
 
-    .menu {
-        width: fit-content;
-        cursor: pointer;
+        .logo {
 
-        gap: 0.625rem;
+            padding-bottom: 3rem;
+            display: flex;
+            justify-content: center;
+            height: auto; // Giữ tỉ lệ hình ảnh
+            width: 90%; // Điều chỉnh chiều rộng cho phù hợp
+
+        }
+
+        .search {
+            margin-bottom: 20px;
+
+            input {
+                width: 100%;
+                padding: 10px;
+                border: none;
+                border-radius: 5px;
+            }
+        }
+
+        .menu {
+            width: fit-content;
+            cursor: pointer;
+
+            gap: 0.625rem;
 
 
-        .menuItem {
+            .menuItem {
+                display: flex;
+                align-items: center;
+                padding: 0.5rem 0 2rem;
+                color: white;
+                padding-bottom: 20px;
+
+                text-decoration: none;
+                font-size: 1.2em;
+
+                &:hover {
+                    border-radius: 10px;
+                    background-color: #023820; // Lighter green for hover state
+                }
+
+                svg {
+                    margin-right: 10px;
+                }
+            }
+        }
+
+        .Seting {
             display: flex;
             align-items: center;
             padding: 0.5rem 0 2rem;
             color: white;
             text-decoration: none;
             font-size: 1.2em;
+            margin-top: 14rem;
 
             &:hover {
                 border-radius: 10px;
@@ -61,27 +97,7 @@
             svg {
                 margin-right: 10px;
             }
+
+
         }
     }
-
-    .Seting {
-        display: flex;
-        align-items: center;
-        padding: 0.5rem 0 2rem;
-        color: white;
-        text-decoration: none;
-        font-size: 1.2em;
-        margin-top: 14rem;
-
-        &:hover {
-            border-radius: 10px;
-            background-color: #023820; // Lighter green for hover state
-        }
-
-        svg {
-            margin-right: 10px;
-        }
-
-
-    }
-}

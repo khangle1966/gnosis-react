@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Sidebar.module.scss'; // SCSS module cho styles
 import logoImage from '../../../assets/images/Gnosis.png';
@@ -10,12 +10,27 @@ import { useNavigate } from 'react-router-dom';
 import { faHome, faBook, faUser, faShoppingCart, faCog, faSignOut } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = () => {
+    const sidebarRef = useRef(null);
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
     };
+    useEffect(() => {
+        const sidebar = sidebarRef.current;
+        // Đảm bảo sidebar tự động cuộn khi cuộn trang
+        const handleScroll = () => {
+            if (sidebar) {
+                sidebar.style.top = `${window.scrollY}px`;
+            }
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
     return (
         <div className={styles.sidebar}>
             <div className={styles.logo}>

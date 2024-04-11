@@ -21,6 +21,7 @@ function App() {
             <Route path="browsecourse" element={<BrowseCoursePage />} />
             <Route path="course/:courseId" element={<CourseDetailPage />} />
 
+
           </Route>
           {/* Chuyển hướng tự động người dùng đến trang đăng nhập nếu họ truy cập đường dẫn '/' */}
           <Route path="/" element={<Navigate replace to="/welcome" />} />

@@ -21,6 +21,8 @@ const Register = () => {
     const navigate = useNavigate();
     const { loading, error } = useSelector(state => state.auth);
     const { registerSuccessMessage } = useSelector(state => state.auth);
+    const [confirmPassword, setConfirmPassword] = useState('');
+
 
     useEffect(() => {
         if (isLoggedIn) {
@@ -41,12 +43,15 @@ const Register = () => {
     });
 
     const handleRegister = async (e) => {
-
         e.preventDefault();
+
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.');
+            return; // Stop the function from proceeding further
+        }
+
         dispatch(register(username, email, password));
-
     };
-
 
 
     return (
@@ -92,6 +97,18 @@ const Register = () => {
                                 value={password}
                                 placeholder='Password'
                                 onChange={(e) => setPassword(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className={styles.formControl}>
+
+                            <input
+                                className={styles.input}
+                                type="password"
+                                value={confirmPassword}
+                                placeholder='Confirm Password'
+                                onChange={(e) => setConfirmPassword(e.target.value)}
                                 required
                             />
                         </div>

@@ -33,8 +33,6 @@ export class Profile {
     @Prop()
     bio: string;
 
-    @Prop()
-    role: string;
 
     @Prop()
     notifications: string[];
