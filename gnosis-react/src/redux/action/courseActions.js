@@ -20,6 +20,8 @@ export const fetchCourseDetail = (courseId) => async (dispatch) => {
     try {
         dispatch({ type: 'FETCH_COURSE_DETAIL_REQUEST' });
         const response = await axios.get(`http://localhost:3000/v1/course/${courseId}`);
+        console.log('API Response:', response.data);  // Log response data
+
         dispatch({
             type: 'FETCH_COURSE_DETAIL_SUCCESS',
             payload: response.data

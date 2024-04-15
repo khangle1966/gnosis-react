@@ -6,7 +6,10 @@ export type CourseDocument = HydratedDocument<Lesson>;
 export class Lesson {
     @Prop()
     ordinalNum: number;
-
+    @Prop({ require: true, unique: true })
+    public titleChapter: string;
+    @Prop({ require: true, unique: true })
+    public chapterNumber: number;
     @Prop()
     title: string;
 
@@ -21,6 +24,9 @@ export class Lesson {
 
     @Prop()
     description: string;
+
+    @Prop({ required: true })
+    duration: number; // In hours
 }
 
 export const LessonSchema = SchemaFactory.createForClass(Lesson);

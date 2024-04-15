@@ -13,7 +13,8 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsergoogleModule } from './usergoogle/usergoogle.module';
-import { ProfileteacherModule } from './profileteacher/profileteacher.module';
+
+import { AuthorModule } from './author/author.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,7 +32,8 @@ import { ProfileteacherModule } from './profileteacher/profileteacher.module';
     ReviewModule,
     AuthModule,
     UsergoogleModule,
-    ProfileteacherModule,
+
+    AuthorModule,
   ],
   controllers: [AppController],
   providers: [AppService],
