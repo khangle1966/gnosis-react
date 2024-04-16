@@ -9,6 +9,7 @@ import Layout from "./pages/layout/Layout"
 import BrowseCoursePage from './pages/layout/BrowseCoursePage/BrowseCoursePage'
 import CourseDetailPage from './pages/layout/BrowseCoursePage/component/CourseDetailPage/CourseDetailPage'
 import store from './redux/store';
+import CartPage from './pages/layout/Cart/cart';
 function App() {
   return (
     <Provider store={store} >
@@ -22,6 +23,8 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="browsecourse" element={<BrowseCoursePage />} />
             <Route path="course/:courseId" element={<CourseDetailPage />} />
+            <Route path="cart" element={<CartPage />} />
+
             <Route path="/" element={<Navigate replace to="/welcome" />} />
           </Route>
           {/* Chuyển hướng tự động người dùng đến trang đăng nhập nếu họ truy cập đường dẫn '/' */}
