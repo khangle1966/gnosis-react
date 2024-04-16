@@ -1,0 +1,57 @@
+// src/chapter/chapter.controller.ts
+
+import { Body, Controller, Get, Post, Param, Put, Delete, HttpException, HttpStatus } from '@nestjs/common';
+import { ChapterService } from './chapter.service';
+import { CreateChapterDto } from './dto/create-chapter.dto';
+import { UpdateChapterDto } from './dto/update-chapter.dto';
+
+@Controller('v1/chapter')
+export class ChapterController {
+  constructor(private readonly chapterService: ChapterService) { }
+
+  @Post()
+  async create(@Body() createChapterDto: CreateChapterDto) {
+    try {
+      const chapter = await this.chapterService.create(createChapterDto);
+      return chapter;
+    } catch (error) {
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get()
+  async findAll() {
+    try {
+      return await this.chapterService.findAll();
+    } catch (error) {
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    try {
+      return await this.chapterService.findOne(id);
+    } catch (error) {
+      throw new HttpException('Chapter not found', HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateChapterDto: UpdateChapterDto) {
+    try {
+      return await this.chapterService.update(id, updateChapterDto);
+    } catch (error) {
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    try {
+      return await this.chapterService.remove(id);
+    } catch (error) {
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+}
