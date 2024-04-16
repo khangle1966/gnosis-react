@@ -102,10 +102,15 @@ button {
             display: flex;
             justify-content: center;
             padding: 2rem;
+<<<<<<< HEAD
+=======
+            font-weight: bold;
+>>>>>>> 916cca0 (a)
 
         }
 
         .slider {
+<<<<<<< HEAD
             position: relative;
             width: 80%;
             overflow: hidden;
@@ -113,6 +118,26 @@ button {
             .images {
                 width: 100%;
                 display: flex;
+=======
+
+            width: 85%;
+            overflow: hidden;
+
+            .images {
+                display: flex;
+                transition: transform 0.5s ease-in-out; // Transition cho việc chuyển đổi các slides
+                width: calc(100% * 4);
+            }
+
+            .active,
+            .slide {
+                min-width: 25%; // Mỗi slide chiếm 1/4 tổng chiều rộng, vì bạn có 4 slides
+                transition: transform 0.5s ease-in-out;
+            }
+
+            .active {
+                display: block;
+>>>>>>> 916cca0 (a)
             }
 
             .images img {
@@ -129,7 +154,24 @@ button {
             .dots {
                 display: flex;
                 justify-content: center;
+<<<<<<< HEAD
                 margin: 5px;
+=======
+                margin-top: 20px;
+            }
+
+            .dot,
+            .dotActive {
+                padding: 10px;
+                margin-right: 5px;
+                cursor: pointer;
+                border-radius: 50%;
+                background: grey; // Màu nền cho các chấm không hoạt động
+            }
+
+            .dotActive {
+                background: #5D9645; // Màu nền cho chấm hiện tại
+>>>>>>> 916cca0 (a)
             }
 
             .dots label {
@@ -210,11 +252,25 @@ button {
 }
 
 .footer_white {
+<<<<<<< HEAD
 
     position: static;
     margin-top: 2rem;
     padding: 1rem;
 
+=======
+    display: flex;
+    justify-content: space-between; // Canh giữa 
+    position: static;
+    margin-top: 2.6rem;
+    padding: 1rem;
+
+    .container_social {
+        display: flex;
+        align-items: center; // Căn các phần tử con theo chiều dọc
+    }
+
+>>>>>>> 916cca0 (a)
     .hotline {
         display: flex;
         justify-content: center;
@@ -233,6 +289,21 @@ button {
 
     }
 
+<<<<<<< HEAD
+=======
+    #icon_social {
+        display: flex;
+        align-items: center; // Căn các biểu tượng theo chiều dọc
+    }
+
+    .socialIcon {
+        margin-left: 10px; // Khoảng cách giữa các biểu tượng
+        font-size: 1.5rem; // Điều chỉnh kích thước của biểu tượng nếu cần
+        cursor: pointer; // Biến con trỏ thành kiểu con trỏ khi di chuột qua biểu tượng
+
+    }
+
+>>>>>>> 916cca0 (a)
 }
 
 @media (max-width: 768px) {

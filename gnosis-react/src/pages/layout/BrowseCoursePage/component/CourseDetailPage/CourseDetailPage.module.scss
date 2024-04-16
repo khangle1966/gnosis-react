@@ -1,0 +1,400 @@
+/* General styles for the course detail page container */
+
+.navbar {
+    background-color: #148725; // or any other color you prefer
+    color: #fff; // Adjust text color based on your navbar background color
+    height: 50px; // You can adjust the height as necessary
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px; // Add padding on the sides
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Optional: add shadow for depth
+    width: 200%;
+
+
+    position: fixed; // Make navbar fixed at the top
+    top: 0; // Align navbar to the top of the viewport
+
+    width: 100%; // Ensure navbar spans the full width of the viewport
+    z-index: 1000; // Ensure navbar stays above other content
+
+    .logo {
+        // Style your logo or brand name here
+        font-size: 1.5rem; // Adjust the size as necessary
+        font-weight: bold; // Adjust font weight as necessary
+    }
+
+    // Style additional navbar items here if you added them
+}
+
+.courseSidebar {
+    position: fixed;
+    top: 100px; // adjust as necessary to clear your fixed navbar
+    right: 6rem;
+    width: 300px; // adjust the width as necessary
+    background-color: #fff;
+    padding: 1.8rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+
+
+    .coursePreview {
+        text-align: center;
+        margin-bottom: 20px;
+
+        img {
+
+            width: 100%;
+        }
+    }
+
+    .coursePurchase {
+        .coursePrice {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            // Style your price
+        }
+
+        .addToCartButton,
+        .buyNowButton {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            // Add more styles for buttons
+        }
+
+        .addToCartButton {
+            background-color: #8e44ad; // example color
+            color: #fff;
+        }
+
+        .buyNowButton {
+            background-color: #3498db; // example color
+            color: #fff;
+        }
+
+        .moneyBackGuarantee {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+            // Style your guarantee
+        }
+    }
+
+    .courseIncludes {
+        h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            // Style your includes title
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+
+            li {
+                font-size: 14px;
+                margin-bottom: 5px;
+
+                // Style your list items
+                &:before {
+                    content: '✔';
+                    color: green; // example color
+                    margin-right: 5px;
+                    // Style your list item icon
+                }
+            }
+        }
+    }
+
+    // Style additional sections here
+}
+
+.courseDetailContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 9rem;
+    padding: 6rem;
+
+    .courseHeader {
+        width: 100%;
+
+
+        .breadcrumbs {
+            font-size: 0.85rem;
+            color: #026618;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .courseTitle {
+            font-size: 1.8rem;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+
+        .courseSubtitle {
+
+            font-size: 1rem;
+            color: #212529;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .courseRating {
+            display: flex;
+            align-items: center;
+
+            font-size: 1rem;
+            color: #212529;
+            margin-bottom: 10px;
+
+            .starFull,
+            .starHalf,
+            .starEmpty {
+
+                color: #ccc; // Màu mặc định cho sao
+                font-size: 16px;
+            }
+
+            .starFull {
+                color: #ffc107; // Màu vàng cho sao đầy
+            }
+
+            .starHalf {
+                color: #ffc107; // Màu vàng, có thể cần tạo gradient hoặc sử dụng hình ảnh để biểu diễn sao bán phần
+                background: linear-gradient(90deg, #ffc107 50%, #ccc 50%); // Gradient cho sao bán phần
+            }
+
+
+            .enrollment {
+                margin-left: 10px;
+            }
+        }
+
+        .instructorInfo {
+            font-size: 0.9rem;
+            color: #212529;
+
+            .updateDate {
+                margin-left: 10px;
+            }
+
+            .language {
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .courseContent {
+        width: 50rem;
+        max-width: 800px;
+        margin: 20px auto;
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        h2 {
+            display: flex;
+            justify-content: center;
+            color: #333;
+            font-size: 1.25rem;
+            padding-bottom: 15px;
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            .item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 20px;
+                background-color: #f5f5f5;
+                border-bottom: 1px solid #ddd;
+                cursor: pointer;
+                transition: background-color 0.3s ease-in-out;
+
+                &:hover {
+                    background-color: #e0e0e0;
+                }
+
+                &.open {
+                    background-color: #fff;
+                }
+
+                .title {
+                    font-size: 1rem;
+                    color: #333;
+                    font-weight: bold;
+                }
+
+                .duration {
+                    font-size: 0.9rem;
+                    color: #999;
+                }
+            }
+
+            .sublist {
+                padding-left: 20px;
+
+                .lesson {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 5px 10px;
+                    font-size: 0.9rem;
+                    color: #666;
+
+                    &:not(:last-child) {
+                        border-bottom: 1px solid #d96161;
+                    }
+                }
+            }
+        }
+    }
+
+    .courseContentOverview {
+
+
+
+        button {
+
+            margin-left: 4rem;
+            font-size: 0.9rem;
+            color: #026618;
+            font-weight: bold;
+
+            &:hover {
+                color: rgb(2, 60, 4)
+            }
+        }
+    }
+
+    .courseContent2 {
+        width: 50rem;
+        max-width: 800px;
+        margin: 20px auto;
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        h2 {
+            display: flex;
+            justify-content: center;
+            color: #333;
+            font-size: 1.55rem;
+            padding-bottom: 15px;
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            .item {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 20px;
+
+
+
+
+
+
+                .title {
+                    font-size: 13px;
+                    color: #333;
+                    font-weight: bold;
+                }
+
+                .duration {
+                    font-size: 0.9rem;
+                    color: #999;
+                }
+            }
+
+            .sublist {
+                padding-left: 20px;
+
+                .lesson {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 5px 10px;
+                    font-size: 0.9rem;
+                    color: #666;
+
+                    &:not(:last-child) {
+                        border-bottom: 1px solid #d96161;
+                    }
+                }
+            }
+        }
+    }
+
+    .requirements {
+        width: 50rem;
+        max-width: 800px;
+        margin: 20px auto;
+
+        padding: 1.5rem;
+
+
+
+        h3 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        ul {
+            list-style: inside;
+            margin: 0;
+            padding: 0;
+
+            li {
+                font-size: 1rem;
+                color: #666;
+            }
+        }
+    }
+
+    .description {
+        width: 50rem;
+        max-width: 800px;
+        margin: 20px auto;
+
+        padding: 20px;
+
+
+        h3 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+    }
+
+
+}

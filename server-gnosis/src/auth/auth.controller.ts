@@ -1,5 +1,9 @@
 import { Controller, Post, Body, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
+<<<<<<< HEAD
+=======
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
+>>>>>>> 916cca0 (a)
 
 @Controller('auth')
 export class AuthController {
@@ -30,4 +34,12 @@ export class AuthController {
             token,
         };
     }
+<<<<<<< HEAD
+=======
+    @Post('register')
+    async register(@Body() createUserDto: CreateUserDto) {
+        console.log(createUserDto); // In dữ liệu nhận được để debug
+        return this.authService.register(createUserDto);
+    }
+>>>>>>> 916cca0 (a)
 }

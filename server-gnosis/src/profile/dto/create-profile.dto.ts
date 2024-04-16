@@ -13,6 +13,9 @@ export class CreateProfileDto {
         public notifications: string[],
         public completedCourse: string[],
         public ongoingCourse: string[],
+<<<<<<< HEAD
         public role: string,
+=======
+>>>>>>> 916cca0 (a)
     ) { }
 }

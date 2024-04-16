@@ -1,0 +1,5 @@
+// src/redux/types/lessonTypes.js
+
+export const FETCH_LESSONS_REQUEST = 'FETCH_LESSONS_REQUEST';
+export const FETCH_LESSONS_SUCCESS = 'FETCH_LESSONS_SUCCESS';
+export const FETCH_LESSONS_FAILURE = 'FETCH_LESSONS_FAILURE';

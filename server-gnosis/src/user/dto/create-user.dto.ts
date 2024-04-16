@@ -6,6 +6,10 @@ export class CreateUserDto {
         public name: string,
         public picture: string,
         public profile: string,
+<<<<<<< HEAD
 
+=======
+        public role: string,
+>>>>>>> 916cca0 (a)
     ) { }
 }

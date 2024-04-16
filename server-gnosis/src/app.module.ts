@@ -13,6 +13,11 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UsergoogleModule } from './usergoogle/usergoogle.module';
+<<<<<<< HEAD
+=======
+
+import { AuthorModule } from './author/author.module';
+>>>>>>> 916cca0 (a)
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,7 +34,11 @@ import { UsergoogleModule } from './usergoogle/usergoogle.module';
     QuizBankModule,
     ReviewModule,
     AuthModule,
+<<<<<<< HEAD
     UsergoogleModule,
+=======
+    UsergoogleModule
+>>>>>>> 916cca0 (a)
   ],
   controllers: [AppController],
   providers: [AppService],

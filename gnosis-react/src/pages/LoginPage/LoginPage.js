@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './Login.module.scss'; // Assuming this is where your provided CSS is stored
 import googleLogo from '../../assets/images/google1.png'; // Make sure the path is correct
 import logo from '../../assets/images/logo1.png'; // Make sure the path is correct
+<<<<<<< HEAD
 import { login } from '../../redux/action/loginActions';
 import { useGoogleLogin } from '@react-oauth/google';
 import { loginWithGoogleAction } from '../../redux/action/loginActions';
@@ -19,6 +20,23 @@ const Login = () => {
     useEffect(() => {
         if (isLoggedIn) {
             navigate('/home'); // Chuyển hướng nếu đã đăng nhập
+=======
+import { login } from '../../redux/action/authActions';
+import { useGoogleLogin } from '@react-oauth/google';
+import { loginWithGoogleAction } from '../../redux/action/authActions';
+
+
+const Login = () => {
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const dispatch = useDispatch();
+    const { loading, error } = useSelector(state => state.auth);
+    const navigate = useNavigate();
+    useEffect(() => {
+        if (isLoggedIn) {
+            navigate('/browsecourse'); // Chuyển hướng nếu đã đăng nhập
+>>>>>>> 916cca0 (a)
         }
     }, [isLoggedIn, navigate]);
 
