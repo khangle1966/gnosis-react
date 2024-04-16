@@ -15,7 +15,11 @@ import { ConfigModule } from '@nestjs/config';
 import { UsergoogleModule } from './usergoogle/usergoogle.module';
 
 import { AuthorModule } from './author/author.module';
+
 import { CategoryModule } from './category/category.module';
+
+import { ChapterModule } from './chapter/chapter.module';
+
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -37,6 +41,7 @@ import { CategoryModule } from './category/category.module';
     AuthorModule,
 
     CategoryModule,
+    ChapterModule,
   ],
   controllers: [AppController],
   providers: [AppService],

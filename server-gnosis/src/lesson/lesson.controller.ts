@@ -29,15 +29,13 @@ export class LessonController {
     }
   }
 
+  // src/lesson/lesson.controller.ts
+
   @Post()
-  async create(@Body() createLessonDto: CreateLessonDto) {
-    try {
-      const createdLesson = await this.lessonsService.create(createLessonDto);
-      return createdLesson;
-    } catch (error) {
-      throw new HttpException(error.message, error.status);
-    }
+  async create(@Body() createLessonDto: CreateLessonDto): Promise<Lesson> {
+    return this.lessonsService.create(createLessonDto);
   }
+
 
   @Get()
   async getAll(): Promise<Lesson[]> {

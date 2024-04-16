@@ -1,26 +1,35 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLessonDto } from './dto/create-lesson.dto';
 import { UpdateLessonDto } from './dto/update-lesson.dto';
 import { Lesson } from './entities/lesson.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Chapter, ChapterDocument } from '../chapter/entities/chapter.entity';
 
 @Injectable()
 export class LessonService {
   createLesson(createLessonDto: CreateLessonDto) {
     throw new Error('Method not implemented.');
   }
-  constructor(@InjectModel(Lesson.name) private lessonModel: Model<Lesson>) {}
+
+  constructor(
+    @InjectModel(Lesson.name) private lessonModel: Model<Lesson>,
+    @InjectModel(Chapter.name) private chapterModel: Model<Chapter> // Inject Chapter model here
+  ) { }
+  // src/lesson/lesson.service.ts
+
 
   async create(createLessonDto: CreateLessonDto): Promise<Lesson> {
-    try {
-      const newLesson = new this.lessonModel({
-        ...createLessonDto,
-      });
-      return await newLesson.save();
-    } catch (error) {
-      throw new HttpException(error.message, error.status);
+    const { chapterId, ...lessonDetails } = createLessonDto;
+    const chapter = await this.chapterModel.findById(chapterId);
+    if (!chapter) {
+      throw new NotFoundException(`Chapter with ID ${chapterId} not found`);
     }
+    const lesson = new this.lessonModel(lessonDetails);
+    lesson.save();
+    chapter.lessons.push(lesson._id);
+    await chapter.save();
+    return lesson;
   }
 
   async getById(id: string): Promise<Lesson> {

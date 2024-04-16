@@ -8,8 +8,11 @@ $font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif; // Adjust to your f
 $border-radius: 4px; // Border radius for buttons and inputs
 $input-height: 40px; // Fixed height for inputs for uniformity
 
+
+
 // Global styles
 * {
+
     box-sizing: border-box;
     margin: 0;
     padding: 0;

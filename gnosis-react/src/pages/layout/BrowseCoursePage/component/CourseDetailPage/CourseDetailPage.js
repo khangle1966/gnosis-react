@@ -149,7 +149,7 @@ export const CourseDetailPage = () => {
                     {chapters.map((chapter, index) => (
                         <div key={index} className={styles.list}>
                             <div className={styles.item} onClick={() => handleToggleChapter(index)}>
-                                <div className={styles.title}>{chapter.title}</div>
+                                <div className={styles.title}>{chapter.title} </div>
                                 <div className={styles.duration}>{chapter.lessons.length} Bài</div>
                             </div>
                             {openChapters.includes(index) && (
