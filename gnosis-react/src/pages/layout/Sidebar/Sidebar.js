@@ -6,11 +6,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { logout } from '../../../redux/action/authActions';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { faHome, faBook, faUser, faShoppingCart, faCog, faSignOut } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = () => {
     const sidebarRef = useRef(null);
+    const role = useSelector(state => state.auth.role);
+    console.log('Role in store:', role);
 
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -48,7 +51,12 @@ const Sidebar = () => {
                 <Link to="/profile" className={styles.menuItem}><FontAwesomeIcon icon={faUser} /> PROFILE</Link>
                 <Link to="/cart" className={styles.menuItem}><FontAwesomeIcon icon={faShoppingCart} /> CART</Link>
                 {/* Asumming you have admin routes */}
-                <Link to="/admin" className={styles.menuItem}><FontAwesomeIcon icon={faUser} className={styles.FaAdminIcon} /> ADMIN</Link>
+                {role === 'admin' && (
+                    <Link to="/admin" className={styles.menuItem}><FontAwesomeIcon icon={faUser} /> ADMIN</Link>
+                )}
+                {role === 'instructor' && (
+                    <Link to="/instructor" className={styles.menuItem}><FontAwesomeIcon icon={faUser} /> INSTRUCTOR</Link>
+                )}
                 <Link to="/login" className={styles.menuItem} onClick={handleLogout}>
                     <FontAwesomeIcon icon={faSignOut} /> LOGOUT
                 </Link>

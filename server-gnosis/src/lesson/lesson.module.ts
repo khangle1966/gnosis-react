@@ -14,5 +14,8 @@ import { Chapter, ChapterSchema } from '../chapter/entities/chapter.entity';
   ],
   controllers: [LessonController],
   providers: [LessonService],
+  exports: [LessonService, MongooseModule] // Export LessonService and MongooseModule
+
 })
+
 export class LessonModule { }

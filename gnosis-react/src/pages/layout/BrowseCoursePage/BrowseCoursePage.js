@@ -9,21 +9,24 @@ const BrowseCoursePage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector(state => state.course);
+    const profileComplete = useSelector(state => state.auth.profileComplete); // Thêm dòng này để lấy profileComplete từ Redux
 
     // const { courses, loading, error } = useSelector(state => state.courses);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
     useEffect(() => {
         if (!isLoggedIn) {
-
             navigate('/login');
-
         } else {
-            dispatch(fetchCourses());
+            if (!profileComplete) {
+                // Nếu đăng nhập nhưng profile chưa hoàn thành, chuyển hướng tới /createprofile
+                navigate('/createprofile');
+            } else {
+                // Nếu đăng nhập và đã có profile, tiếp tục thực hiện fetchCourses
+                dispatch(fetchCourses());
+            }
         }
-    }, [isLoggedIn, navigate, dispatch]);
-
-
+    }, [isLoggedIn, profileComplete, navigate, dispatch]); // Thêm profileComplete vào dependencies
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`); // Replace this with your actual route
     };

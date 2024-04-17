@@ -8,9 +8,6 @@ import { Chapter, ChapterDocument } from '../chapter/entities/chapter.entity';
 
 @Injectable()
 export class LessonService {
-  createLesson(createLessonDto: CreateLessonDto) {
-    throw new Error('Method not implemented.');
-  }
 
   constructor(
     @InjectModel(Lesson.name) private lessonModel: Model<Lesson>,
@@ -19,18 +16,33 @@ export class LessonService {
   // src/lesson/lesson.service.ts
 
 
+
+
   async create(createLessonDto: CreateLessonDto): Promise<Lesson> {
     const { chapterId, ...lessonDetails } = createLessonDto;
-    const chapter = await this.chapterModel.findById(chapterId);
-    if (!chapter) {
-      throw new NotFoundException(`Chapter with ID ${chapterId} not found`);
+
+    try {
+      const chapter = await this.chapterModel.findById(chapterId);
+      if (!chapter) {
+        throw new NotFoundException(`Chapter with ID ${chapterId} not found`);
+      }
+
+      // Include chapterId in the lesson creation to ensure it's saved in the database
+      const lesson = new this.lessonModel({
+        ...lessonDetails,
+        chapterId: chapter._id // Ensuring chapterId is saved with the lesson
+      });
+
+      chapter.lessons.push(lesson._id);
+      await chapter.save();
+
+      return await lesson.save();
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
     }
-    const lesson = new this.lessonModel(lessonDetails);
-    lesson.save();
-    chapter.lessons.push(lesson._id);
-    await chapter.save();
-    return lesson;
   }
+
+
 
   async getById(id: string): Promise<Lesson> {
     try {
@@ -77,6 +89,15 @@ export class LessonService {
       throw new HttpException(error.message, error.status);
     }
   }
+  async getLessonsByChapterId(chapterId: string): Promise<Lesson[]> {
+    try {
+      //populate nestjs object mongoose
+      return await this.lessonModel.find({ chapterId: chapterId }).exec();
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
 
   //how to get all lessons by given ordinal number
   async getLessonsByOrdinalNumber(ordinalnumber: number): Promise<Lesson[]> {

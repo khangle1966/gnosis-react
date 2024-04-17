@@ -1,0 +1,258 @@
+// Define colors and other styles as variables
+$background-green: #4CAF50; // Adjust to match the exact green color from the image
+$background-greendark: #2d8b30;
+$login-text-color: #007BFF; // Adjust to the blue color you want for the login text
+$link-color: #007BFF; // Adjust to the blue color for links
+$text-color: #333; // A standard text color, adjust as needed
+$font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif; // Adjust to your font
+$border-radius: 4px; // Border radius for buttons and inputs
+$input-height: 40px; // Fixed height for inputs for uniformity
+
+
+
+// Global styles
+* {
+
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+    font-family: $font-stack;
+}
+
+// Container holding both the image and the form
+.container {
+    background-color: #FDFDF6;
+    display: flex;
+    height: 100vh;
+}
+
+// Section containing the background image
+.leftSection {
+    width: 60%;
+    background: url('../../assets/images/1.png') no-repeat center center;
+    background-size: cover;
+    position: relative;
+    transform: skewX(-15deg); // Adjust the angle to match your design
+    transform-origin: top right;
+    z-index: 2; // Ensure it's above the background image
+
+}
+
+// Right section containing the form
+.rightSection {
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: #FDFDF6; // Light background color
+    z-index: 3; // Ensures the right section is above the slanted cut
+
+}
+
+.logo {
+    margin-bottom: 3rem;
+
+    img {
+        height: 10rem;
+    }
+}
+
+.textLogin {
+
+    font-size: 2.5rem; // Adjust the font size to match the image
+    font-weight: bold;
+
+    color: #217b24;
+    margin-bottom: 2rem;
+}
+
+// The login form styling
+.loginForm {
+    width: 100%;
+    max-width: 400px; // Set a max-width for the form
+
+    form {
+        display: flex;
+        flex-direction: column;
+    }
+
+    // Styling for form controls
+    .formControl {
+
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        input {
+
+            width: 100%;
+            height: 3.5rem;
+            padding: 0.75rem;
+            border: 1px solid #ccc; // Light border for inputs
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+            background-color: white;
+
+            font-size: 1.1rem;
+
+
+
+            padding-left: 2em;
+
+        }
+
+        input::placeholder {
+            color: #909090;
+
+            font-size: 1.1rem;
+
+
+
+
+        }
+
+        .wrapper {
+            margin-bottom: 20px; // Adjust the margin as needed
+            // ...any other styling you need
+        }
+
+        .input {
+
+            width: 100%;
+            height: 3.5rem;
+            padding: 0.75rem;
+            border: 1px solid #ccc; // Light border for inputs
+            border-radius: 20px;
+            margin-bottom: 0.5rem;
+            background-color: white;
+
+            font-size: 1.1rem;
+
+
+
+            padding-left: 2em;
+
+            &:focus {
+                border-color: rgb(26, 122, 80); // Change border color on focus (customize as needed)
+            }
+
+            // You might want to add some styles for the select dropdowns
+
+            background-size: 12px; // Adjust size as needed
+            cursor: pointer; // Change cursor to indicate this is a dropdown
+        }
+    }
+
+    // Button styling
+    .button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 1rem;
+        border-radius: 2rem;
+        width: 10rem;
+        border: none;
+
+        margin-top: 1rem;
+        cursor: pointer;
+        font-size: 1rem;
+
+        &:hover {
+            background-color: darken(#4CAF50, 10%);
+        }
+    }
+
+    // Separator for 'OR'
+    .separator {
+        display: flex;
+        align-items: center;
+        margin: 1rem 0;
+
+
+
+        &:before,
+        &:after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid #ccc;
+        }
+
+        &:not(:empty)::before {
+            margin-right: .50rem;
+
+        }
+
+        &:not(:empty)::after {
+            margin-left: .50rem;
+        }
+    }
+
+    // Google sign-in button
+    .googleSignin {
+        background-color: #4CAF50; // The green color used in the button
+        height: 4rem;
+        width: 17rem;
+        color: white;
+        padding: 10px 20px; // Adjust padding to match the image
+        border: none;
+        border-radius: 4rem;
+        font-size: 0.9rem; // Decrease font size to fit the button
+        font-weight: 500; // Adjust weight as necessary
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+            img {
+
+                background-color: darken($background-green, 10%); // Đảm bảo ảnh cũng thay đổi màu nền
+            }
+
+            background-color: darken(#4CAF50, 10%);
+
+
+        }
+
+        img {
+            background-color: #4CAF50;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 2rem;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+
+
+        }
+    }
+}
+
+// Footer links for account creation
+.footer {
+    font-size: 1rem;
+
+    a {
+        color: $background-greendark;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}

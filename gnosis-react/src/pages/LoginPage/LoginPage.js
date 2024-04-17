@@ -15,13 +15,18 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
     const { loading, error } = useSelector(state => state.auth);
+    const profileComplete = useSelector(state => state.auth.profileComplete);
+
     const navigate = useNavigate();
     useEffect(() => {
         if (isLoggedIn) {
-            navigate('/browsecourse'); // Chuyển hướng nếu đã đăng nhập
+            if (!profileComplete) {
+                navigate('/createprofile');
+            } else {
+                navigate('/browsecourse');
+            }
         }
-    }, [isLoggedIn, navigate]);
-
+    }, [isLoggedIn, profileComplete, navigate]);
 
     const handleLogin = async (e) => {
 

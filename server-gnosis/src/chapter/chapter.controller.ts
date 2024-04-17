@@ -18,7 +18,14 @@ export class ChapterController {
       throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
-
+  @Get('course/:courseId')
+  async getChaptersByCourseId(@Param('courseId') courseId: string) {
+    try {
+      return await this.chapterService.findByCourseId(courseId);
+    } catch (error) {
+      throw new HttpException('Chapters not found', HttpStatus.NOT_FOUND);
+    }
+  }
   @Get()
   async findAll() {
     try {

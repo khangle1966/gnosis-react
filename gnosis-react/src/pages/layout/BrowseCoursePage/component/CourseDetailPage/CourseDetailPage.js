@@ -1,45 +1,75 @@
 import React, { useState, useEffect } from 'react';
 import styles from './CourseDetailPage.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLessonsByCourseId } from '../../../../../redux/action/lessonActions';
-import renderStars from './renderStars'; // Giả sử bạn đã export hàm này từ file khác
+import { fetchLessonsByCourseId, fetchLessonsBychapterId } from '../../../../../redux/action/lessonActions';
+import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
+import renderStars from './renderStars';
 import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
 
 export const CourseDetailPage = () => {
-    const { courseId } = useParams();  // Using useParams to get the course id
+    const { courseId, chapterId } = useParams();
     const dispatch = useDispatch();
     const { courseDetail, loading: loadingCourse, error: errorCourse } = useSelector(state => state.courseDetail);
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
-    const { rating } = courseDetail; // Đảm bảo rằng courseDetail có chứa trường rating
+    const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail);
+    const { rating } = courseDetail;
 
-
-
+    const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
+
     useEffect(() => {
         if (courseId) {
-            dispatch(fetchCourseDetail(courseId)); // Dispatch action để lấy thông tin chi tiết khóa học
-            dispatch(fetchLessonsByCourseId(courseId)); // Dispatch action để lấy danh sách bài học của khóa học
+            dispatch(fetchCourseDetail(courseId));
+            dispatch(fetchLessonsByCourseId(courseId));
+            dispatch(fetchChaptersByCourseId(courseId));
+            if (chapterId) {
+                dispatch(fetchLessonsBychapterId(chapterId));
+            }
         }
-    }, [dispatch, courseId]);
-    console.log("Course detail data:", courseDetail);
-    if (loadingCourse || loadingLessons) return <div>Đang tải...</div>;
-    if (errorCourse || errorLessons) return <div>Lỗi: {errorCourse || errorLessons}</div>;
+    }, [dispatch, courseId, chapterId]);
 
-    const handleToggleChapter = (index) => {
-        setOpenChapters((prevOpenChapters) => {
-            // Kiểm tra xem chương đã mở hay chưa
-            const isOpen = prevOpenChapters.includes(index);
-            // Nếu chưa mở, thêm chương vào mảng, nếu đã mở thì loại bỏ khỏi mảng
-            return isOpen ? prevOpenChapters.filter((item) => item !== index) : [...prevOpenChapters, index];
+    useEffect(() => {
+        if (chapters.length > 0 && lessons.length > 0) {
+            const sortedChapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+            const chaptersMap = sortedChapters.reduce((acc, chapter) => {
+                acc[chapter._id] = {
+                    title: `Chapter ${chapter.chapterNumber}: ${chapter.title}`,
+                    lessons: [],
+                    _id: chapter._id
+                };
+                return acc;
+            }, {});
+
+            lessons.forEach(lesson => {
+                if (chaptersMap[lesson.chapterId]) {
+                    chaptersMap[lesson.chapterId].lessons.push(lesson);
+                }
+            });
+
+            setGroupedChapters(Object.values(chaptersMap));
+        }
+    }, [lessons, chapters]);
+
+    if (loadingCourse || loadingLessons || loadingChapters) return <div>Đang tải...</div>;
+    if (errorCourse || errorLessons || errorChapters) return <div>Lỗi: {errorCourse || errorLessons || errorChapters}</div>;
+
+    const handleToggleChapter = (chapterId) => {
+        setOpenChapters(prev => {
+            const isOpen = prev.includes(chapterId);
+            return isOpen ? prev.filter(id => id !== chapterId) : [...prev, chapterId];
         });
     };
 
+    const handleToggleAllChapters = () => {
+        const anyChapterClosed = groupedChapters.some(chapter => !openChapters.includes(chapter._id));
+        setOpenChapters(anyChapterClosed ? groupedChapters.map(chapter => chapter._id) : []);
+    };
 
     // Static data structure for demonstration
 
 
-    const chapters = groupLessonsByChapter(lessons);
+
 
     const totalChapters = chapters.length; // Tổng số chương dựa vào số lượng chương nhóm được
     const totalLessons = chapters.reduce((total, chapter) => total + chapter.lessons.length, 0); // Tổng số bài học
@@ -55,16 +85,7 @@ export const CourseDetailPage = () => {
     // Chuyển tổng thời lượng từ giây sang giờ và phút
     const totalHours = Math.floor(totalDurationSeconds / 3600);
     const totalMinutes = Math.floor((totalDurationSeconds % 3600) / 60);
-    const handleToggleAllChapters = () => {
-        const anyChapterClosed = chapters.some((_, index) => !openChapters.includes(index));
 
-        if (anyChapterClosed) {
-            setOpenChapters(chapters.map((_, index) => index));
-        } else {
-            // Empty the openChapters array to close all
-            setOpenChapters([]);
-        }
-    };
 
 
     return (
@@ -146,16 +167,16 @@ export const CourseDetailPage = () => {
                     <button onClick={handleToggleAllChapters}>Mở rộng/tắt tất cả các chương</button>
                 </div>
                 <div className={styles.courseContent}>
-                    {chapters.map((chapter, index) => (
-                        <div key={index} className={styles.list}>
-                            <div className={styles.item} onClick={() => handleToggleChapter(index)}>
-                                <div className={styles.title}>{chapter.title} </div>
+                    {groupedChapters.map(chapter => (
+                        <div key={chapter._id} className={styles.list}>
+                            <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
+                                <h4>{chapter.title}</h4>
                                 <div className={styles.duration}>{chapter.lessons.length} Bài</div>
                             </div>
-                            {openChapters.includes(index) && (
+                            {openChapters.includes(chapter._id) && (
                                 <ul className={styles.sublist}>
-                                    {chapter.lessons.map((lesson, lessonIndex) => (
-                                        <li key={lessonIndex} className={styles.lesson}>
+                                    {chapter.lessons.map(lesson => (
+                                        <li key={lesson._id} className={styles.lesson}>
                                             <span className={styles.lessonTitle}>{lesson.title}</span>
                                             <span className={styles.lessonDuration}>{lesson.duration}</span>
                                         </li>
@@ -183,27 +204,5 @@ export const CourseDetailPage = () => {
         </>
     );
 };
-function groupLessonsByChapter(lessons) {
-    const chaptersMap = {};
-
-    lessons.forEach((lesson) => {
-        const chapterNumber = lesson.chapterNumber; // Trường xác định chương
-        if (!chaptersMap[chapterNumber]) {
-            chaptersMap[chapterNumber] = {
-                title: `Chapter ${chapterNumber}`, // Tiêu đề chương
-                lessons: []
-            };
-        }
-        chaptersMap[chapterNumber].lessons.push(lesson);
-    });
-
-    // Chuyển đổi từ object sang mảng chương
-    return Object.keys(chaptersMap).map((chapterNumber) => {
-        return {
-            ...chaptersMap[chapterNumber],
-            chapterNumber
-        };
-    });
-}
 
 export default CourseDetailPage;

@@ -1,0 +1,7 @@
+// src/redux/types/chapterTypes.js
+
+export const FETCH_CHAPTERS_REQUEST = 'FETCH_CHAPTERS_REQUEST';
+export const FETCH_CHAPTERS_SUCCESS = 'FETCH_CHAPTERS_SUCCESS';
+export const FETCH_CHAPTERS_FAILURE = 'FETCH_CHAPTERS_FAILURE';
+export const SET_CHAPTER_ID = 'SET_CHAPTER_ID';
+

@@ -1,10 +1,12 @@
 const initialState = {
     isLoggedIn: false,
-    isRegistering: false, // Thêm trạng thái đăng ký
+    isRegistering: false,
     loading: false,
     user: null,
     error: '',
-    registerSuccessMessage: ''
+    registerSuccessMessage: '',
+    role: null,  // Thêm trường này để lưu trữ vai trò của người dùng
+    profileComplete: false,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -19,7 +21,9 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 isLoggedIn: true,
                 loading: false,
-                user: action.payload,
+                user: action.payload.user,
+                role: action.payload.role,
+                profileComplete: action.payload.profileComplete, // profileComplete được cập nhật dựa trên payload
                 error: ''
             };
         case 'LOGIN_FAILURE':
@@ -60,6 +64,7 @@ const authReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
+
         default:
             return state;
     }

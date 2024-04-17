@@ -19,3 +19,16 @@ export const fetchLessonsByCourseId = (courseId) => async (dispatch) => {
         });
     }
 };
+
+export const fetchLessonsBychapterId = (chapterId) => async (dispatch) => {
+    dispatch({ type: FETCH_LESSONS_REQUEST });
+    try {
+        const response = await axios.get(`http://localhost:3000/v1/lesson/chapter/${chapterId}`);
+        dispatch({ type: FETCH_LESSONS_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({
+            type: FETCH_LESSONS_FAILURE,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+    }
+};

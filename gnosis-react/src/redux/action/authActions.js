@@ -4,10 +4,17 @@ export const loginRequest = () => {
     return { type: 'LOGIN_REQUEST' };
 }
 
-export const loginSuccess = (user) => {
-    return { type: 'LOGIN_SUCCESS', payload: user };
-}
-
+export const loginSuccess = (user, role) => {
+    // Giả định rằng profile bằng 'null' hoặc null thực sự là không hoàn thành
+    const profileComplete = user._doc && user._doc.profile && user._doc.profile !== 'null' && user._doc.profile.trim() !== '';
+    return {
+        type: 'LOGIN_SUCCESS',
+        payload: { user, role, profileComplete: !!profileComplete } // Chuyển đổi thành boolean
+    };
+};
+export const setProfileComplete = (isComplete) => {
+    return { type: 'PROFILE_COMPLETE', payload: isComplete };
+};
 export const loginFailure = (error) => {
     return { type: 'LOGIN_FAILURE', payload: error };
 }
@@ -30,13 +37,15 @@ export const login = (email, password) => {
         dispatch(loginRequest());
         try {
             const response = await axios.post('http://localhost:3000/auth/login', { email, password });
-            dispatch(loginSuccess(response.data));
+            const profileComplete = response.data.user._doc && response.data.user._doc.profile && response.data.user._doc.profile.trim() !== '';
+            dispatch(loginSuccess(response.data.user, response.data.user._doc.role, profileComplete));
             localStorage.setItem('token', response.data.token);
         } catch (error) {
             dispatch(loginFailure(error.response.data.message || 'Something went wrong'));
+            console.log('Login error:', error); // Thêm log ở đây
         }
     };
-}
+};
 
 export const loginWithGoogleAction = (access_token) => async (dispatch) => {
     try {
@@ -47,7 +56,7 @@ export const loginWithGoogleAction = (access_token) => async (dispatch) => {
                 'Content-Type': 'application/json'
             }
         });
-        
+
 
         dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
         localStorage.setItem('access_token', res.data.access_token); // Lưu token vào localStorage

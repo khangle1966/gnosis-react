@@ -203,6 +203,14 @@
         border: 1px solid #ddd;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
+        span {
+
+            &:hover {
+                cursor: pointer;
+                
+            }
+        }
+
         h2 {
             display: flex;
             justify-content: center;

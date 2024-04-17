@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Login from './pages/LoginPage/LoginPage'; // Thay đổi đường dẫn tương ứng với cấu trúc dự án của bạn
 import Welcome from './pages/Welcome/Welcome'; // Tạo một file HomePage.js tương tự như LoginPage.js
 import Register from './pages/Register/register'
+import CreateProfilePage from './pages/CreateProfilePage/createprofilepage'
 import Layout from "./pages/layout/Layout"
 import BrowseCoursePage from './pages/layout/BrowseCoursePage/BrowseCoursePage'
 import CourseDetailPage from './pages/layout/BrowseCoursePage/component/CourseDetailPage/CourseDetailPage'
@@ -13,25 +14,20 @@ import CartPage from './pages/layout/Cart/cart';
 function App() {
   return (
     <Provider store={store} >
-      < Router >
+      <Router>
         <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route path="/welcome" element={<Welcome />} />
-
-          <Route path="/register" element={<Register />} />
-
           <Route path="/" element={<Layout />}>
+            <Route index element={<Navigate replace to="/welcome" />} />
             <Route path="browsecourse" element={<BrowseCoursePage />} />
             <Route path="course/:courseId" element={<CourseDetailPage />} />
             <Route path="cart" element={<CartPage />} />
-
-            <Route path="/" element={<Navigate replace to="/welcome" />} />
           </Route>
-          {/* Chuyển hướng tự động người dùng đến trang đăng nhập nếu họ truy cập đường dẫn '/' */}
-          <Route path="/" element={<Navigate replace to="/welcome" />} />
-          {/* Thêm các đường dẫn khác tại đây nếu cần */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/welcome" element={<Welcome />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/createprofile" element={<CreateProfilePage />} />
         </Routes>
-      </Router >
+      </Router>
     </Provider>
 
   );

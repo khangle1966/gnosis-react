@@ -4,10 +4,13 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { ChapterController } from './chapter.controller';
 import { ChapterService } from './chapter.service';
 import { Chapter, ChapterSchema } from './entities/chapter.entity';
+import { LessonModule } from '../lesson/lesson.module'; // Import the LessonModule
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: Chapter.name, schema: ChapterSchema }])
+    MongooseModule.forFeature([{ name: Chapter.name, schema: ChapterSchema }]),
+    LessonModule, // Import LessonModule here
+
   ],
   controllers: [ChapterController],
   providers: [ChapterService],

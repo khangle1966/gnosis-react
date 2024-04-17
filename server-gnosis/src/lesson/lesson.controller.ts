@@ -33,7 +33,11 @@ export class LessonController {
 
   @Post()
   async create(@Body() createLessonDto: CreateLessonDto): Promise<Lesson> {
-    return this.lessonsService.create(createLessonDto);
+    try {
+      return await this.lessonsService.create(createLessonDto);
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
   }
 
 
@@ -84,4 +88,16 @@ export class LessonController {
       throw new HttpException(error.message, error.status);
     }
   }
+  @Get('chapter/:chapterId')
+  async getLessonsByChapterId(
+    @Param('chapterId') chapterId: string,
+  ): Promise<Lesson[]> {
+    try {
+      const lessons = await this.lessonsService.getLessonsByChapterId(chapterId);
+      return lessons;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
 }
