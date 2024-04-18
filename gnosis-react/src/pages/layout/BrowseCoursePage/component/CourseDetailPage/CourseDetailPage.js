@@ -7,7 +7,7 @@ import renderStars from './renderStars';
 import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
-
+import { addItemToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
 
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
@@ -16,9 +16,10 @@ export const CourseDetailPage = () => {
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
     const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail);
     const { rating } = courseDetail;
-
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
+   
+     
 
     useEffect(() => {
         if (courseId) {
@@ -52,6 +53,9 @@ export const CourseDetailPage = () => {
             setGroupedChapters(Object.values(chaptersMap));
         }
     }, [lessons, chapters]);
+    const handleAddToCart = () => {
+        dispatch(addItemToCart(courseId));
+    };
 
     if (loadingCourse || loadingLessons || loadingChapters) return <div>Đang tải...</div>;
     if (errorCourse || errorLessons || errorChapters) return <div>Lỗi: {errorCourse || errorLessons || errorChapters}</div>;
@@ -106,7 +110,7 @@ export const CourseDetailPage = () => {
                 </div>
                 <div className={styles.coursePurchase}>
                     <div className={styles.coursePrice}>${courseDetail.price}</div>
-                    <button className={styles.addToCartButton}>Thêm vào giỏ hàng</button>
+                    <button className={styles.addToCartButton} onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
                     <button className={styles.buyNowButton}>Mua ngay</button>
                     <div className={styles.moneyBackGuarantee}>Đảm bảo hoàn tiền trong 30 ngày</div>
                 </div>
