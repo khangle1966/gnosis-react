@@ -67,11 +67,11 @@ export const loginWithGoogleAction = (access_token) => async (dispatch) => {
         });
     }
 };
-export const register = (username, email, password) => {
+export const register = (email, password) => {
     return async dispatch => {
         dispatch(registerRequest());
         try {
-            const response = await axios.post('http://localhost:3000/auth/register', { username, email, password });
+            const response = await axios.post('http://localhost:3000/auth/register', { email, password });
             dispatch(registerSuccess(response.data));
             localStorage.setItem('token', response.data.token);
         } catch (error) {

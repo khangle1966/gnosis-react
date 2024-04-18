@@ -16,17 +16,15 @@ const BrowseCoursePage = () => {
 
     useEffect(() => {
         if (!isLoggedIn) {
+
             navigate('/login');
+
         } else {
-            if (!profileComplete) {
-                // Nếu đăng nhập nhưng profile chưa hoàn thành, chuyển hướng tới /createprofile
-                navigate('/createprofile');
-            } else {
-                // Nếu đăng nhập và đã có profile, tiếp tục thực hiện fetchCourses
-                dispatch(fetchCourses());
-            }
+            dispatch(fetchCourses());
         }
-    }, [isLoggedIn, profileComplete, navigate, dispatch]); // Thêm profileComplete vào dependencies
+    }, [isLoggedIn, navigate, dispatch]);
+
+
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`); // Replace this with your actual route
     };

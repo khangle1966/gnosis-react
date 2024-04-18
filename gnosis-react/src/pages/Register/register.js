@@ -16,7 +16,7 @@ const Register = () => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [username, setusername] = useState('');
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { loading, error } = useSelector(state => state.auth);
@@ -36,6 +36,7 @@ const Register = () => {
         }
     }, [registerSuccessMessage, navigate]);
 
+
     const loginWithGoogle = useGoogleLogin({
         onSuccess: async (response) => {
             dispatch(loginWithGoogleAction(response.access_token)); // Đảm bảo rằng đây là access_token
@@ -50,7 +51,7 @@ const Register = () => {
             return; // Stop the function from proceeding further
         }
 
-        dispatch(register(username, email, password));
+        dispatch(register(email, password));
     };
 
 
@@ -68,16 +69,7 @@ const Register = () => {
                 <div className={styles.loginForm}>
                     <form onSubmit={handleRegister}>
 
-                        <div className={styles.formControl}>
-                            <input
-                                className={styles.input}
-                                type="username"
-                                value={username}
-                                placeholder='Username'
-                                onChange={(e) => setusername(e.target.value)}
-                                required
-                            />
-                        </div>
+
                         <div className={styles.formControl}>
 
                             <input

@@ -6,6 +6,8 @@ import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActi
 import renderStars from './renderStars';
 import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
+import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
+
 
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
@@ -124,11 +126,12 @@ export const CourseDetailPage = () => {
             <div className={styles.courseDetailContainer}>
 
                 <div className={styles.courseHeader}>
-                    <div className={styles.breadcrumbs}>Browse Course &gt; {courseDetail.name} </div>
+                    <div className={styles.breadcrumbs}>Home &gt; Browse Course &gt; {courseDetail.name} </div>
                     <h1 className={styles.courseTitle}>{courseDetail.name}</h1>
 
 
-                    <p className={styles.courseSubtitle}>{courseDetail.subtitle}</p>
+                    <p className={styles.courseSubtitle}>{courseDetail.subTitle}</p>
+
                     <div className={styles.courseRating}>
                         <span className={styles.rating}>({courseDetail.rating})</span>
 
@@ -170,13 +173,18 @@ export const CourseDetailPage = () => {
                     {groupedChapters.map(chapter => (
                         <div key={chapter._id} className={styles.list}>
                             <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
-                                <h4>{chapter.title}</h4>
+                                <h4>
+
+
+                                    <span>{chapter.title}</span> {/* Thêm text cho tooltip */}
+
+                                </h4>
                                 <div className={styles.duration}>{chapter.lessons.length} Bài</div>
                             </div>
                             {openChapters.includes(chapter._id) && (
                                 <ul className={styles.sublist}>
                                     {chapter.lessons.map(lesson => (
-                                        <li key={lesson._id} className={styles.lesson}>
+                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
                                             <span className={styles.lessonTitle}>{lesson.title}</span>
                                             <span className={styles.lessonDuration}>{lesson.duration}</span>
                                         </li>
@@ -201,6 +209,7 @@ export const CourseDetailPage = () => {
                 </div>
 
             </div>
+
         </>
     );
 };

@@ -1,30 +1,41 @@
-
+// File: createprofilepage.js
 import React, { useState } from 'react';
-
-
-import { useSelector } from 'react-redux';
-import styles from './createprofilepage.module.scss'; // Assuming this is where your provided CSS is stored
-import logo from '../../assets/images/logo1.png'; // Make sure the path is correct
-
-
+import { useDispatch, useSelector } from 'react-redux';
+import { createProfile } from '../../redux/action/profileActions'; // Đảm bảo đường dẫn đúng
+import styles from './createprofilepage.module.scss';
+import logo from '../../assets/images/logo1.png';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 const CreateProfilePage = () => {
+    const { user } = useSelector(state => state.auth); // Giả sử authReducer lưu trữ thông tin người dùng
+    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState(user._doc.email);
     const [gender, setGender] = useState('');
     const [country, setCountry] = useState('');
-    const [email, setEmail] = useState('');
-
-    const [username, setusername] = useState('');
-
-    const { loading, error } = useSelector(state => state.auth);
-
-
+    const dispatch = useDispatch();
+    const { loading, error } = useSelector(state => state.profile);
+    const navigate = useNavigate(); // Khởi tạo navigate
 
 
 
     const handleRegister = async (e) => {
-        console.log("kakakak")
+        e.preventDefault();
+        const profileData = {
+            id: user._doc.uid, // You'll need to replace 'some-uid' with actual uid from user data
+            userName: username,
+            email,
+            gender,
+            country
+        };
 
-    }
-
+        try {
+            await dispatch(createProfile(profileData));
+            // Chuyển hướng người dùng sau khi tạo profile thành công
+            navigate('/browsecourse');
+        } catch (error) {
+            // Xử lý lỗi nếu cần
+            console.error('Error creating profile:', error);
+        }
+    };
 
     return (
 
@@ -46,7 +57,7 @@ const CreateProfilePage = () => {
                                 type="username"
                                 value={username}
                                 placeholder='Username'
-                                onChange={(e) => setusername(e.target.value)}
+                                onChange={(e) => setUsername(e.target.value)}
                                 required
                             />
                         </div>
@@ -58,6 +69,7 @@ const CreateProfilePage = () => {
                                 value={email}
                                 placeholder='Email'
                                 onChange={(e) => setEmail(e.target.value)}
+                                disabled={true} // Disable input này
                                 required
                             />
                         </div>
@@ -93,9 +105,9 @@ const CreateProfilePage = () => {
                                 {/* Add additional country options here */}
                             </select>
                         </div>
-                        {error && <p style={{ color: '#FF0000', fontWeight: 'bold', margin: '10px 0', borderRadius: '5px', textAlign: 'center', }}>{error} </p>}
+
                         <div className={styles.formControl}>
-                            <button type="submit" disabled={loading} className={styles.button}>SIGN IN</button>
+                            <button type="submit" className={styles.button}>SIGN IN</button>
                         </div>
                     </form>
 
@@ -108,5 +120,6 @@ const CreateProfilePage = () => {
         </div>
     );
 };
+
 
 export default CreateProfilePage;

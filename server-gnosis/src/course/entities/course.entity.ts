@@ -14,6 +14,9 @@ export class Course {
 
   @Prop()
   description: string;
+  @Prop()
+  subTitle: string;
+
 
   @Prop()
   img: string; // This should be a URL to the image
