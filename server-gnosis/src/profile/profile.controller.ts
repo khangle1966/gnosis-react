@@ -15,13 +15,61 @@ import { CreateProfileDto } from './dto/create-profile.dto';
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { UserService } from 'src/user/user.service';
-
+import { UsergoogleService } from 'src/usergoogle/usergoogle.service';
 @Controller('v1/profile')
 export class ProfileController {
   constructor(
     private profileService: ProfileService,
     private userService: UserService,
+    private userGoogleService: UsergoogleService,
   ) { }
+  @Get(':email')
+  async checkEmailExists(@Param('email') email: string): Promise<{ exists: boolean }> {
+    const exists = await this.profileService.findByEmail(email);
+    return { exists };
+  }
+  // Thêm vào UserGoogleController
+
+  
+  @Post('googleprofile')
+  async createProfileForUserGoogle(@Body() createProfileDto: CreateProfileDto): Promise<Profile> {
+    const requiredFields = ['id', 'email', 'userName'];
+    const missingFields = requiredFields.filter(
+      (field) => !createProfileDto[field],
+    );
+    if (missingFields.length > 0) {
+      throw new HttpException(
+        `Missing required fields: ${missingFields.join(', ')}`,
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+    try {
+      const isExist = await this.profileService.findOne(createProfileDto.id);
+      if (isExist) {
+        throw new HttpException(
+          'Profile already exists',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const newProfile = await this.profileService.create(createProfileDto);
+      if (!newProfile) {
+        try {
+          console.log('No profile');
+          await this.userGoogleService.remove(createProfileDto.id);
+        } catch (error) {
+          throw new Error(error);
+        }
+      } else {
+        console.log('Have profile');
+        this.userGoogleService.update(newProfile.id, {
+          profile: newProfile.id,
+        });
+      }
+      return newProfile;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   @Post()
   async create(@Body() createProfileDto: CreateProfileDto): Promise<Profile> {

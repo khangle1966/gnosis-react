@@ -7,39 +7,51 @@ import logo from '../../assets/images/logo1.png'; // Make sure the path is corre
 import { login } from '../../redux/action/authActions';
 import { useGoogleLogin } from '@react-oauth/google';
 import { loginWithGoogleAction } from '../../redux/action/authActions';
+// import { checkDuplicateProfile } from '../../redux/action/profileActions';
+// import { logout } from '../../redux/action/authActions';
 
 
 const Login = () => {
+    // const { user } = useSelector(state => state.auth); // Giả sử authReducer lưu trữ thông tin người dùng
+
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const dispatch = useDispatch();
     const { loading, error } = useSelector(state => state.auth);
     const profileComplete = useSelector(state => state.auth.profileComplete);
+    const profileCompleteGoogle = useSelector(state => state.auth.profileCompleteGoogle);
 
     const navigate = useNavigate();
     useEffect(() => {
         if (isLoggedIn) {
-            if (!profileComplete) {
+            if (!profileComplete && !profileCompleteGoogle) {
                 navigate('/createprofile');
             } else {
                 navigate('/browsecourse');
             }
         }
-    }, [isLoggedIn, profileComplete, navigate]);
+    }, [isLoggedIn, profileComplete, profileCompleteGoogle, navigate]);
 
     const handleLogin = async (e) => {
 
         e.preventDefault();
         dispatch(login(email, password));
 
-    };
 
+    };
     const loginWithGoogle = useGoogleLogin({
         onSuccess: async (response) => {
-            dispatch(loginWithGoogleAction(response.access_token)); // Đảm bảo rằng đây là access_token
+            await dispatch(loginWithGoogleAction(response.access_token));
+            // Sau khi cập nhật trạng thái Redux, kiểm tra xem người dùng đã hoàn thành profile chưa
+            if (!profileCompleteGoogle) {
+                navigate('/createprofile');
+            } else {
+                navigate('/browsecourse');
+            }
         },
     });
+
 
     return (
 

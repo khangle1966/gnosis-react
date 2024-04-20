@@ -12,6 +12,18 @@ export const loginSuccess = (user, role) => {
         payload: { user, role, profileComplete: !!profileComplete } // Chuyển đổi thành boolean
     };
 };
+
+export const loginWithGoogleSuccess = (user, role) => {
+    // Kiểm tra trạng thái hoàn thiện profile của người dùng từ thông tin trả về
+    const profileCompleteGoogle = user && user.profile && user.profile !== 'null' && user.profile.trim() !== '';
+    return {
+        type: 'LOGIN_GOOGLE_SUCCESS',
+        payload: { user, role, profileCompleteGoogle: !!profileCompleteGoogle }  // Sử dụng !! để chuyển đổi rõ ràng sang giá trị boolean
+    };
+};
+
+
+
 export const setProfileComplete = (isComplete) => {
     return { type: 'PROFILE_COMPLETE', payload: isComplete };
 };
@@ -49,22 +61,20 @@ export const login = (email, password) => {
 
 export const loginWithGoogleAction = (access_token) => async (dispatch) => {
     try {
-        dispatch({ type: 'LOGIN_REQUEST' });
+        dispatch(loginRequest());
         const res = await axios.post('http://localhost:3000/auth/google-login', { access_token }, {
-
             headers: {
                 'Content-Type': 'application/json'
             }
         });
 
+        const profileCompleteGoogle = res.data.user && res.data.user.profile && res.data.user.profile.trim() !== '';
+        console.log(res.data.user.profile)
+        dispatch(loginWithGoogleSuccess(res.data.user, res.data.user.role, profileCompleteGoogle));
 
-        dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
-        localStorage.setItem('access_token', res.data.access_token); // Lưu token vào localStorage
+        localStorage.setItem('token', res.data.token); // Lưu token vào localStorage
     } catch (error) {
-        dispatch({
-            type: 'LOGIN_FAILURE',
-            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
-        });
+        console.log('Google login error:', error); // Thêm log ở đây
     }
 };
 export const register = (email, password) => {

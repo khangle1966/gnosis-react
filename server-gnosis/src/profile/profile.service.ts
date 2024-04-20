@@ -6,20 +6,33 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
+
+
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Course } from 'src/course/entities/course.entity';
+import { UsergoogleService } from '../usergoogle/usergoogle.service'
 
 @Injectable()
 export class ProfileService {
   constructor(
     @InjectModel(Profile.name) private profileModel: Model<Profile>,
 
-    
   ) { }
 
+
+  async createProfileForUserGoogle(createProfileDto: CreateProfileDto): Promise<Profile> {
+    try {
+      const profile = new this.profileModel(createProfileDto);
+      console.log(profile);
+      return await profile.save();
+    } catch (error) {
+      console.log(error);
+      throw new HttpException(error.message, error.status);
+    }
+  }
   async create(createProfileDto: CreateProfileDto): Promise<Profile> {
     try {
       const profile = new this.profileModel(createProfileDto);
@@ -92,4 +105,22 @@ export class ProfileService {
       throw new HttpException(error.message, error.status);
     }
   }
+  async findByEmail(email: string): Promise<boolean> {
+    try {
+      // Tìm profile theo email
+      const profile = await this.profileModel.findOne({ email }).exec();
+
+      // Nếu không tìm thấy profile, trả về false
+      if (!profile) {
+        return false;
+      }
+
+      // Nếu tìm thấy profile, trả về true
+      return true;
+    } catch (error) {
+      // Xử lý ngoại lệ nếu có lỗi xảy ra
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
 }

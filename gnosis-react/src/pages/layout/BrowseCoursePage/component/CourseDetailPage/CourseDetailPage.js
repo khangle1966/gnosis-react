@@ -6,7 +6,7 @@ import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActi
 import renderStars from './renderStars';
 import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
-import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
+// import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
 
 
 export const CourseDetailPage = () => {

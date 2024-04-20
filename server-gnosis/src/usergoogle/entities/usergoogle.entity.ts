@@ -22,6 +22,8 @@ export class Usergoogle {
 
     @Prop({ default: null })
     profile: string;
+    @Prop({ default: 'user' })
+    role: string;
 }
 
 export const UsergoogleSchema = SchemaFactory.createForClass(Usergoogle);

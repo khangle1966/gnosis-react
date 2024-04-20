@@ -13,7 +13,10 @@ import {
 const initialState = {
     profile: null,
     loading: false,
-    error: null
+    error: null,
+    isCheckingDuplicate: false,
+    isDuplicate: false,
+
 };
 
 const profileReducer = (state = initialState, action) => {
@@ -31,6 +34,24 @@ const profileReducer = (state = initialState, action) => {
         case PROFILE_UPDATE_FAILURE:
         case PROFILE_DELETE_FAILURE:
             return { ...state, loading: false, error: action.payload };
+        case 'CHECK_DUPLICATE_PROFILE_REQUEST':
+            return {
+                ...state,
+                isCheckingDuplicate: true
+            };
+        case 'CHECK_DUPLICATE_PROFILE_SUCCESS':
+            return {
+                ...state,
+                isCheckingDuplicate: false,
+                isDuplicate: action.payload,
+                error: ''
+            };
+        case 'CHECK_DUPLICATE_PROFILE_FAILURE':
+            return {
+                ...state,
+                isCheckingDuplicate: false,
+                error: action.payload
+            };
         default:
             return state;
     }
