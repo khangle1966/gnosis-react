@@ -1,6 +1,15 @@
 // Trong file actions/courseActions.js
 import axios from 'axios';
 
+import {
+    UPDATE_COURSE,
+    RESET_COURSE,
+    SUBMIT_COURSE,
+    SUBMIT_COURSE_SUCCESS,
+    SUBMIT_COURSE_FAILURE,
+
+} from '../types/courseType';
+
 export const fetchCourses = () => async (dispatch) => {
     try {
         const response = await axios.get('http://localhost:3000/v1/course');
@@ -33,3 +42,30 @@ export const fetchCourseDetail = (courseId) => async (dispatch) => {
         });
     }
 };
+export function updateCourse(courseData) {
+    return { type: UPDATE_COURSE, payload: courseData };
+}
+
+export function resetCourse() {
+    return { type: RESET_COURSE };
+}
+
+export function submitCourse(courseData) {
+    return async (dispatch) => {
+        dispatch({ type: SUBMIT_COURSE });
+        try {
+            // Making API call to submit course data using Axios
+            const response = await axios.post('http://localhost:3000/v1/course', courseData, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // Handling the response data
+            const data = response.data;
+            dispatch({ type: SUBMIT_COURSE_SUCCESS, payload: data });
+        } catch (error) {
+            dispatch({ type: SUBMIT_COURSE_FAILURE, payload: error.response ? error.response.data : error.message });
+        }
+    };
+}
