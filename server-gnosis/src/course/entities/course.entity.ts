@@ -49,6 +49,8 @@ export class Course {
 
   @Prop({ required: true, type: String }) // author could reference an Author schema
   author: string;
+  @Prop({ required: true, type: String }) // author could reference an Author schema
+  authorId: string;
 
   @Prop({ required: true })
   duration: number; // In hours

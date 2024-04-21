@@ -116,7 +116,7 @@
         }
 
         .language,
-        .pricing {
+        .price {
             flex-basis: 48%; // Mỗi phần tử chiếm 48% không gian để có khoảng trống ở giữa
 
             select,
@@ -148,8 +148,7 @@
             }
         }
 
-        // Phần này là cho trường nhập Pricing để giống hình ảnh đã cung cấp
-        .pricing {
+        .price {
             position: relative;
 
             input {
@@ -177,68 +176,67 @@
         }
 
         .uploadArea {
+            position: relative;
+            /* Thêm thuộc tính position: relative; */
             display: flex;
             align-items: center;
             gap: 1rem;
+            transition: all 0.3s ease;
+
+            &:hover {
+                transform: scale(1.1); // phóng to nút bấm khi hover
+            }
+
+            img {
+                position: absolute;
+                top: 0;
+                left: 0;
+
+                object-fit: fill; // Điều chỉnh này giúp hình ảnh không bị méo
+                border-radius: 9px;
+                border: 4px dashed;
+                border-color: #139030;
+            }
 
             .uploadBtn {
                 width: 36rem;
-                height: 20rem;
-            }
+                height: 35rem;
 
-            .uploadLessonBtn {
-
-                width: 17.5rem;
-                height: 10rem;
-            }
-
-            .addBtn {
-                width: 17.5rem;
-                height: 10rem;
 
             }
 
-            .uploadLessonBtn {
+            .uploadBtn.disabled {
+                opacity: 0.5;
+                /* Thiết lập opacity để làm mờ button */
+                pointer-events: none;
+                /* Vô hiệu hóa sự kiện click trên button */
+            }
+
+            /* Thêm một class mới để làm mờ button */
 
 
+
+            .uploadBtn {
                 padding: .8rem 1.2rem;
                 border-radius: 2rem;
                 border: 2px dashed #ccc;
-                background-color: #f7f7f7;
+                background-color: #ececec;
+                color: black;
                 cursor: pointer;
                 transition: background-color .3s;
 
                 &:hover {
-                    background-color: #e7e7e7;
+                    background-color: #bdbdbd; // Thay đổi màu khi hover
+                }
+
+                &:disabled {
+                    opacity: 0.5; // Làm mờ nút khi nó không hoạt động
+                    pointer-events: none; // Ngăn không cho người dùng click khi nút không hoạt động
                 }
             }
 
-            .uploadBtn,
-            .addBtn {
 
-                padding: .8rem 1.2rem;
-                border-radius: 2rem;
-                border: 2px dashed #ccc;
-                background-color: #f7f7f7;
-                cursor: pointer;
-                transition: background-color .3s;
 
-                &:hover {
-                    background-color: #e7e7e7;
-                }
-            }
-
-            .addBtn {
-                border-style: solid;
-                background-color: #fff;
-            }
-
-            .uploadBtn,
-            .addBtn,
-            .uploadLessonBtn {
-
-                color: #000;
-            }
 
         }
     }

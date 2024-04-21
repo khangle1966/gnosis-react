@@ -19,6 +19,7 @@ import { AuthorModule } from './author/author.module';
 import { CategoryModule } from './category/category.module';
 
 import { ChapterModule } from './chapter/chapter.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { ChapterModule } from './chapter/chapter.module';
 
     CategoryModule,
     ChapterModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],

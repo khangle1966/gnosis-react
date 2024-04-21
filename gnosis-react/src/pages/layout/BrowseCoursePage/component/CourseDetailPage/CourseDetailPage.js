@@ -16,6 +16,8 @@ export const CourseDetailPage = () => {
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
     const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail);
     const { rating } = courseDetail;
+    const { user } = useSelector(state => state.auth);
+
 
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
@@ -31,6 +33,17 @@ export const CourseDetailPage = () => {
         }
     }, [dispatch, courseId, chapterId]);
 
+    useEffect(() => {
+        if (courseDetail.authorId === user.uid) {
+            alert("You are the author of this course!");
+        }
+        else {
+            alert("Không phải bạn")
+        }
+
+
+
+    }, [courseDetail, user.uid]);
     useEffect(() => {
         if (chapters.length > 0 && lessons.length > 0) {
             const sortedChapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);

@@ -44,11 +44,7 @@ const Login = () => {
         onSuccess: async (response) => {
             await dispatch(loginWithGoogleAction(response.access_token));
             // Sau khi cập nhật trạng thái Redux, kiểm tra xem người dùng đã hoàn thành profile chưa
-            if (!profileCompleteGoogle) {
-                navigate('/createprofile');
-            } else {
-                navigate('/browsecourse');
-            }
+
         },
     });
 
@@ -74,8 +70,7 @@ const Login = () => {
                                 type="email"
                                 value={email}
                                 placeholder='Email'
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
+                                onChange={(e) => setEmail(e.target.value)} required
                             />
                         </div>
                         <div className={styles.formControl}>
