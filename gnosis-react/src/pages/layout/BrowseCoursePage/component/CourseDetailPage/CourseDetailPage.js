@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchLessonsByCourseId, fetchLessonsBychapterId } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
 import renderStars from './renderStars';
-import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
+import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
 // import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
 
@@ -22,6 +22,10 @@ export const CourseDetailPage = () => {
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
 
+    const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
+    const [editMode, setEditMode] = useState(false);
+
+
     useEffect(() => {
         if (courseId) {
             dispatch(fetchCourseDetail(courseId));
@@ -33,17 +37,7 @@ export const CourseDetailPage = () => {
         }
     }, [dispatch, courseId, chapterId]);
 
-    useEffect(() => {
-        if (courseDetail.authorId === user.uid) {
-            alert("You are the author of this course!");
-        }
-        else {
-            alert("Không phải bạn")
-        }
 
-
-
-    }, [courseDetail, user.uid]);
     useEffect(() => {
         if (chapters.length > 0 && lessons.length > 0) {
             const sortedChapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
@@ -66,9 +60,36 @@ export const CourseDetailPage = () => {
         }
     }, [lessons, chapters]);
 
-    if (loadingCourse || loadingLessons || loadingChapters) return <div>Đang tải...</div>;
-    if (errorCourse || errorLessons || errorChapters) return <div>Lỗi: {errorCourse || errorLessons || errorChapters}</div>;
 
+    const handleSaveChanges = () => {
+        dispatch(updateCourseDetails(editableCourse));
+        setEditMode(false);
+    };
+    const handlePriceInput = (e) => {
+        const regex = /^[0-9]*$/; // Chỉ cho phép số
+        if (!regex.test(e.target.textContent)) {
+            e.preventDefault();
+        }
+    };
+
+    // Hàm xử lý sự kiện khi giá bị thay đổi
+    const handlePriceChange = (e) => {
+        const price = e.target.textContent.replace(/\D/g, ''); // Lọc ra chỉ số từ nội dung nhập
+        setEditableCourse({ ...editableCourse, price: price });
+    };
+    const handleCancelEdit = () => {
+        setEditableCourse({ ...courseDetail });  // Khôi phục thông tin khóa học ban đầu
+        setEditMode(false);
+    };
+
+
+    if (loadingCourse || loadingLessons || loadingChapters) {
+        return <div>Đang tải...</div>;
+    }
+
+    if (errorCourse || errorLessons || errorChapters) {
+        return <div>Lỗi: {errorCourse || errorLessons || errorChapters}</div>;
+    }
     const handleToggleChapter = (chapterId) => {
         setOpenChapters(prev => {
             const isOpen = prev.includes(chapterId);
@@ -107,8 +128,8 @@ export const CourseDetailPage = () => {
         <>
             <nav className={styles.navbar}>
                 {/* You can add your logo, navigation links or any other content here */}
-                <h1 className={styles.courseTitle}>{courseDetail.name}</h1>
 
+                <h1 className={styles.courseTitle}>{courseDetail.name}</h1>
                 {/* Add additional nav items here if needed */}
             </nav>
             <div className={styles.courseSidebar}>
@@ -118,7 +139,14 @@ export const CourseDetailPage = () => {
                     {courseDetail.img && <img src={courseDetail.img} alt="Hình ảnh khóa học" className={styles.courseImage} />}
                 </div>
                 <div className={styles.coursePurchase}>
-                    <div className={styles.coursePrice}>${courseDetail.price}</div>
+                    <div
+                        className={`${styles.coursePrice} ${editMode ? styles.editable : ''}`}
+                        contentEditable={editMode}
+                        onInput={(e) => handlePriceInput(e)}
+                        onBlur={(e) => handlePriceChange(e)}
+                        dangerouslySetInnerHTML={{ __html: `$${courseDetail.price}` }}
+                    />
+
                     <button className={styles.addToCartButton}>Thêm vào giỏ hàng</button>
                     <button className={styles.buyNowButton}>Mua ngay</button>
                     <div className={styles.moneyBackGuarantee}>Đảm bảo hoàn tiền trong 30 ngày</div>
@@ -140,7 +168,14 @@ export const CourseDetailPage = () => {
 
                 <div className={styles.courseHeader}>
                     <div className={styles.breadcrumbs}>Home &gt; Browse Course &gt; {courseDetail.name} </div>
-                    <h1 className={styles.courseTitle}>{courseDetail.name}</h1>
+
+                    <h1
+                        className={`${styles.courseTitle} ${editMode ? styles.editable : ''}`}
+
+                        contentEditable={editMode}
+                        onBlur={(e) => setEditableCourse({ ...editableCourse, name: e.target.textContent })}
+                        dangerouslySetInnerHTML={{ __html: courseDetail.name }}
+                    />
 
 
                     <p className={styles.courseSubtitle}>{courseDetail.subTitle}</p>
@@ -158,9 +193,32 @@ export const CourseDetailPage = () => {
                     <div className={styles.instructorInfo}>
                         Được tạo bởi <a href='/default' > {courseDetail.author} </a>
                         <span className={styles.updateDate}>Lần cập nhật gần đây nhất 11/2023</span>
-                        <span className={styles.language}>{courseDetail.language}</span>
+                        <span
+
+                            className={`${styles.language} ${editMode ? styles.editable : ''}`}
+
+                            contentEditable={editMode}
+                            onBlur={(e) => setEditableCourse({ ...editableCourse, language: e.target.textContent })}
+                            dangerouslySetInnerHTML={{ __html: courseDetail.language }}
+                        />
+
+                        {user.uid === courseDetail.authorId && (
+                            <div className={styles.editPrompt}>
+                                Bạn là chủ khóa học , vào mode chỉnh sửa ?
+                                {editMode ? (
+                                    <>
+                                        <button onClick={handleSaveChanges} className={styles.saveButton}>Lưu Thay Đổi</button>
+                                        <button onClick={handleCancelEdit} className={styles.exitButton}>Thoát</button>
+                                    </>
+                                ) : (
+                                    <button onClick={() => setEditMode(true)} className={styles.editButton}>Chỉnh sửa</button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
+
+
 
                 <div className={styles.courseContent2}>
                     <h2>Nội dung bài học</h2>
@@ -169,7 +227,14 @@ export const CourseDetailPage = () => {
 
 
                     <div className={styles.item}>
-                        <div className={styles.title}>{courseDetail.description}</div>
+                        <div
+                            className={`${styles.title} ${editMode ? styles.editable : ''}`}
+                            contentEditable={editMode}
+                            onBlur={(e) => setEditableCourse({ ...editableCourse, description: e.target.textContent })}
+                            dangerouslySetInnerHTML={{ __html: courseDetail.description }}
+                        />
+
+
 
                     </div>
 
@@ -209,14 +274,28 @@ export const CourseDetailPage = () => {
                 </div>
                 <div className={styles.requirements}>
                     <h3>Yêu cầu</h3>
-                    <ul>
-                        <li>{courseDetail.request}</li>
-                    </ul>
+                    <div
+                        className={`${styles.title} ${editMode ? styles.editable : ''}`}
+                        contentEditable={editMode}
+                        onBlur={(e) => setEditableCourse({ ...editableCourse, request: e.target.textContent })}
+                        dangerouslySetInnerHTML={{ __html: courseDetail.request }}
+                    />
+
+
                 </div>
 
                 <div className={styles.description}>
                     <h3>Mô tả</h3>
-                    <p>{courseDetail.describe}</p>
+                    <div
+                        className={`${styles.title} ${editMode ? styles.editable : ''}`}
+
+                        contentEditable={editMode}
+                        onBlur={(e) => setEditableCourse({ ...editableCourse, describe: e.target.textContent })}
+                        dangerouslySetInnerHTML={{ __html: courseDetail.describe }}
+                    />
+
+
+
 
                     {/* ...tiếp tục thêm toàn bộ nội dung mô tả từ hình ảnh... */}
                 </div>

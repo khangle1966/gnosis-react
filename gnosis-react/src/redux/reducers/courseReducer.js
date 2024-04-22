@@ -32,10 +32,13 @@ export const courseDetailReducer = (state = courseDetailInitialState, action) =>
             return { ...state, loading: false, courseDetail: action.payload };
         case 'FETCH_COURSE_DETAIL_FAILURE':
             return { ...state, loading: false, error: action.payload };
+        case UPDATE_COURSE:
+            return { ...state, courseDetail: { ...state.courseDetail, ...action.payload }, loading: false };
         default:
             return state;
     }
 };
+
 export const courseReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'FETCH_COURSES_SUCCESS':
@@ -58,11 +61,7 @@ export const courseReducer = (state = initialState, action) => {
 
 export const coursePushReducer = (state = initialCourseState, action) => {
     switch (action.type) {
-        case UPDATE_COURSE:
-            return {
-                ...state,
-                courseData: { ...state.courseData, ...action.payload }
-            };
+
         case RESET_COURSE:
             return initialCourseState;
         case SUBMIT_COURSE:

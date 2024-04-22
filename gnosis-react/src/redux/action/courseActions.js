@@ -45,6 +45,21 @@ export const fetchCourseDetail = (courseId) => async (dispatch) => {
 export function updateCourse(courseData) {
     return { type: UPDATE_COURSE, payload: courseData };
 }
+export const updateCourseDetails = (courseData) => async (dispatch) => {
+    try {
+        const response = await axios.put(`http://localhost:3000/v1/course/${courseData._id}`, courseData);
+        dispatch({
+            type: UPDATE_COURSE,
+            payload: response.data
+        });
+    } catch (error) {
+        console.error("Error updating course:", error);
+        dispatch({
+            type: 'UPDATE_COURSE_FAILURE',
+            payload: error.response ? error.response.data.message : error.message
+        });
+    }
+};
 
 export function resetCourse() {
     return { type: RESET_COURSE };
