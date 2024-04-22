@@ -6,6 +6,8 @@ import axios from 'axios';
 const InstructorsPage = () => {
     const { user } = useSelector(state => state.auth);
     const dispatch = useDispatch();
+    const [courseSubmitted, setCourseSubmitted] = useState(false);
+
     const [course, setCourse] = useState({
         name: "",
         description: "",
@@ -68,31 +70,28 @@ const InstructorsPage = () => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        // Nếu bạn muốn sử dụng Redux để xử lý submit
         dispatch(submitCourse(course));
-        // Hoặc gửi form bằng API call tại đây nếu không sử dụng Redux
-
+        setCourseSubmitted(true); // Đặt trạng thái thành công khi gửi khóa học
     };
 
     const handleReset = () => {
         setCourse({
             name: "",
             description: "",
-            duration: "",
             category: "",
             language: "",
             price: "",
-            author: "",
-            describe: "",
-            request: "",
-            rating: "",
-            img: "",
             isReleased: false,
         });
     };
 
     return (
         <div className={styles.Container}>
+            {courseSubmitted && (
+                <div className={styles.successMessage}>
+                    Khóa học đã được tạo thành công!
+                </div>
+            )}
             <div className={styles.Header}>
                 <h1 className={styles.Title}>New Course Creation</h1>
                 <div className={styles.Container_Button}>

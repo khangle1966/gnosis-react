@@ -3,6 +3,15 @@
     width: 85vw;
     height: 100vh;
 
+    .successMessage {
+        background-color: #28a745; // Màu xanh lá cho thông báo thành công
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        text-align: center;
+    }
+
     .Header {
         display: flex; //phải có thg này
         justify-content: space-between; //căn chỉnh nằm sát biên theo chiều ngang

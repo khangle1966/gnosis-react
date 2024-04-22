@@ -4,10 +4,28 @@ import axios from 'axios';
 import {
     FETCH_CHAPTERS_REQUEST,
     FETCH_CHAPTERS_SUCCESS,
-    FETCH_CHAPTERS_FAILURE
+    FETCH_CHAPTERS_FAILURE,
+    ADD_CHAPTER_SUCCESS,
+    REMOVE_CHAPTER_SUCCESS
 } from '../types/chapterTypes';
 
+export const addChapter = (newChapter) => async (dispatch) => {
+    try {
+        const response = await axios.post(`http://localhost:3000/v1/chapter`, newChapter);
+        dispatch({ type: ADD_CHAPTER_SUCCESS, payload: response.data });
+    } catch (error) {
+        console.error('Add Chapter Failed:', error);
+    }
+};
 
+export const removeChapter = (chapterId) => async (dispatch) => {
+    try {
+        await axios.delete(`http://localhost:3000/v1/chapter/${chapterId}`);
+        dispatch({ type: REMOVE_CHAPTER_SUCCESS, payload: chapterId });
+    } catch (error) {
+        console.error('Remove Chapter Failed:', error);
+    }
+};
 export const setChapterId = (chapterId) => {
     return {
         type: 'SET_CHAPTER_ID',

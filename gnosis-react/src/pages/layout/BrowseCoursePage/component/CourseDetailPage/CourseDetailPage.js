@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './CourseDetailPage.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLessonsByCourseId, fetchLessonsBychapterId } from '../../../../../redux/action/lessonActions';
-import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
+import { fetchChaptersByCourseId, addChapter, removeChapter } from '../../../../../redux/action/chapterActions';
 import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
@@ -11,6 +11,8 @@ import { useParams } from 'react-router-dom';
 
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
+    console.log(courseId); // Kiểm tra giá trị này trong console để xác nhận
+
     const dispatch = useDispatch();
     const { courseDetail, loading: loadingCourse, error: errorCourse } = useSelector(state => state.courseDetail);
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
@@ -23,6 +25,7 @@ export const CourseDetailPage = () => {
     const [openChapters, setOpenChapters] = useState([]);
 
     const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
+    console.log("edit ", editableCourse)
     const [editMode, setEditMode] = useState(false);
 
 
@@ -37,29 +40,53 @@ export const CourseDetailPage = () => {
         }
     }, [dispatch, courseId, chapterId]);
 
-
     useEffect(() => {
-        if (chapters.length > 0 && lessons.length > 0) {
-            const sortedChapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
-            const chaptersMap = sortedChapters.reduce((acc, chapter) => {
-                acc[chapter._id] = {
-                    title: `Chapter ${chapter.chapterNumber}: ${chapter.title}`,
-                    lessons: [],
-                    _id: chapter._id
-                };
-                return acc;
-            }, {});
+        setEditableCourse({ ...courseDetail });
+    }, [courseDetail]);
+    useEffect(() => {
+        const sortedChapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        const chaptersMap = sortedChapters.reduce((acc, chapter) => {
+            acc[chapter._id] = {
+                title: `Chapter ${chapter.chapterNumber}: ${chapter.title}`,
+                lessons: [], // Khởi tạo mảng rỗng cho lessons
+                _id: chapter._id
+            };
+            return acc;
+        }, {});
 
+        // Chỉ thêm lessons vào các chapter nếu có lessons liên quan
+        if (lessons.length > 0) {
             lessons.forEach(lesson => {
                 if (chaptersMap[lesson.chapterId]) {
                     chaptersMap[lesson.chapterId].lessons.push(lesson);
                 }
             });
-
-            setGroupedChapters(Object.values(chaptersMap));
         }
+
+        setGroupedChapters(Object.values(chaptersMap));
     }, [lessons, chapters]);
 
+    const handleAddChapter = () => {
+        const newChapterNumber = chapters.length + 1; // Tạo số thứ tự cho chương mới
+        const newChapter = {
+            title: `Chapter ${newChapterNumber}`,
+            chapterNumber: newChapterNumber,
+            courseId: courseId, // Sử dụng courseId đã có từ useParams
+            lessons: []
+        };
+        dispatch(addChapter(newChapter)); // Gửi đến Redux store
+    };
+    const handleRemoveChapter = () => {
+        if (chapters.length === 0) {
+            alert("Không có chương nào để xóa.");
+            return;
+        }
+
+        const lastChapterId = chapters[chapters.length - 1]._id; // Lấy ID của chương cuối cùng
+        if (window.confirm('Bạn có chắc chắn muốn xoá chương mới nhất không?')) {
+            dispatch(removeChapter(lastChapterId)); // Gửi đến Redux store để xóa
+        }
+    };
 
     const handleSaveChanges = () => {
         dispatch(updateCourseDetails(editableCourse));
@@ -246,7 +273,14 @@ export const CourseDetailPage = () => {
                     <h2>Nội dung khóa học</h2>
                     <span>{totalChapters} phần · {totalLessons} bài giảng · {totalHours} giờ {totalMinutes} phút tổng thời lượng</span>
                     <button onClick={handleToggleAllChapters}>Mở rộng/tắt tất cả các chương</button>
+
                 </div>
+                {editMode && (
+                    <>
+                        <button className={styles.addChapterButton} onClick={handleAddChapter}>Thêm chương mới</button>
+                        <button className={styles.removeChapterButton} onClick={() => handleRemoveChapter(chapterId)}>Xoá chương hiện tại</button>
+                    </>
+                )}
                 <div className={styles.courseContent}>
                     {groupedChapters.map(chapter => (
                         <div key={chapter._id} className={styles.list}>
