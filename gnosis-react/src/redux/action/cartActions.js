@@ -29,20 +29,21 @@ export const fetchCart = () => async (dispatch) => {
 
 // Action to add an item to the cart
 export const addItemToCart = (itemId) => async (dispatch) => {
-    dispatch({ type: 'ADD_ITEM_REQUEST' });
+    dispatch({ type: ADD_ITEM_REQUEST });
     try {
         const response = await axios.post(`http://localhost:3000/v1/cart/add`, { itemId });
         console.log('Response:', response.data); // Thêm để debug
         dispatch({
-            type: 'ADD_ITEM_SUCCESS',
+            type: ADD_ITEM_SUCCESS,
             payload: response.data
         });
+        // Sau khi thêm mục vào giỏ hàng thành công, gửi yêu cầu để cập nhật lại giỏ hàng
+        dispatch(fetchCart());
     } catch (error) {
         console.error("Error adding item to cart:", error);
         dispatch({
-            type: 'ADD_ITEM_FAILURE',
+            type: ADD_ITEM_FAILURE,
             payload: error.response?.data.message ?? error.message
         });
     }
 };
-

@@ -7,6 +7,8 @@ const initialState = {
     registerSuccessMessage: '',
     role: null,  // Thêm trường này để lưu trữ vai trò của người dùng
     profileComplete: false,
+    profileCompleteGoogle: false,
+    loginMethod: null,
 };
 
 const authReducer = (state = initialState, action) => {
@@ -24,6 +26,18 @@ const authReducer = (state = initialState, action) => {
                 user: action.payload.user,
                 role: action.payload.role,
                 profileComplete: action.payload.profileComplete, // profileComplete được cập nhật dựa trên payload
+                loginMethod: 'standard',
+                error: ''
+            };
+        case 'LOGIN_GOOGLE_SUCCESS':
+            return {
+                ...state,
+                isLoggedIn: true,
+                loading: false,
+                user: action.payload.user,
+                role: action.payload.role,
+                profileCompleteGoogle: action.payload.profileCompleteGoogle, // profileComplete được cập nhật dựa trên payload
+                loginMethod: 'google',
                 error: ''
             };
         case 'LOGIN_FAILURE':

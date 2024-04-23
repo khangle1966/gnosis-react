@@ -116,6 +116,11 @@
     // Style additional sections here
 }
 
+.editable {
+    border: 2px solid #010202; // Định nghĩa kiểu đường viền
+    border-radius: 4px; // Tùy chỉnh viền cong nếu cần
+}
+
 .courseDetailContainer {
     display: flex;
     flex-direction: column;
@@ -124,9 +129,74 @@
     margin: 0 9rem;
     padding: 6rem;
 
+    .addChapterButton,
+    .removeChapterButton {
+        padding: 8px 16px;
+        font-size: 16px;
+        color: white;
+        background-color: #158d35;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #066721;
+        }
+
+        &:focus {
+            outline: none;
+        }
+    }
+
+    .removeChapterButton {
+        background-color: #158d35; // Red for remove button
+
+        &:hover {
+            background-color: #066721;
+        }
+    }
+
     .courseHeader {
         width: 100%;
 
+        .saveButton,
+        .exitButton,
+        .editButton {
+            margin: 0 5px;
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+        }
+
+        .saveButton {
+            background-color: #4CAF50;
+            /* Green */
+            color: white;
+        }
+
+
+
+        .exitButton {
+            background-color: #f44336;
+            /* Red */
+            color: white;
+        }
+
+        .editButton {
+            background-color: #008CBA;
+            /* Blue */
+            color: white;
+        }
+
+        .saveButton:hover,
+        .exitButton:hover,
+        .editButton:hover {
+            opacity: 0.8;
+        }
 
         .breadcrumbs {
             font-size: 0.85rem;
@@ -207,7 +277,7 @@
 
             &:hover {
                 cursor: pointer;
-                
+
             }
         }
 

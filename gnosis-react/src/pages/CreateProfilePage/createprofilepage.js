@@ -1,18 +1,24 @@
 // File: createprofilepage.js
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { createProfile } from '../../redux/action/profileActions'; // Đảm bảo đường dẫn đúng
+import { createProfile, createProfileforUserGoogle } from '../../redux/action/profileActions'; // Đảm bảo đường dẫn đúng
 import styles from './createprofilepage.module.scss';
 import logo from '../../assets/images/logo1.png';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { checkDuplicateProfile } from '../../redux/action/profileActions';
+import { logout } from '../../redux/action/authActions';
+
 const CreateProfilePage = () => {
-    const { user } = useSelector(state => state.auth); // Giả sử authReducer lưu trữ thông tin người dùng
+    const { user, loginMethod } = useSelector(state => state.auth); // Giả sử authReducer lưu trữ thông tin người dùng
     const [username, setUsername] = useState('');
-    const [email, setEmail] = useState(user._doc.email);
+
+    const [email, setEmail] = useState(user._doc ? user._doc.email : user.email); // Sử dụng user.email nếu không có _doc
+    const [id] = useState(user._doc ? user._doc.uid : user.uid); // Sử dụng user.uid nếu không có _doc
+
     const [gender, setGender] = useState('');
     const [country, setCountry] = useState('');
     const dispatch = useDispatch();
-    const { loading, error } = useSelector(state => state.profile);
+    // const { loading, error } = useSelector(state => state.profile);
     const navigate = useNavigate(); // Khởi tạo navigate
 
 
@@ -20,22 +26,33 @@ const CreateProfilePage = () => {
     const handleRegister = async (e) => {
         e.preventDefault();
         const profileData = {
-            id: user._doc.uid, // You'll need to replace 'some-uid' with actual uid from user data
+            id,
             userName: username,
             email,
             gender,
             country
         };
 
+        const isDuplicate = await dispatch(checkDuplicateProfile(email)); // Gửi yêu cầu kiểm tra trùng lặp profile
+        if (isDuplicate) {
+            alert('Profile already exists. Please log in.');
+            dispatch(logout());
+            navigate('/login');
+            return;
+        }
+
         try {
-            await dispatch(createProfile(profileData));
-            // Chuyển hướng người dùng sau khi tạo profile thành công
+            if (loginMethod === 'google') {
+                await dispatch(createProfileforUserGoogle(profileData));
+            } else {
+                await dispatch(createProfile(profileData));
+            }
             navigate('/browsecourse');
         } catch (error) {
-            // Xử lý lỗi nếu cần
             console.error('Error creating profile:', error);
         }
     };
+
 
     return (
 

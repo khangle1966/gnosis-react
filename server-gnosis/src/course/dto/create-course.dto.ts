@@ -12,6 +12,7 @@ export class CreateCourseDto {
         public language: string,
         public price: number,
         public author: string,
+        public authorId: string,
         public isReleased: boolean,
         public duration: number, // Thời lượng khóa học tính bằng giờ
         public publishedDate: Date,
