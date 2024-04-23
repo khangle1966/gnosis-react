@@ -6,13 +6,10 @@ import { fetchChaptersByCourseId, addChapter, removeChapter } from '../../../../
 import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
-<<<<<<< HEAD
 import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
 import { addItemToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
-=======
-// import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
 
->>>>>>> 77c5fe4a6b17baae2702ce2adf1683fe9a88e92a
+
 
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
@@ -23,12 +20,10 @@ export const CourseDetailPage = () => {
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
     const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail);
     const { rating } = courseDetail;
-<<<<<<< HEAD
-=======
+
     const { user } = useSelector(state => state.auth);
 
 
->>>>>>> 77c5fe4a6b17baae2702ce2adf1683fe9a88e92a
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
    
@@ -179,10 +174,9 @@ export const CourseDetailPage = () => {
                     {courseDetail.img && <img src={courseDetail.img} alt="Hình ảnh khóa học" className={styles.courseImage} />}
                 </div>
                 <div className={styles.coursePurchase}>
-<<<<<<< HEAD
                     <div className={styles.coursePrice}>${courseDetail.price}</div>
                     <button className={styles.addToCartButton} onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
-=======
+
                     <div
                         className={`${styles.coursePrice} ${editMode ? styles.editable : ''}`}
                         contentEditable={editMode}
@@ -192,7 +186,6 @@ export const CourseDetailPage = () => {
                     />
 
                     <button className={styles.addToCartButton}>Thêm vào giỏ hàng</button>
->>>>>>> 77c5fe4a6b17baae2702ce2adf1683fe9a88e92a
                     <button className={styles.buyNowButton}>Mua ngay</button>
                     <div className={styles.moneyBackGuarantee}>Đảm bảo hoàn tiền trong 30 ngày</div>
                 </div>
