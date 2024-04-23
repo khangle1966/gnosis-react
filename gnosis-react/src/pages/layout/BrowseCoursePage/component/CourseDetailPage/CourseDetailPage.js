@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './CourseDetailPage.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLessonsByCourseId, fetchLessonsBychapterId } from '../../../../../redux/action/lessonActions';
+import { fetchLessonsByCourseId, fetchLessonsBychapterId, addLesson } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId, addChapter, removeChapter } from '../../../../../redux/action/chapterActions';
 import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
@@ -11,7 +11,7 @@ import { useParams } from 'react-router-dom';
 
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
-    console.log(courseId); // Kiểm tra giá trị này trong console để xác nhận
+    console.log(chapterId); // Kiểm tra giá trị này trong console để xác nhận
 
     const dispatch = useDispatch();
     const { courseDetail, loading: loadingCourse, error: errorCourse } = useSelector(state => state.courseDetail);
@@ -19,8 +19,9 @@ export const CourseDetailPage = () => {
     const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail);
     const { rating } = courseDetail;
     const { user } = useSelector(state => state.auth);
-
-
+    const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0 });
+    const [showAddLessonForm, setShowAddLessonForm] = useState(null); // Quản lý việc hiển thị form của từng chapter
+    console.log(chapters); // Kiểm tra giá trị này trong console để xác nhận
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
 
@@ -87,9 +88,19 @@ export const CourseDetailPage = () => {
             dispatch(removeChapter(lastChapterId)); // Gửi đến Redux store để xóa
         }
     };
-
+    const handleAddLesson = (event, chapterId) => {
+        event.preventDefault();
+        const lessonData = { ...newLesson, chapterId, courseId: courseId };  // Assuming `courseId` is available in your component
+        dispatch(addLesson(lessonData));
+        setNewLesson({ title: '', description: '', duration: 0 }); // Reset form fields after dispatch
+        setShowAddLessonForm(null); // Hide the form after submission
+    };
     const handleSaveChanges = () => {
         dispatch(updateCourseDetails(editableCourse));
+        setEditMode(false);
+    };
+    const handleCancelEdit = () => {
+        setEditableCourse({ courseDetail });  // Khôi phục thông tin khóa học ban đầu
         setEditMode(false);
     };
     const handlePriceInput = (e) => {
@@ -104,10 +115,7 @@ export const CourseDetailPage = () => {
         const price = e.target.textContent.replace(/\D/g, ''); // Lọc ra chỉ số từ nội dung nhập
         setEditableCourse({ ...editableCourse, price: price });
     };
-    const handleCancelEdit = () => {
-        setEditableCourse({ ...courseDetail });  // Khôi phục thông tin khóa học ban đầu
-        setEditMode(false);
-    };
+
 
 
     if (loadingCourse || loadingLessons || loadingChapters) {
@@ -282,7 +290,7 @@ export const CourseDetailPage = () => {
                     </>
                 )}
                 <div className={styles.courseContent}>
-                    {groupedChapters.map(chapter => (
+                    {groupedChapters.map((chapter, index) => (
                         <div key={chapter._id} className={styles.list}>
                             <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
                                 <h4>
@@ -293,6 +301,38 @@ export const CourseDetailPage = () => {
                                 </h4>
                                 <div className={styles.duration}>{chapter.lessons.length} Bài</div>
                             </div>
+                            {editMode && (
+                                <>
+                                    <button onClick={() => setShowAddLessonForm(index)} className={styles.addLessonButton}>
+                                        Thêm Lesson
+                                    </button>
+                                    {showAddLessonForm === index && (
+                                        <form onSubmit={(e) => handleAddLesson(e, chapter._id)}>
+                                            <input
+                                                type="text"
+                                                required
+                                                value={newLesson.title}
+                                                onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
+                                                placeholder="Lesson Title"
+                                            />
+                                            <textarea
+                                                required
+                                                value={newLesson.description}
+                                                onChange={(e) => setNewLesson({ ...newLesson, description: e.target.value })}
+                                                placeholder="Lesson Description"
+                                            />
+                                            <input
+                                                type="number"
+                                                required
+                                                value={newLesson.duration}
+                                                onChange={(e) => setNewLesson({ ...newLesson, duration: e.target.value })}
+                                                placeholder="Duration (in hours)"
+                                            />
+                                            <button type="submit">Lưu Lesson</button>
+                                        </form>
+                                    )}
+                                </>
+                            )}
                             {openChapters.includes(chapter._id) && (
                                 <ul className={styles.sublist}>
                                     {chapter.lessons.map(lesson => (

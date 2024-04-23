@@ -1,3 +1,4 @@
+
 // HomePageContent.module.scss
 .homePageContent {
     display: flex;
@@ -5,6 +6,7 @@
     padding: 20px;
     width: 100%; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
     background-color: #fdfdf6;
+    animation: fadeIn 0.5s ease-in-out forwards;
 
     .breadcrumbs {
         margin-bottom: 20px;
@@ -98,6 +100,7 @@
             border-radius: 1rem;
             background-color: #f9f9f9;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: zoomIn 0.5s ease-in-out forwards;
 
             img {
                 width: 100%; // Thu nhỏ hình ảnh để vừa với khung card
@@ -130,6 +133,7 @@
                     border-radius: 0 0 8px 8px;
                     margin-left: 1rem;
                     cursor: pointer;
+                    transition: background-color 0.3s ease;
 
                     &:hover {
                         background-color: darken(#00A86B, 5%);
@@ -159,6 +163,30 @@
 
         span {
             padding: 8px 12px;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes zoomIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
         }
     }
 }
