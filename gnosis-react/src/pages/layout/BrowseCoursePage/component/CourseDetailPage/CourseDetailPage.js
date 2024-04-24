@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './CourseDetailPage.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLessonsByCourseId, fetchLessonsBychapterId, addLesson } from '../../../../../redux/action/lessonActions';
-import { fetchChaptersByCourseId, addChapter, removeChapter } from '../../../../../redux/action/chapterActions';
+import { fetchChaptersByCourseId, addChapter, removeChapter, updateChapterTitle } from '../../../../../redux/action/chapterActions';
 import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
@@ -24,8 +24,11 @@ export const CourseDetailPage = () => {
     console.log(chapters); // Kiểm tra giá trị này trong console để xác nhận
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
+    const [selectedChapterId, setSelectedChapterId] = useState("");
 
     const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
+    const [selectedChapter, setSelectedChapter] = useState(null);
+
     console.log("edit ", editableCourse)
     const [editMode, setEditMode] = useState(false);
 
@@ -66,7 +69,20 @@ export const CourseDetailPage = () => {
 
         setGroupedChapters(Object.values(chaptersMap));
     }, [lessons, chapters]);
+    const handleSelectChapter = (chapter) => {
+        if (editMode) {
+            setSelectedChapter({ ...chapter });
+        }
+    };
 
+    const handleTitleChange = (e) => {
+        setSelectedChapter(prev => ({ ...prev, title: e.target.value }));
+    };
+
+    const handleSaveTitle = (chapterId, title) => {
+        dispatch(updateChapterTitle(chapterId, title));
+        setSelectedChapter(null);
+    };
     const handleAddChapter = () => {
         const newChapterNumber = chapters.length + 1; // Tạo số thứ tự cho chương mới
         const newChapter = {
@@ -78,16 +94,17 @@ export const CourseDetailPage = () => {
         dispatch(addChapter(newChapter)); // Gửi đến Redux store
     };
     const handleRemoveChapter = () => {
-        if (chapters.length === 0) {
-            alert("Không có chương nào để xóa.");
+        const chapterToRemove = selectedChapterId;
+        if (!chapterToRemove) {
+            alert("Vui lòng chọn chương để xoá.");
             return;
         }
 
-        const lastChapterId = chapters[chapters.length - 1]._id; // Lấy ID của chương cuối cùng
-        if (window.confirm('Bạn có chắc chắn muốn xoá chương mới nhất không?')) {
-            dispatch(removeChapter(lastChapterId)); // Gửi đến Redux store để xóa
+        if (window.confirm('Bạn có chắc chắn muốn xoá chương này không?')) {
+            dispatch(removeChapter(chapterToRemove)); // Gửi đến Redux store để xóa
         }
     };
+
     const handleAddLesson = (event, chapterId) => {
         event.preventDefault();
         const lessonData = { ...newLesson, chapterId, courseId: courseId };  // Assuming `courseId` is available in your component
@@ -286,19 +303,38 @@ export const CourseDetailPage = () => {
                 {editMode && (
                     <>
                         <button className={styles.addChapterButton} onClick={handleAddChapter}>Thêm chương mới</button>
+
                         <button className={styles.removeChapterButton} onClick={() => handleRemoveChapter(chapterId)}>Xoá chương hiện tại</button>
+                        <div className={styles.customselect}>
+                            <select value={selectedChapterId} onChange={(e) => setSelectedChapterId(e.target.value)}>
+                                <option value="">Chọn chương để xoá</option>
+                                {chapters.map(chapter => (
+                                    <option key={chapter._id} value={chapter._id}>{chapter.title}</option>
+                                ))}
+                            </select>
+                        </div>
                     </>
                 )}
                 <div className={styles.courseContent}>
                     {groupedChapters.map((chapter, index) => (
                         <div key={chapter._id} className={styles.list}>
                             <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
-                                <h4>
 
 
-                                    <span>{chapter.title}</span> {/* Thêm text cho tooltip */}
+                                <div key={chapter._id}>
+                                    {selectedChapter && selectedChapter._id === chapter._id ? (
+                                        <input
+                                            type="text"
+                                            value={selectedChapter.title}
+                                            onChange={handleTitleChange}
+                                            onBlur={() => handleSaveTitle(chapter._id, selectedChapter.title)}
+                                        />
+                                    ) : (
+                                        <h4 onClick={() => handleSelectChapter(chapter)}>{chapter.title}</h4>
+                                    )}
+                                </div>
 
-                                </h4>
+
                                 <div className={styles.duration}>{chapter.lessons.length} Bài</div>
                             </div>
                             {editMode && (

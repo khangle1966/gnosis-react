@@ -166,6 +166,66 @@
         }
     }
 
+    .customselect {
+        position: relative;
+        display: inline-block;
+
+        select {
+            /* Thiết lập kích thước, màu sắc và các thuộc tính khác cho select */
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+            /* Loại bỏ viền khi select được focus */
+            appearance: none;
+            /* Loại bỏ giao diện mặc định của select */
+            transition: border-color 0.3s ease;
+            /* Hiệu ứng transition cho border-color */
+        }
+
+        &:after {
+            /* Icon mũi tên bên phải của select */
+            content: '\25BC';
+            /* Unicode cho mũi tên */
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            font-size: 16px;
+            color: #555;
+            /* Màu của mũi tên */
+            transform: translateY(-50%);
+            transition: color 0.3s ease;
+            /* Hiệu ứng transition cho màu sắc */
+        }
+
+        select:hover {
+            /* Hiệu ứng hover khi di chuột vào select */
+            border-color: #999;
+        }
+
+        select:focus {
+            /* Hiệu ứng focus khi select được chọn */
+            border-color: #555;
+        }
+
+        &:hover:after {
+            /* Hiệu ứng hover cho mũi tên */
+            color: #999;
+        }
+
+        select:disabled {
+            /* Thiết lập kiểu dáng cho select khi bị vô hiệu hóa */
+            cursor: not-allowed;
+            background-color: #f0f0f0;
+            color: #999;
+        }
+    }
+
+
     .addChapterButton,
     .removeChapterButton {
         padding: 10px 20px;

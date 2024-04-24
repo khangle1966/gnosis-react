@@ -6,7 +6,10 @@ import {
     FETCH_CHAPTERS_SUCCESS,
     FETCH_CHAPTERS_FAILURE,
     ADD_CHAPTER_SUCCESS,
-    REMOVE_CHAPTER_SUCCESS
+    REMOVE_CHAPTER_SUCCESS,
+    UPDATE_CHAPTER_REQUEST,
+    UPDATE_CHAPTER_SUCCESS,
+    UPDATE_CHAPTER_FAILURE
 } from '../types/chapterTypes';
 
 export const addChapter = (newChapter) => async (dispatch) => {
@@ -41,6 +44,24 @@ export const fetchChaptersByCourseId = (courseId) => async (dispatch) => {
         dispatch({
             type: FETCH_CHAPTERS_FAILURE,
             payload: error.message
+        });
+    }
+};
+// chapterActions.js
+
+
+export const updateChapterTitle = (chapterId, title) => async (dispatch) => {
+    dispatch({ type: UPDATE_CHAPTER_REQUEST });
+    try {
+        const response = await axios.put(`http://localhost:3000/v1/chapter/${chapterId}`, { title });
+        dispatch({
+            type: UPDATE_CHAPTER_SUCCESS,
+            payload: response.data
+        });
+    } catch (error) {
+        dispatch({
+            type: UPDATE_CHAPTER_FAILURE,
+            payload: error.response ? error.response.data : "Unknown error"
         });
     }
 };
