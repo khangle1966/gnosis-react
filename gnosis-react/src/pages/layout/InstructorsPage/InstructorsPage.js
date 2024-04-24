@@ -9,6 +9,7 @@ const InstructorsPage = () => {
     const [courseSubmitted, setCourseSubmitted] = useState(false);
 
     const [course, setCourse] = useState({
+
         name: "",
         description: "",
         duration: "0",
@@ -24,19 +25,7 @@ const InstructorsPage = () => {
         isReleased: false,
     });
     // get user info from reducer 
-
-
-
-
-
-
     const [isImageUploaded, setIsImageUploaded] = useState(false);
-
-
-
-
-
-
     console.log('Course Data:', course); // Kiểm tra toàn bộ object course
     const handleChange = (event) => {
         const { id, value } = event.target;
@@ -66,8 +55,6 @@ const InstructorsPage = () => {
             }
         }
     };
-
-
     const handleSubmit = (event) => {
         event.preventDefault();
         dispatch(submitCourse(course));
@@ -126,9 +113,6 @@ const InstructorsPage = () => {
                                 <option value="">Select a Language</option>
                                 <option value="english">English</option>
                                 <option value="vietnam">Việt Nam</option>
-
-
-
                             </select>
                         </div>
                         <div className={styles.price}>
