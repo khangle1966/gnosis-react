@@ -69,7 +69,8 @@ export const loginWithGoogleAction = (access_token) => async (dispatch) => {
         });
 
         const profileCompleteGoogle = res.data.user && res.data.user.profile && res.data.user.profile.trim() !== '';
-        console.log(res.data.user.profile)
+
+
         dispatch(loginWithGoogleSuccess(res.data.user, res.data.user.role, profileCompleteGoogle));
 
         localStorage.setItem('token', res.data.token); // Lưu token vào localStorage

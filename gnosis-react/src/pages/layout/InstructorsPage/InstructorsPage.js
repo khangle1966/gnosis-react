@@ -5,6 +5,7 @@ import styles from "./InstructorsPage.module.scss";
 import axios from 'axios';
 const InstructorsPage = () => {
     const { user } = useSelector(state => state.auth);
+    
     const dispatch = useDispatch();
     const [courseSubmitted, setCourseSubmitted] = useState(false);
 

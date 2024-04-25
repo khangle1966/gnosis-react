@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './Sidebar.module.scss'; // SCSS module cho styles
 import logoImage from '../../../assets/images/Gnosis.png';
@@ -7,16 +7,22 @@ import { logout } from '../../../redux/action/authActions';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { fetchUserProfile } from '../../../redux/action/authActions';
 
-import { faHome, faBook, faUser, faShoppingCart, faCog, faSignOut } from '@fortawesome/free-solid-svg-icons';
+import { faHome, faBook, faUser, faShoppingCart, faCog, faSignOut, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const Sidebar = () => {
     const sidebarRef = useRef(null);
     const role = useSelector(state => state.auth.role);
     console.log('Role in store:', role);
-
+    const { user } = useSelector(state => state.auth);
+    const { name, picture } = user || {};
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const [isOpen, setIsOpen] = useState(true);
+    const toggleSidebar = () => {
+        setIsOpen(!isOpen);
+    };
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
@@ -35,11 +41,18 @@ const Sidebar = () => {
         };
     }, []);
     return (
-        <div className={styles.sidebar}>
+        <div className={isOpen ? styles.sidebar : `${styles.sidebar} ${styles.collapsed}`}>
+            <button className={styles.toggleButton} onClick={toggleSidebar}>
+                <FontAwesomeIcon icon={faBars} />
+            </button>
             <div className={styles.logo}>
 
                 <img src={logoImage} alt="GNOSIS Logo" className={styles.logo} />
 
+            </div>
+            <div className={styles.userInfo}>
+                <img src={picture} alt={`Avatar of ${name}`} className={styles.avatar} />
+                <p>Hello, {name}</p>
             </div>
             <div className={styles.search}>
                 <input type="text" placeholder="Search" />

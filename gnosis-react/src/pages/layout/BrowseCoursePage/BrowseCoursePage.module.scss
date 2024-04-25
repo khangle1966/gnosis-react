@@ -1,10 +1,10 @@
-
 // HomePageContent.module.scss
 .homePageContent {
+
     display: flex;
     flex-direction: column;
     padding: 20px;
-    width: 100%; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
+    width: 85vw; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
     background-color: #fdfdf6;
     animation: fadeIn 0.5s ease-in-out forwards;
 

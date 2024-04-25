@@ -23,12 +23,8 @@ const BrowseCoursePage = () => {
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
-    
-    const handleAddToCart = (course) => {
-        console.log(course);
-        dispatch(addToCart(course));
-    };
-   
+
+
 
     return (
         <div className={styles.homePageContent}>
@@ -62,7 +58,7 @@ const BrowseCoursePage = () => {
                                 <div className={styles.courseInfo}>
                                     <h3>{course.name}</h3>
                                     <p>{course.description}</p>
-                                   
+
                                     <button onClick={() => dispatch(addToCart(course))}>Add to Cart</button>
                                     <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
                                 </div>
