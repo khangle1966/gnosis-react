@@ -2,9 +2,14 @@
 .homeLayout {
     display: flex;
     min-height: 100vh;
-    background-color: #fff;
+    background-color: #fdfdf6;
 
-
+    .sidebar {
+        width: 20%; // Chiếm 20% chiều rộng của viewport
+        height: 100%;
+        background-color: #004d26; // Màu nền của sidebar
+        // Các styles khác cho sidebar
+    }
 
 
 }
