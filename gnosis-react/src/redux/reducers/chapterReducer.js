@@ -5,7 +5,10 @@ import {
     FETCH_CHAPTERS_FAILURE,
     SET_CHAPTER_ID,
     ADD_CHAPTER_SUCCESS,
-    REMOVE_CHAPTER_SUCCESS // Đảm bảo rằng bạn đã khai báo action type này trong file chapterTypes.js
+    REMOVE_CHAPTER_SUCCESS,
+    UPDATE_CHAPTER_REQUEST,
+    UPDATE_CHAPTER_SUCCESS,
+    UPDATE_CHAPTER_FAILURE //Đảm bảo rằng bạn đã khai báo action type này trong file chapterTypes.js
 } from '../types/chapterTypes';
 
 const initialState = {
@@ -35,6 +38,18 @@ export const chapterReducer = (state = initialState, action) => {
                 ...state,
                 chapters: state.chapters.filter(chapter => chapter._id !== action.payload)
             };
+        case UPDATE_CHAPTER_REQUEST:
+            return { ...state, loading: true };
+        case UPDATE_CHAPTER_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                chapters: state.chapters.map(chapter =>
+                    chapter._id === action.payload._id ? action.payload : chapter
+                )
+            };
+        case UPDATE_CHAPTER_FAILURE:
+            return { ...state, loading: false, error: action.payload };
         default:
             return state;
     }
