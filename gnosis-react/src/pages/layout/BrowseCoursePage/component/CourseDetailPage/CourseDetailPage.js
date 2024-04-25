@@ -7,7 +7,7 @@ import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
 import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
-import { addItemToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
+import { addToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
 
 
 
@@ -71,10 +71,20 @@ export const CourseDetailPage = () => {
 
         setGroupedChapters(Object.values(chaptersMap));
     }, [lessons, chapters]);
-    const handleAddToCart = () => {
-        dispatch(addItemToCart(courseId));
-    };
+    
+    
+    useEffect(() => {
+        setEditableCourse({ ...courseDetail });
+    }, [courseDetail]);
 
+    const handleAddToCart = () => {
+        console.log(courseDetail);
+        dispatch(addToCart(courseDetail));
+    };
+    const handleBuyCourse = (course) => {
+        console.log("Purchasing course:", course.name);
+        // Thêm logic thanh toán ở đây hoặc chuyển hướng người dùng tới trang thanh toán
+    };
     const handleAddChapter = () => {
         const newChapterNumber = chapters.length + 1; // Tạo số thứ tự cho chương mới
         const newChapter = {
@@ -183,7 +193,7 @@ export const CourseDetailPage = () => {
                 </div>
                 <div className={styles.coursePurchase}>
                     <div className={styles.coursePrice}>${courseDetail.price}</div>
-                    <button className={styles.addToCartButton} onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
+                    <button className={styles.addToCartButton} onClick={handleAddToCart}>Add to Cart</button>
 
                     <div
                         className={`${styles.coursePrice} ${editMode ? styles.editable : ''}`}
@@ -193,8 +203,8 @@ export const CourseDetailPage = () => {
                         dangerouslySetInnerHTML={{ __html: `$${courseDetail.price}` }}
                     />
 
-                    <button className={styles.addToCartButton}>Thêm vào giỏ hàng</button>
-                    <button className={styles.buyNowButton}>Mua ngay</button>
+                    <button className={styles.addToCartButton}onClick={handleAddToCart}>Add to Cart</button>
+                    <button className={styles.buyNowButton}onClick={handleBuyCourse}>Buy Now</button>
                     <div className={styles.moneyBackGuarantee}>Đảm bảo hoàn tiền trong 30 ngày</div>
                 </div>
                 <div className={styles.courseIncludes}>

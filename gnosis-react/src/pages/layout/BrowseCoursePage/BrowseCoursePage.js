@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../../../redux/action/courseActions';
-import { addItemToCart } from '../../../redux/action/cartActions'; // Import addItemToCart action
+import { addToCart } from '../../../redux/action/cartActions'; // Đảm bảo rằng import này chính xác
 
 import styles from './BrowseCoursePage.module.scss';
 
@@ -23,10 +23,12 @@ const BrowseCoursePage = () => {
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
-
-    const handleAddToCart = (courseId) => {
-        dispatch(addItemToCart(courseId));
+    
+    const handleAddToCart = (course) => {
+        console.log(course);
+        dispatch(addToCart(course));
     };
+   
 
     return (
         <div className={styles.homePageContent}>
@@ -60,7 +62,8 @@ const BrowseCoursePage = () => {
                                 <div className={styles.courseInfo}>
                                     <h3>{course.name}</h3>
                                     <p>{course.description}</p>
-                                    <button onClick={() => handleAddToCart(course._id)}>Add to Cart</button>
+                                   
+                                    <button onClick={() => dispatch(addToCart(course))}>Add to Cart</button>
                                     <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
                                 </div>
                             </div>

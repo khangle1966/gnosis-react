@@ -1,62 +1,61 @@
-// Initial state of the cart
+import { ADD_TO_CART, REMOVE_FROM_CART } from '../types/cartTypes';
+
+// reducers/cartReducer.js
+
+// reducers/cartReducer.js
+
 const initialState = {
-    cartItems: [],
-    loading: false,
-    error: null
+    cartItems: []
 };
 
-// Action types
-const FETCH_CART_REQUEST = 'FETCH_CART_REQUEST';
-const FETCH_CART_SUCCESS = 'FETCH_CART_SUCCESS';
-const FETCH_CART_FAILURE = 'FETCH_CART_FAILURE';
 
-const ADD_ITEM_REQUEST = 'ADD_ITEM_REQUEST';
-const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS';
-const ADD_ITEM_FAILURE = 'ADD_ITEM_FAILURE';
-
-// Cart reducer function
-const cartReducer = (state = initialState, action) => {
+// Thêm vào file cartReducer.js
+const cartReducer = (state = { cartItems: [] }, action) => {
     switch (action.type) {
-        case FETCH_CART_REQUEST:
+        case 'ADD_TO_CART':
+            const item = action.payload;
+            const existItem = state.cartItems.find(x => x._id === item._id);
+            if (existItem) {
+                return {
+                    ...state,
+                    cartItems: state.cartItems.map(x =>
+                        x._id === item._id ? { ...x, qty: x.qty + 1 } : x
+                    )
+                };
+            } else {
+                return {
+                    ...state,
+                    cartItems: [...state.cartItems, { ...item, qty: 1 }]
+                };
+            }
+        case 'REMOVE_FROM_CART':
             return {
                 ...state,
-                loading: true,
-                error: null
+                cartItems: state.cartItems.filter(x => x._id !== action.payload)
             };
-        case FETCH_CART_SUCCESS:
+        case 'INCREASE_QUANTITY':
             return {
                 ...state,
-                cartItems: action.payload,
-                loading: false
+                cartItems: state.cartItems.map(x =>
+                    x._id === action.payload ? { ...x, qty: x.qty + 1 } : x
+                )
             };
-        case FETCH_CART_FAILURE:
+        case 'DECREASE_QUANTITY':
             return {
                 ...state,
-                loading: false,
-                error: action.payload
-            };
-        case ADD_ITEM_REQUEST:
-            return {
-                ...state,
-                loading: true,
-                error: null
-            };
-        case ADD_ITEM_SUCCESS:
-            // Assuming payload contains the added item details
-            return {
-                ...state,
-                cartItems: [...state.cartItems, action.payload],
-                loading: false
-            };
-        case ADD_ITEM_FAILURE:
-            return {
-                ...state,
-                loading: false,
-                error: action.payload
+                cartItems: state.cartItems.map(x =>
+                    x._id === action.payload ? { ...x, qty: x.qty > 1 ? x.qty - 1 : 1 } : x
+                )
             };
         default:
             return state;
     }
 };
 
+
+
+
 export default cartReducer;
+
+
+

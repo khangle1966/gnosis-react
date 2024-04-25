@@ -1,134 +1,119 @@
-$primary-color: #4CAF50; // Màu xanh lá cho các nút và tiêu đề
-$secondary-color: #00796b; // Màu xanh đậm cho nút tìm kiếm
-$text-color: #333; // Màu văn bản chung
-$border-color: #ccc; // Màu viền
-$background-color: #f9f9f9; // Màu nền cho các mục trong giỏ hàng và tóm tắt đơn hàng
+// CartPage.scss
+$primary-color: #4CAF50; 
+$secondary-color: #00796b;
+$text-color: #333;
+$border-color: #ccc;
+$background-color: #f9f9f9;
 
 .cartPage {
     font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: white; // Nền trắng cho toàn bộ trang
+    background-color: white;
     padding: 20px;
     width: 100%;
-    max-width: 1500px; // Chiều rộng tối đa cho trang
-    margin: 0 auto; // Căn giữa trang
+    max-width: none;
+    margin: 0 auto;
+    box-sizing: border-box;
 
-    .searchContainer {
-        position: fixed;
-        top: 20px;
-        right: 20px;
+    h2 {
+        color: $primary-color;
+        margin-bottom: 20px;
+    }
+
+    .item {
         display: flex;
+        justify-content: space-between;
         align-items: center;
-        z-index: 1000; // Đảm bảo ô tìm kiếm nằm trên cùng
-    }
-
-    #searchInput {
-        padding: 8px;
-        margin-right: 5px;
-        border: 1px solid $border-color;
-        border-radius: 20px;
-        outline: none; // Bỏ đường viền khi focus
-    }
-
-    .searchButton {
-        background-color: $secondary-color;
-        color: white;
-        border: none;
-        padding: 8px 15px;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-            background-color: darken($secondary-color, 10%);
-        }
-    }
-
-    .searchUnderline {
-        width: 100%; // Chiều rộng bằng với container hoặc theo mong muốn của bạn
-        height: 10px; // Độ dày của đường kẻ
-        background-color: #ccc; // Màu sắc của đường kẻ
-        position: fixed;
-        top: 60px; // Khoảng cách từ đầu trang tới đường kẻ, điều chỉnh cho phù hợp
-        left: 0;
-    }
-    .cartHeader {
-        margin-top: 60px; /* Để tạo khoảng cách từ ô tìm kiếm */
+        border-bottom: 1px solid $border-color;
+        padding: 10px;
         width: 100%;
-        text-align: left; // Tiêu đề căn giữa
-        color: black;
-        font-size: 1.5em; // Kích thước chữ cho tiêu đề
-    }
 
-    .cartContent {
-        display: flex;
-        flex-direction: row; // Để item và tóm tắt đơn hàng nằm cạnh nhau
-        width: 100%; // Chiếm đầy chiều rộng
-        margin-top: 50px; // Khoảng cách từ tiêu đề đến nội dung
-        margin-left: 20px;
-        .cartItems {
-            display: flex;
-            flex-direction: column;
-            border-bottom: 1px solid $border-color;
-            margin-bottom: 20px;
-            flex-grow: 2; // Cho phần danh sách sản phẩm chiếm nhiều không gian hơn
-            padding-right: 20px; // Khoảng cách giữa các mục và tóm tắt đơn hàng
-            margin-right: 500px;
-            margin-left: 100px;
+        span {
+            color: $text-color;
+            margin-right: 10px;
         }
 
-       
-        .cartSummary {
-            width: 300px; // Kích thước cố định cho phần tóm tắt đơn hàng
-            height:150px;
-            border: 1px solid $border-color;
-            padding: 10px;
-            border-radius: 5px;
-            background-color: $background-color;
-            
-        }
-        
-
-        .checkoutButton {
-            background-color: #4CAF50;
+        button {
+            background-color: $primary-color;
             color: white;
-            padding: 10px 20px;
             border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
             cursor: pointer;
-            display: block;
-            width: 100%;
-            margin-top: 10px; /* Khoảng cách từ nút đến phần tổng kết đơn hàng */
-            border-radius: 5px; /* Bo góc cho nút */
-            transition: background-color 0.3s; /* Hiệu ứng chuyển đổi màu nền */
+            transition: background-color 0.3s ease;
+
+            &:hover {
+                background-color: darken($primary-color, 10%);
+            }
         }
-        
-        .checkoutButton:hover {
-            background-color: #45a049; /* Màu nền khi di chuột qua */
-        }
-        
     }
 }
 
-// Responsive styles
-@media (max-width: 600px) {
-    .searchContainer {
-        top: 10px;
-        right: 10px;
+.checkoutButton {
+    background-color: $secondary-color;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    width: 100%;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+        background-color: darken($secondary-color, 10%);
     }
+}
 
-    .cartContent {
-        flex-direction: column; // Chuyển sang chiều dọc khi màn hình nhỏ
+.totalSection {
+    padding: 20px;
+    margin-top: 20px;
+    border-top: 2px solid $border-color;
+    text-align: center;
+    width: 100%;
 
-        .cartItems,
-        .cartSummary {
-            width: 100%; // Chiếm đầy chiều rộng khi màn hình nhỏ
-            margin-right: 0;
+    .buyAllButton {
+        background-color: $primary-color;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+            background-color: darken($primary-color, 10%);
         }
+    }
+}
 
-        .cartSummary {
-            margin-top: 20px; // Khoảng cách từ danh sách sản phẩm đến tóm tắt
+.controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    button {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: #e0e0e0;
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .cartPage {
+        padding: 10px;
+
+        .item {
+            flex-direction: column;
+            align-items: flex-start;
         }
     }
 }
