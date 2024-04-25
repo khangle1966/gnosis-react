@@ -79,10 +79,6 @@ export const CourseDetailPage = () => {
     }, [lessons, chapters]);
 
     
-    
-    useEffect(() => {
-        setEditableCourse({ ...courseDetail });
-    }, [courseDetail]);
 
     const handleAddToCart = () => {
         console.log(courseDetail);
@@ -91,7 +87,7 @@ export const CourseDetailPage = () => {
     const handleBuyCourse = (course) => {
         console.log("Purchasing course:", course.name);
         // Thêm logic thanh toán ở đây hoặc chuyển hướng người dùng tới trang thanh toán
-
+    }
     const handleSelectChapter = (chapter) => {
         if (editMode) {
             setSelectedChapter({ ...chapter });
@@ -215,8 +211,6 @@ export const CourseDetailPage = () => {
                     {courseDetail.img && <img src={courseDetail.img} alt="Hình ảnh khóa học" className={styles.courseImage} />}
                 </div>
                 <div className={styles.coursePurchase}>
-                    <div className={styles.coursePrice}>${courseDetail.price}</div>
-                    <button className={styles.addToCartButton} onClick={handleAddToCart}>Add to Cart</button>
 
                     <div
                         className={`${styles.coursePrice} ${editMode ? styles.editable : ''}`}
@@ -301,7 +295,7 @@ export const CourseDetailPage = () => {
 
                 <div className={styles.courseContent2}>
                     <h2>Nội dung bài học</h2>
-                    {/* Static data for demonstration */}
+                   
 
 
 
@@ -434,7 +428,7 @@ export const CourseDetailPage = () => {
 
 
 
-                    {/* ...tiếp tục thêm toàn bộ nội dung mô tả từ hình ảnh... */}
+                 
                 </div>
 
             </div>
@@ -442,6 +436,5 @@ export const CourseDetailPage = () => {
         </>
     );
 };
-};
 
-export default CourseDetailPage;
+export default CourseDetailPage
