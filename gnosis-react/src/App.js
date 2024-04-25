@@ -24,7 +24,7 @@ function App() {
 
             <Route path="course/:courseId" element={<CourseDetailPage />} />
 
-            <Route path="cart" element={<CartPage />} />
+            <Route path="/cart" element={<CartPage />} />
             <Route path="instructor" element={<InstructorsPage />} />
 
           </Route>

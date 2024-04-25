@@ -1,86 +1,52 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeFromCart, increaseQuantity, decreaseQuantity } from '../../../redux/action/cartActions';
 import styles from './cart.module.scss';
 
 const CartPage = () => {
-    // State để lưu trữ giá trị nhập vào ô tìm kiếm
-    const [searchTerm, setSearchTerm] = useState('');
+    const cartItems = useSelector(state => state.cart.cartItems);
+    const dispatch = useDispatch();
 
-    // Giả sử bạn sẽ tải dữ liệu giỏ hàng từ một API hoặc Context/Redux Store
-    const cartItems = [
-        { id: 1, name: 'IT - Web Developer', price: '$899' },
-        { id: 2, name: 'Graphic Design Course', price: '$699' },
-        // Thêm các mục khác vào đây
-    ];
-
-    // Hàm để xử lý thay đổi giá trị nhập vào ô tìm kiếm
-    const handleSearchChange = (event) => {
-        setSearchTerm(event.target.value);
+    const handleRemoveFromCart = (id) => {
+        dispatch(removeFromCart(id));
     };
 
-    // Hàm để thực hiện chức năng tìm kiếm
-    const search = (item) => {
-        return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const handleBuyAll = () => {
+        console.log('Buying all items:', cartItems);
+        // Thêm logic để xử lý mua hàng ở đây, ví dụ chuyển hướng tới trang thanh toán
     };
+
+    const handleIncreaseQuantity = (id) => {
+        dispatch(increaseQuantity(id));
+    };
+
+    const handleDecreaseQuantity = (id) => {
+        const currentItem = cartItems.find(item => item._id === id);
+        if (currentItem.qty > 1) {
+            dispatch(decreaseQuantity(id));
+        }
+    };
+
+    // Tính tổng tiền
+    const totalPrice = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
 
     return (
         <div className={styles.cartPage}>
-            <div className={styles.searchContainer}>
-                <input type="text" id="searchInput" placeholder="Search..." value={searchTerm} onChange={handleSearchChange} />
-            </div>
-
-            <div className={styles.seacrhUnderline}>
-                
-            </div>
-            <div cla    ssName={styles.cartHeader}>
-                <h2>You have {cartItems.length} items in your cart</h2>
-            </div>
-            
-            <div className={styles.cartContent}>
-                <div className={styles.cartItems}>
-                    {cartItems.filter(search).map((item, index) => (
-                        <CartItem key={item.id} name={item.name} price={item.price} />
-                    ))}
+            <h2>Bạn có {cartItems.length} khóa học trong giỏ hàng</h2>
+            {cartItems.map((item, index) => (
+                <div key={index} className={styles.item}>
+                    <span>{item.name} - {item.qty} x ${item.price.toFixed(2)}</span>
+                    <div className={styles.controls}>
+                        <button onClick={() => handleDecreaseQuantity(item._id)}>-</button>
+                        <button onClick={() => handleIncreaseQuantity(item._id)}>+</button>
+                        <button onClick={() => handleRemoveFromCart(item._id)}>x</button>
+                    </div>
                 </div>
-                <div className={styles.cartSummary}>
-                    <OrderSummary />
-                </div>
+            ))}
+            <div className={styles.totalSection}>
+                <h3>Total: ${totalPrice.toFixed(2)}</h3>
+                <button onClick={handleBuyAll} className={styles.buyAllButton}>Buy All Courses</button>
             </div>
-        </div>
-    );
-};
-
-const CartItem = ({ name, price }) => {
-    return (
-        <div className={styles.cartItem}>
-            <div className={styles.productDetails}>
-                <span className={styles.productName}>{name}</span>
-                <span className={styles.productPrice}>{price}</span>
-                <button className={styles.removeItem}>×</button>
-            </div>
-        </div>
-    );
-};
-
-const OrderSummary = () => {
-    const total = '$899';
-    const discount = '-$0';
-
-    return (
-        <div className={styles.orderSummary}>
-            <h3>Order</h3>
-            <div className={styles.summaryItem}>
-                <span>Provisional</span>
-                <span>{total}</span>
-            </div>
-            <div className={styles.summaryItem}>
-                <span>Discount</span>
-                <span>{discount}</span>
-            </div>
-            <div className={styles.total}>
-                <span>Total</span>
-                <span>{total}</span>
-            </div>
-            <button className={styles.checkoutButton}>Buy</button>
         </div>
     );
 };

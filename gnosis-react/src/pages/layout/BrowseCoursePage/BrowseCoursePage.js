@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../../../redux/action/courseActions';
+import { addToCart } from '../../../redux/action/cartActions'; // Đảm bảo rằng import này chính xác
 
 import styles from './BrowseCoursePage.module.scss';
 
@@ -9,29 +10,27 @@ const BrowseCoursePage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector(state => state.course);
-    const profileComplete = useSelector(state => state.auth.profileComplete); // Thêm dòng này để lấy profileComplete từ Redux
-
-    // const { courses, loading, error } = useSelector(state => state.courses);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
     useEffect(() => {
         if (!isLoggedIn) {
-
             navigate('/login');
-
         } else {
             dispatch(fetchCourses());
         }
     }, [isLoggedIn, navigate, dispatch]);
 
-
     const handleDescriptionClick = (courseId) => {
-        navigate(`/course/${courseId}`); // Replace this with your actual route
+        navigate(`/course/${courseId}`);
     };
-    // console.log(courses.map(course => course.img)); 
+    
+    const handleAddToCart = (course) => {
+        console.log(course);
+        dispatch(addToCart(course));
+    };
+   
 
     return (
-
         <div className={styles.homePageContent}>
             <div className={styles.breadcrumbs}>Home &gt; Browse</div>
             <div className={styles.promotions}>
@@ -49,7 +48,6 @@ const BrowseCoursePage = () => {
                 <button>English</button>
                 <button>Music</button>
                 <button>Cook</button>
-
             </div>
             <div className={styles.course}>
                 {loading ? (
@@ -64,7 +62,8 @@ const BrowseCoursePage = () => {
                                 <div className={styles.courseInfo}>
                                     <h3>{course.name}</h3>
                                     <p>{course.description}</p>
-                                    <button>Add to Cart</button>
+                                   
+                                    <button onClick={() => dispatch(addToCart(course))}>Add to Cart</button>
                                     <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
                                 </div>
                             </div>

@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose'; // Import MongooseModule
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CourseModule } from './course/course.module';
@@ -9,17 +11,13 @@ import { UserModule } from './user/user.module';
 import { QuizModule } from './quiz/quiz.module';
 import { QuizBankModule } from './quiz-bank/quiz-bank.module';
 import { ReviewModule } from './review/review.module';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
-import { ConfigModule } from '@nestjs/config';
 import { UsergoogleModule } from './usergoogle/usergoogle.module';
-
 import { AuthorModule } from './author/author.module';
-
 import { CategoryModule } from './category/category.module';
-
 import { ChapterModule } from './chapter/chapter.module';
 import { UploadModule } from './upload/upload.module';
+import { CartModule } from './cart/cart.module';
 
 @Module({
   imports: [
@@ -38,12 +36,11 @@ import { UploadModule } from './upload/upload.module';
     ReviewModule,
     AuthModule,
     UsergoogleModule,
-
     AuthorModule,
-
     CategoryModule,
     ChapterModule,
     UploadModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [AppService],

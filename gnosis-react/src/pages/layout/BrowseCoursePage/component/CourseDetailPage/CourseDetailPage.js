@@ -6,7 +6,9 @@ import { fetchChaptersByCourseId, addChapter, removeChapter, updateChapterTitle 
 import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
-// import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
+import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
+import { addToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
+
 
 
 export const CourseDetailPage = () => {
@@ -18,13 +20,19 @@ export const CourseDetailPage = () => {
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
     const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail);
     const { rating } = courseDetail;
+
     const { user } = useSelector(state => state.auth);
     const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0 });
     const [showAddLessonForm, setShowAddLessonForm] = useState(null); // Quản lý việc hiển thị form của từng chapter
     console.log(chapters); // Kiểm tra giá trị này trong console để xác nhận
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
+
+   
+     
+
     const [selectedChapterId, setSelectedChapterId] = useState("");
+
 
     const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
     const [selectedChapter, setSelectedChapter] = useState(null);
@@ -69,6 +77,21 @@ export const CourseDetailPage = () => {
 
         setGroupedChapters(Object.values(chaptersMap));
     }, [lessons, chapters]);
+
+    
+    
+    useEffect(() => {
+        setEditableCourse({ ...courseDetail });
+    }, [courseDetail]);
+
+    const handleAddToCart = () => {
+        console.log(courseDetail);
+        dispatch(addToCart(courseDetail));
+    };
+    const handleBuyCourse = (course) => {
+        console.log("Purchasing course:", course.name);
+        // Thêm logic thanh toán ở đây hoặc chuyển hướng người dùng tới trang thanh toán
+
     const handleSelectChapter = (chapter) => {
         if (editMode) {
             setSelectedChapter({ ...chapter });
@@ -82,6 +105,7 @@ export const CourseDetailPage = () => {
     const handleSaveTitle = (chapterId, title) => {
         dispatch(updateChapterTitle(chapterId, title));
         setSelectedChapter(null);
+
     };
     const handleAddChapter = () => {
         const newChapterNumber = chapters.length + 1; // Tạo số thứ tự cho chương mới
@@ -191,6 +215,9 @@ export const CourseDetailPage = () => {
                     {courseDetail.img && <img src={courseDetail.img} alt="Hình ảnh khóa học" className={styles.courseImage} />}
                 </div>
                 <div className={styles.coursePurchase}>
+                    <div className={styles.coursePrice}>${courseDetail.price}</div>
+                    <button className={styles.addToCartButton} onClick={handleAddToCart}>Add to Cart</button>
+
                     <div
                         className={`${styles.coursePrice} ${editMode ? styles.editable : ''}`}
                         contentEditable={editMode}
@@ -199,8 +226,8 @@ export const CourseDetailPage = () => {
                         dangerouslySetInnerHTML={{ __html: `$${courseDetail.price}` }}
                     />
 
-                    <button className={styles.addToCartButton}>Thêm vào giỏ hàng</button>
-                    <button className={styles.buyNowButton}>Mua ngay</button>
+                    <button className={styles.addToCartButton}onClick={handleAddToCart}>Add to Cart</button>
+                    <button className={styles.buyNowButton}onClick={handleBuyCourse}>Buy Now</button>
                     <div className={styles.moneyBackGuarantee}>Đảm bảo hoàn tiền trong 30 ngày</div>
                 </div>
                 <div className={styles.courseIncludes}>
@@ -414,6 +441,7 @@ export const CourseDetailPage = () => {
 
         </>
     );
+};
 };
 
 export default CourseDetailPage;
