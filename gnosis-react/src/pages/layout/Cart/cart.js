@@ -3,29 +3,30 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removeFromCart, increaseQuantity, decreaseQuantity } from '../../../redux/action/cartActions';
 import styles from './cart.module.scss';
 
-const CartPage = () => {
-    const cartItems = useSelector(state => state.cart.cartItems);
-    const dispatch = useDispatch();
 
-    const handleRemoveFromCart = (id) => {
-        dispatch(removeFromCart(id));
-    };
-
-    const handleBuyAll = () => {
-        console.log('Buying all items:', cartItems);
-        // Thêm logic để xử lý mua hàng ở đây, ví dụ chuyển hướng tới trang thanh toán
-    };
-
-    const handleIncreaseQuantity = (id) => {
-        dispatch(increaseQuantity(id));
-    };
-
-    const handleDecreaseQuantity = (id) => {
-        const currentItem = cartItems.find(item => item._id === id);
-        if (currentItem.qty > 1) {
-            dispatch(decreaseQuantity(id));
-        }
-    };
+    const CartPage = () => {
+        const cartItems = useSelector(state => state.cart.cartItems);
+        const dispatch = useDispatch();
+    
+        const handleRemoveFromCart = (id) => {
+            dispatch(removeFromCart(id));
+        };
+    
+        const handleBuyAll = () => {
+            console.log('Buying all items:', cartItems);
+            // Thêm logic để xử lý mua hàng ở đây, ví dụ chuyển hướng tới trang thanh toán
+        };
+    
+        const handleIncreaseQuantity = (id) => {
+            dispatch(increaseQuantity(id));
+        };
+    
+        const handleDecreaseQuantity = (id) => {
+            const currentItem = cartItems.find(item => item._id === id);
+            if (currentItem.qty > 1) {
+                dispatch(decreaseQuantity(id));
+            }
+        };
 
     // Tính tổng tiền
     const totalPrice = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
@@ -35,10 +36,18 @@ const CartPage = () => {
             <h2>Bạn có {cartItems.length} khóa học trong giỏ hàng</h2>
             {cartItems.map((item, index) => (
                 <div key={index} className={styles.item}>
-                    <span>{item.name} - {item.qty} x ${item.price.toFixed(2)}</span>
-                    <div className={styles.controls}>
+                    <div className={styles.course}>
+                    <img src={item.imageUrl} alt={item.name} />
+                    </div>
+                    <div className={styles.price}>
+                        <span>${item.price.toFixed(2)}</span>
+                    </div>
+                    <div className={styles.quantity}>
                         <button onClick={() => handleDecreaseQuantity(item._id)}>-</button>
+                        <span>{item.qty}</span>
                         <button onClick={() => handleIncreaseQuantity(item._id)}>+</button>
+                    </div>
+                    <div className={styles.remove}>
                         <button onClick={() => handleRemoveFromCart(item._id)}>x</button>
                     </div>
                 </div>
