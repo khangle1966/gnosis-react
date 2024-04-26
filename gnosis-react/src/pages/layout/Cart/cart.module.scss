@@ -1,5 +1,5 @@
 // CartPage.scss
-$primary-color: #4CAF50; 
+$primary-color: #4CAF50;
 $secondary-color: #00796b;
 $text-color: #333;
 $border-color: #ccc;
@@ -12,14 +12,17 @@ $background-color: #f9f9f9;
     align-items: center;
     background-color: white;
     padding: 20px;
-    width: 100%;
+    width: 1300px;
     max-width: none;
     margin: 0 auto;
     box-sizing: border-box;
-
+    max-height: 100%;
+    text-align: center;
     h2 {
-        color: $primary-color;
+        color: black;
         margin-bottom: 20px;
+        padding-right: 850px;
+        padding-bottom: 50px;
     }
 
     .item {
@@ -30,85 +33,123 @@ $background-color: #f9f9f9;
         padding: 10px;
         width: 100%;
 
+        .course, .price, .quantity, .remove {
+            flex: 1;
+            text-align: left; // Đặt text-align để các text nằm về bên trái
+        }
+        
+        .quantity {
+            display: flex;
+            justify-content: space-evenly; // Đặt các nút và số lượng cách đều nhau
+            cursor: pointer;
+         
+            border: 1px #4CAF50 solid 10%;
+            border-radius: 10px;
+           
+
+            button {
+                color: black;
+                 // Màu nền trong suốt để chỉ thấy màu của .remove
+                border: none; // Bỏ viền của button
+                padding: 5px 10px; // Padding cho button để tăng kích thước clickable
+                border-radius: 5px; // Bo tròn góc cho button
+                cursor: pointer;
+
+                &:hover {
+                    background-color: darken(green, 10%); // Màu nền tối hơn khi hover
+                }
+            }
+        }
+    
+
+        .remove {
+            // Xóa thuộc tính border có độ dày 1px ở đây nếu không cần thiết
+            border: none; // Nếu không muốn có viền
+            border-radius: 10px; // Giữ nguyên viền bo tròn
+            cursor: pointer; // Thay đổi con trỏ khi di chuyển chuột vào phần tử
+            display: flex; // Sử dụng flexbox để căn giữa nội dung bên trong
+            align-items: center; // Căn giữa theo chiều dọc
+            justify-content: center; // Căn giữa theo chiều ngang
+            width: 10px; // Chiều rộng cố định của nút
+            height: 30px; // Chiều cao cố định của nút
+        
+            button {
+                color: white; // Màu chữ trắng để nổi bật trên nền đỏ
+                background-color: red; // Màu nền của button là màu đỏ
+                border: none; // Bỏ viền của button
+                border-radius: 5px; // Bo tròn góc cho button
+                cursor: pointer; // Kế thừa con trỏ từ .remove
+                width: 40%; // Chiều rộng của button bằng với .remove
+                height: 100%; // Chiều cao của button bằng với .remove
+        
+                &:hover {
+                    background-color: darken(red, 10%); // Màu nền tối hơn khi hover
+                }
+            }
+        }
         span {
             color: $text-color;
             margin-right: 10px;
         }
 
-        button {
+        .controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            button {
+                background-color: red;
+                border: 1px solid #ccc;
+                padding: 5px 10px;
+                border-radius: 4px;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: #e0e0e0;
+                }
+            }
+        }
+    }
+
+    .checkoutButton {
+        background-color: $secondary-color;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 20px;
+        width: 100%;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: darken($secondary-color, 10%);
+        }
+    }
+
+    .totalSection {
+        padding: 20px;
+        margin-top: 20px;
+        border-top: 2px solid $border-color;
+        text-align: center;
+        width: 100%;
+
+        .buyAllButton {
             background-color: $primary-color;
             color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 4px;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s;
 
             &:hover {
                 background-color: darken($primary-color, 10%);
             }
         }
     }
-}
 
-.checkoutButton {
-    background-color: $secondary-color;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 20px;
-    width: 100%;
-    transition: background-color 0.3s ease;
-
-    &:hover {
-        background-color: darken($secondary-color, 10%);
-    }
-}
-
-.totalSection {
-    padding: 20px;
-    margin-top: 20px;
-    border-top: 2px solid $border-color;
-    text-align: center;
-    width: 100%;
-
-    .buyAllButton {
-        background-color: $primary-color;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        font-size: 16px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-
-        &:hover {
-            background-color: darken($primary-color, 10%);
-        }
-    }
-}
-
-.controls {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-
-    button {
-        background-color: #f0f0f0;
-        border: 1px solid #ccc;
-        padding: 5px 10px;
-        border-radius: 4px;
-        cursor: pointer;
-
-        &:hover {
-            background-color: #e0e0e0;
-        }
-    }
-}
-
-@media (max-width: 768px) {
-    .cartPage {
+    @media (max-width: 1000px) {
         padding: 10px;
 
         .item {
