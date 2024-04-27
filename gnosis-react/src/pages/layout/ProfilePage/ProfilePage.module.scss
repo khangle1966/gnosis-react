@@ -1,0 +1,274 @@
+.profilePage {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 85vw; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
+    padding: 20px;
+}
+
+.profileHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+
+    .logoutButton {
+        background-color: #4CAF50; // Màu nền xanh lá
+        color: white; // Màu chữ trắng
+        padding: 10px 20px; // Đệm xung quanh nội dung
+        border: none; // Không viền
+        border-radius: 5px; // Viền bo tròn
+        font-weight: bold; // Chữ đậm
+        cursor: pointer; // Con trỏ chuột kiểu pointer
+        display: inline-flex; // Hiển thị inline và cho phép flex items
+        align-items: center; // Căn giữa các items theo trục dọc
+        justify-content: center; // Căn giữa nội dung theo trục ngang
+        gap: 5px; // Khoảng cách giữa các icon và text
+
+        &:hover {
+            background-color: #45a049; // Màu nền khi hover
+        }
+
+        // Thêm icon nếu bạn có icon class sẵn hoặc sử dụng thư viện icon
+        .fa {
+            // Lớp chung cho tất cả các icon Font Awesome
+            font-size: 16px; // Đặt kích thước cho icon
+            color: white; // Đảm bảo icon có màu trắng để nổi bật trên nút
+            margin-right: 8px; // Tạo khoảng cách giữa icon và văn bản
+
+            // Tùy chỉnh thêm nếu bạn cần
+        }
+    }
+}
+
+.profileContent {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 20px;
+}
+
+.leftColumn,
+.middleColumn,
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.leftColumn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
+
+    .avatar {
+        width: 120px; // Hoặc bất kỳ kích thước nào bạn muốn
+        height: 120px; // Đảm bảo đây là kích thước vuông vắn để giữ hình tròn
+        border-radius: 50%; // Làm hình ảnh tròn
+        margin-bottom: 10px; // Khoảng cách giữa avatar và tên
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Thêm bóng nếu bạn thích
+        // Thêm các thuộc tính CSS khác cho avatar nếu cần
+    }
+
+    .userName {
+        font-size: 1.5em; // Thay đổi kích thước font cho tên người dùng
+        font-weight: bold;
+        margin-bottom: 5px; // Khoảng cách giữa tên và email
+    }
+
+    .userEmail {
+        color: #666; // Màu cho email
+        font-size: 1em;
+    }
+}
+
+.middleColumn {
+    border-radius: 10px;
+    padding: 40px;
+    width: fit-content; // Để `width` tự động điều chỉnh theo nội dung bên trong
+    // Các kiểu dáng khác của .middleColumn
+    border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
+
+    // margin-left: 0; // Không cần thiết nếu bạn muốn nó tựa sát vào bên trái
+    width: auto; // Cho phép nó mở rộng tùy theo nội dung
+    max-width: 80%; // Cho phép mở rộng tối đa dựa trên chiều rộng của container cha
+
+    h2 {
+        color: #333;
+        margin-bottom: 30px;
+        font-size: 1.5em;
+    }
+
+    .inputRow {
+        display: flex;
+        justify-content: space-between; // Nếu bạn muốn khoảng cách giữa chúng
+        align-items: center;
+        margin-bottom: 4rem; // Đặt khoảng cách với phần tử tiếp theo
+
+        .inputGroup {
+            flex: 1; // Cho phép mỗi nhóm input mở rộng đều
+            margin-right: 8px; // Thêm khoảng cách giữa các input
+
+            &:last-child {
+                margin-right: 0; // Loại bỏ khoảng cách bên phải của nhóm input cuối cùng
+            }
+
+            label {
+                display: block;
+                margin-bottom: 0.5rem;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            select {
+                width: 100%; // Mở rộng chiều rộng tối đa
+                padding: 1rem 1.2rem; // Tăng padding để tăng chiều cao
+                border: 1px solid #ccc;
+                border-radius: 20px; // Viền bo tròn
+                box-sizing: border-box;
+                background: rgba(255, 255, 255, 0.5); // Màu nền mờ
+
+                font-size: 1rem; // Kích thước chữ
+            }
+        }
+    }
+
+    .inputGroupSingle {
+        margin-bottom: 3rem; // Khoảng cách giữa các nhóm input
+        width: 100%;
+
+        label {
+            display: block; // Cho label hiển thị trên một dòng riêng
+            margin-bottom: 5px; // Khoảng cách giữa label và input
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%; // Mở rộng chiều rộng tối đa
+            padding: 1rem 1.2rem; // Tăng padding để tăng chiều cao
+            border: 1px solid #ccc;
+            border-radius: 20px; // Viền bo tròn
+            box-sizing: border-box;
+            background: rgba(255, 255, 255, 0.5); // Màu nền mờ
+
+            font-size: 1rem; // Kích thước chữ
+        }
+
+        textarea {
+            height: 80px; // Chiều cao cố định cho textarea
+            resize: vertical; // Cho phép điều chỉnh kích thước theo chiều dọc
+        }
+    }
+
+    .updateProfileButton {
+        background-color: #4CAF50;
+        color: white;
+        padding: 15px 30px; //
+        border: none;
+        border-radius: 9px;
+        cursor: pointer;
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        font-size: 1em; // Đ
+        font-weight: bold;
+        text-align: center;
+
+        &:hover {
+            background-color: #45a049;
+        }
+    }
+}
+
+
+.rightColumn {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-left: -8rem;
+
+    .coursesHeader {
+        font-size: 1.5rem; // Chọn kích cỡ phù hợp với thiết kế của bạn
+        color: #333; // Hoặc màu tùy chọn của bạn
+        font-weight: bold; // Nếu bạn muốn tiêu đề in đậm
+        margin-bottom: 20px; // Tạo khoảng cách giữa tiêu đề và card đầu tiên
+        // Thêm các thuộc tính khác nếu bạn cần
+    }
+
+    .courseCard {
+        background: #FFFFFF; // Màu nền cho card
+        border-radius: 20px; // Bo tròn góc
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Bóng mờ nhẹ
+        width: 120%; // Chiều rộng card
+
+        margin-bottom: 20px; // Khoảng cách giữa các card
+        overflow: hidden; // Ẩn nội dung tràn ra khỏi card
+        transition: all 0.4s ease-in-out; // Thêm hiệu ứng cho card
+
+        &:hover {
+            transform: translateY(-5px); // Di chuyển card lên trên khi hover
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); // Tăng độ mờ của box-shadow
+        }
+
+        .courseImageWrapper {
+            background: #f0f9ff; // Màu nền phía sau hình ảnh
+            padding: 20px; // Đệm cho phần hình ảnh
+            display: flex;
+            justify-content: center; // Căn giữa hình ảnh theo trục ngang
+            align-items: center; // Căn giữa hình ảnh theo trục dọc
+
+            img {
+                max-width: 100%; // Đảm bảo hình ảnh không quá lớn
+                height: auto; // Giữ tỷ lệ hình ảnh
+            }
+        }
+
+        .courseContent {
+            padding: 15px; // Đệm cho phần nội dung
+
+            .courseTitle {
+                font-size: 1.5rem; // Kích thước chữ cho tiêu đề
+                font-weight: bold; // In đậm tiêu đề
+                color: #333; // Màu chữ tiêu đề
+                margin-bottom: 5px; // Khoảng cách giữa tiêu đề và mô tả
+            }
+
+            .courseSubtitle {
+                font-size: 1rem; // Kích thước chữ cho phụ đề
+                color: #666; // Màu chữ phụ đề
+                margin-bottom: 15px; // Khoảng cách giữa phụ đề và các nút
+            }
+
+            .courseButtons {
+                display: flex;
+                justify-content: space-between; // Căn các nút theo trục ngang
+
+                button {
+                    padding: 10px 15px; // Đệm cho nút
+                    font-size: 1rem; // Kích thước chữ trong nút
+                    border-radius: 15px; // Bo tròn nút
+                    border: 1px solid #ddd; // Viền nút
+                    background-color: transparent; // Nền trong suốt
+                    cursor: pointer; // Con trỏ khi di chuyển qua nút
+
+                    &:first-child {
+                        color: #4CAF50; // Màu cho nút hành động
+                    }
+
+                    &:last-child {
+                        color: #f44336; // Màu cho nút hủy bỏ
+                    }
+
+                    &:hover {
+                        background-color: #f2f2f2; // Màu nền khi hover
+                    }
+                }
+            }
+        }
+    }
+}

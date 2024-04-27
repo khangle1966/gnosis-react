@@ -10,7 +10,7 @@ import Layout from "./pages/layout/Layout"
 import BrowseCoursePage from './pages/layout/BrowseCoursePage/BrowseCoursePage'
 import CourseDetailPage from './pages/layout/BrowseCoursePage/component/CourseDetailPage/CourseDetailPage'
 import store from './redux/store';
-
+import ProfilePage from './pages/layout/ProfilePage/ProfilePage';
 import CartPage from './pages/layout/Cart/cart';
 import InstructorsPage from './pages/layout/InstructorsPage/InstructorsPage';
 function App() {
@@ -20,12 +20,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate replace to="/welcome" />} />
-            <Route path="browsecourse" element={<BrowseCoursePage />} />
+            <Route path="/browsecourse" element={<BrowseCoursePage />} />
 
             <Route path="course/:courseId" element={<CourseDetailPage />} />
-
+            <Route path="/profile" element={< ProfilePage />} />
             <Route path="/cart" element={<CartPage />} />
-            <Route path="instructor" element={<InstructorsPage />} />
+            <Route path="/instructor" element={<InstructorsPage />} />
 
           </Route>
           <Route path="/login" element={<Login />} />
