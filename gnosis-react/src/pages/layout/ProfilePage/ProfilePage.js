@@ -71,7 +71,7 @@ const ProfilePage = () => {
                             <h3 className={styles.courseTitle}>Responsive Web Design</h3>
                             <p className={styles.courseSubtitle}>Web Developer</p>
                             <div className={styles.courseButtons}>
-                                <button>Quất</button>
+                                <button>Start</button>
                                 <button>Cancel</button>
                             </div>
                         </div>
@@ -84,7 +84,7 @@ const ProfilePage = () => {
                             <h3 className={styles.courseTitle}>Responsive Web Design</h3>
                             <p className={styles.courseSubtitle}>Web Developer</p>
                             <div className={styles.courseButtons}>
-                                <button>Quất</button>
+                                <button>Start</button>
                                 <button>Cancel</button>
                             </div>
                         </div>
