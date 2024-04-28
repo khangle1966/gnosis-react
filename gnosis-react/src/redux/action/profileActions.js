@@ -5,9 +5,9 @@ import {
     PROFILE_CREATE_REQUEST,
     PROFILE_CREATE_SUCCESS,
     PROFILE_CREATE_FAILURE,
-    // PROFILE_UPDATE_REQUEST,
-    // PROFILE_UPDATE_SUCCESS,
-    // PROFILE_UPDATE_FAILURE,
+    PROFILE_UPDATE_REQUEST,
+    PROFILE_UPDATE_SUCCESS,
+    PROFILE_UPDATE_FAILURE,
     // PROFILE_DELETE_REQUEST,
     // PROFILE_DELETE_SUCCESS,
     // PROFILE_DELETE_FAILURE,
@@ -28,7 +28,18 @@ export const checkDuplicateProfileFailure = (error) => {
 }
 
 
-
+export const updateProfile = (profileData, userId) => async (dispatch) => {
+    dispatch({ type: PROFILE_UPDATE_REQUEST });
+    try {
+        const response = await axios.put(`http://localhost:3000/v1/profile/${userId}`, profileData);
+        dispatch({ type: PROFILE_UPDATE_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({
+            type: PROFILE_UPDATE_FAILURE,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+    }
+};
 export const createProfile = (profileData) => async (dispatch) => {
     dispatch({ type: PROFILE_CREATE_REQUEST });
     try {

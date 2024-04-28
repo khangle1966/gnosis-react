@@ -4,6 +4,21 @@
     gap: 20px;
     width: 85vw; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
     padding: 20px;
+    .successMessage {
+        color: green;
+        background-color: #ccffcc;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
+    
+    .errorMessage {
+        color: red;
+        background-color: #ffcccc;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 5px;
+    }
 }
 
 .profileHeader {
@@ -47,6 +62,7 @@
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     gap: 20px;
+    
 }
 
 .leftColumn,

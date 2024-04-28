@@ -1,63 +1,105 @@
-import React from 'react';
+import React,{ useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
 import styles from './ProfilePage.module.scss';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { logout } from '../../../redux/action/authActions';
+import { updateProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
 
 const ProfilePage = () => {
+    const { user } = useSelector(state => state.auth);
+    const { name, picture ,email } = user || {};
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [notification, setNotification] = useState({ message: '', type: '' });
 
+    const { profile, loading, error } = useSelector(state => state.profile);
+    console.log ("halo",profile.userName)
+    const [formData, setFormData] = useState({
+        userName: profile?.userName || '',
+        gender: profile?.gender || '',
+        country: profile?.country || '',
+        bio: profile?.bio || ''
+    });
+    const handleChange = (event) => {
+        setFormData({
+            ...formData,
+            [event.target.id]: event.target.value
+        });
+    };
 
+    // Xử lý nộp biểu mẫu
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            await dispatch(updateProfile(formData, user.uid));
+            setNotification({ message: 'Profile updated successfully!', type: 'success' });
+        } catch (err) {
+            setNotification({ message: 'Failed to update profile. Please try again.', type: 'error' });
+        }
+    };
 
+    // Xử lý đăng xuất
+    const handleLogout = () => {
+        dispatch(logout());
+        navigate('/login');
+    };
     return (
 
-        <div className={styles.profilePage}>
+            <div className={styles.profilePage}>
+                 {notification.message && (
+                <div className={notification.type === 'success' ? styles.successMessage : styles.errorMessage}>
+                    {notification.message}
+                </div>
+            )}
             <header className={styles.profileHeader}>
                 <h1>Profile</h1>
-                <button className={styles.logoutButton}>
+                <button onClick={handleLogout} className={styles.logoutButton}>
                     <FontAwesomeIcon icon={faSignOutAlt} className={styles.icon} />
                     Log out
-
                 </button>
             </header>
             <main className={styles.profileContent}>
+           
                 <section className={styles.leftColumn}>
-                    <img src="https://news.harvard.edu/wp-content/uploads/2022/11/iStock-mathproblems.jpg" alt="Cris Ronaldo" className={styles.avatar} />
-                    <h2 className={styles.userName}>Cris Ronaldo</h2>
-                    <p className={styles.userEmail}>messi7@gmail.com</p>
+                    <img src={user?.picture} alt={`Avatar of ${user?.name}`} className={styles.avatar} />
+                    <h2 className={styles.userName}>{profile?.userName}</h2>
+                    <p className={styles.userEmail}>{user?.email}</p>
                 </section>
                 <section className={styles.middleColumn}>
                     <h2>Edit your Personal Settings</h2>
-                    <form>
+                    <form onSubmit={handleSubmit}>
                         <div className={styles.inputRow}>
                             <div className={styles.inputGroup}>
                                 <label htmlFor="userName">User Name</label>
-                                <input type="text" id="userName" placeholder="Phùng" />
+                                <input type="text" id="userName" value={formData.userName} onChange={handleChange} placeholder="User Name..." />
                             </div>
+                           
                             <div className={styles.inputGroup}>
                                 <label htmlFor="gender">Gender</label>
-                                <select id="gender">
+                                <select id="gender" value={formData.gender} onChange={handleChange}>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
                                     <option value="other">Other</option>
                                 </select>
                             </div>
                         </div>
-
                         <div className={styles.inputGroupSingle}>
-                            <label htmlFor="email">Email Address</label>
-                            <input type="email" id="email" placeholder="khoachoco@gmail.com" />
-                        </div>
+                            <label htmlFor="email">Email Address </label>
+                            <input type="email" id="email" placeholder="Email..." value=  {email}  disabled />
 
+                        </div>
                         <div className={styles.inputGroupSingle}>
                             <label htmlFor="country">Country</label>
-                            <input type="text" id="country" placeholder="Việt Nam" />
+                            <input type="text" id="country" value={profile.country} onChange={handleChange} placeholder="Country" />
                         </div>
-
                         <div className={styles.inputGroupSingle}>
                             <label htmlFor="bio">Bio</label>
-                            <textarea id="bio" placeholder="Tôi mong muốn được cải thiện bản thân."></textarea>
+                            <textarea id="bio" value={profile.bio} onChange={handleChange} placeholder="Describe yourself..."></textarea>
                         </div>
-
                         <button type="submit" className={styles.updateProfileButton}>Update Profile</button>
                     </form>
                 </section>

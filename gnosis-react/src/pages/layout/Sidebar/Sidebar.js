@@ -7,7 +7,6 @@ import { logout } from '../../../redux/action/authActions';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { fetchUserProfile } from '../../../redux/action/authActions';
 
 import { faHome, faBook, faUser, faShoppingCart, faCog, faSignOut, faBars } from '@fortawesome/free-solid-svg-icons';
 
