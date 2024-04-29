@@ -71,6 +71,9 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
+    animation-name: zoomIn; 
+    animation-duration: 1s;   
+    transition: all 0.5s ease; 
 }
 
 .leftColumn {
@@ -90,7 +93,7 @@
         box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
         transform: translatey(0px);
         animation: float 6s ease-in-out infinite;
-        animation:  rainbow-spin rainbow-spin 6s ease-in-out infinite;
+       
    
         position: relative;
         background: white;
@@ -117,34 +120,7 @@
             transform: translatey(0px);
         }
     }
-    @keyframes rainbow-spin {
-        0% {
-          border-color: red;
-          transform: rotate(0deg);
-        }
-        14% {
-          border-color: orange;
-        }
-        28% {
-          border-color: yellow;
-        }
-        42% {
-          border-color: green;
-        }
-        56% {
-          border-color: blue;
-        }
-        70% {
-          border-color: indigo;
-        }
-        84% {
-          border-color: violet;
-        }
-        100% {
-          border-color: red;
-          transform: rotate(360deg);
-        }
-      }
+    
     .userName {
         font-size: 1.5em; // Thay đổi kích thước font cho tên người dùng
         font-weight: bold;
@@ -342,6 +318,29 @@
                     }
                 }
             }
+        }
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+    
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @keyframes zoomIn {
+        from {
+            opacity: 0;
+            transform: scale(0.9);
+        }
+    
+        to {
+            opacity: 1;
+            transform: scale(1);
         }
     }
 }

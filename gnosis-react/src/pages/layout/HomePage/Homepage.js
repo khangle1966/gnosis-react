@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCourses } from '../../../redux/action/courseActions';
-import { addToCart } from '../../../redux/action/cartActions'; // Đảm bảo rằng import này chính xác
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import styles from './HomePage.module.scss';
+import { fetchCourses } from '../../../redux/action/courseActions';
+
 import StatisticsComponent from './component/StatisticsComponent/StatisticsComponent';
 import CalendarComponent from './component/CalendarComponent/CalendarComponent';
 import { fetchProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
@@ -21,11 +21,21 @@ const HomePage = () => {
     useEffect(() => {
         dispatch(fetchProfile(user.uid));
     }, [dispatch,user.uid]);
-    
+
+ 
+
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/login');
+        } else {
+            dispatch(fetchCourses());
+        }
+    }, [isLoggedIn, navigate, dispatch]);
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
+
     const truncateDescription = (description) => {
         if (!description) return ''; // Kiểm tra nếu không tồn tại mô tả
         return description.length > 50 ? description.substring(0, 50) + '...' : description;
@@ -104,7 +114,8 @@ const HomePage = () => {
 
 
             </div>
-            <div className={styles.rightcolumn}>
+            
+            <div className={`${styles.rightcolumn} show`}>
 
                 <header className={styles.header}>
                     <h1>PROFILE USER</h1>
@@ -120,7 +131,7 @@ const HomePage = () => {
                 <h2 className={styles.userName}>{profile.userName}</h2>
                 <p className={styles.userEmail}>{profile.email}</p>
 
-                <p className={styles.membership}>User : {user.role}</p>
+                <p className={styles.membership}>Role : {user.role}</p>
                 <StatisticsComponent
                 rating={10}
                 timeSpent="2h"
@@ -133,6 +144,7 @@ const HomePage = () => {
                     <p>Learn with passion, excel with dedication, and keep studying to infinity</p>
                 </footer>
             </div>
+           
 
             </main>
     );

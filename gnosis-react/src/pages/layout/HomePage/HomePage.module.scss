@@ -15,10 +15,12 @@
 .leftcolumn {
     display: flex;
     flex-direction: column;
-
+    animation-name: zoomIn; /* Sử dụng animation slideInRight */
+    animation-duration: 1s; /* Thời gian chuyển động */
     padding: 50px;
     border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
-  
+    transition: all 0.3s ease; 
+
 
     .header {
         display: flex;
@@ -150,6 +152,7 @@
                     position: absolute;
                     top: 0;
                     left: 0;
+                    padding-bottom: 0.75rem;
                     
                 }
             }
@@ -219,13 +222,14 @@
   align-items: center;
   border-radius: 20px;
   padding-top: 55px;
-  transition: all 0.3s ease; /* Thêm hiệu ứng di chuyển mềm mại */
-  position: fixed; /* Cho phần cột phải cố định */
-  top: 0; /* Đặt phần cột phải ở đầu trang */
-  bottom: 0; /* Đặt phần cột phải ở cuối trang */
-  right: 0; /* Đặt phần cột phải ở bên phải của trang */
-  overflow-y: auto; /* Cho phép cuộn nếu nội dung quá dài */
-
+  transition: all 0.5s ease; 
+  position: fixed; 
+  top: 0; 
+  bottom: 0; 
+  right: 0; 
+  overflow-y: auto; 
+  animation-name: zoomIn; 
+  animation-duration: 1s; 
   .header {
     display: flex;
     justify-content: space-between;
@@ -295,13 +299,38 @@
     text-align: center;
     margin-top: 1rem;
     font-weight: bold;
-    position: fixed; /* Cho footer nằm ở dưới cùng của viewport */
-    bottom: 2rem; /* Đặt footer ở phía dưới của viewport */
-    width: 100%; /* Chiều rộng bằng 100% để giữ footer nằm trên toàn bộ chiều rộng */
+    position: fixed; 
+    bottom: 2rem; 
+    width: 100%; 
     
     
     
   
   }
 
+  @keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+    
+   
 }
