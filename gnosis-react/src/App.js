@@ -13,6 +13,7 @@ import store from './redux/store';
 import ProfilePage from './pages/layout/ProfilePage/ProfilePage';
 import CartPage from './pages/layout/Cart/cart';
 import InstructorsPage from './pages/layout/InstructorsPage/InstructorsPage';
+import HomePage from './pages/layout/HomePage/Homepage';
 function App() {
   return (
     <Provider store={store} >
@@ -21,6 +22,7 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route index element={<Navigate replace to="/welcome" />} />
             <Route path="/browsecourse" element={<BrowseCoursePage />} />
+            <Route path="/home" element={<HomePage />} />
 
             <Route path="course/:courseId" element={<CourseDetailPage />} />
             <Route path="/profile" element={< ProfilePage />} />

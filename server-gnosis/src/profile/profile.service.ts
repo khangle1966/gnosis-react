@@ -59,6 +59,7 @@ export class ProfileService {
       throw new HttpException(error.message, error.status);
     }
   }
+  
 
   async update(id: string, updateProfileDto: UpdateProfileDto) {
     try {

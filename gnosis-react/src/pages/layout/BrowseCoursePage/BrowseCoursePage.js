@@ -23,7 +23,14 @@ const BrowseCoursePage = () => {
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
-
+    const truncateDescription = (description) => {
+        if (!description) return ''; // Kiểm tra nếu không tồn tại mô tả
+        return description.length > 50 ? description.substring(0, 50) + '...' : description;
+      };
+      const truncateNameCourse = (name) => {
+        if (!name) return ''; // Kiểm tra nếu không tồn tại mô tả
+        return name.length > 50 ? name.substring(0, 50) + '...' : name;
+      };
 
 
     return (
@@ -45,27 +52,28 @@ const BrowseCoursePage = () => {
                 <button>Music</button>
                 <button>Cook</button>
             </div>
-            <div className={styles.course}>
-                {loading ? (
-                    <div>Loading courses...</div>
-                ) : error ? (
-                    <div>Error fetching courses: {error.message}</div>
-                ) : courses ? (
-                    <div className={styles.courseGrid}>
-                        {courses.map(course => (
-                            <div key={course._id} className={styles.courseCard}>
-                                <img src={course.img} alt={course.name} />
-                                <div className={styles.courseInfo}>
-                                    <h3>{course.name}</h3>
-                                    <p>{course.description}</p>
+            <div className={styles.courseGrid}>
+                {loading && <div>Loading courses...</div>}
+                {error && <div>Error fetching courses: {error.message}</div>}
+                {courses && courses.map((course) => (
+                    <div key={course._id} className={styles.courseCard}>
+                        <div className={styles.courseImageWrapper}>
+                            <img src={course.img} alt={course.name} />
+                        </div>
+                        <div className={styles.courseDetails}>
+                            <h3>{truncateNameCourse(course.name)}</h3>
+                            <p>{truncateDescription(course.description || '')}</p>
+                   
+                            
+                                  <div className={styles.courseActions}>
+                                  <button onClick={() => dispatch(addToCart(course))}>Add to Cart</button>
 
-                                    <button onClick={() => dispatch(addToCart(course))}>Add to Cart</button>
-                                    <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
-                                </div>
+                                <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
+                                {/* Thêm nút "Cancel" nếu cần */}
                             </div>
-                        ))}
+                        </div>
                     </div>
-                ) : null}
+                ))}
             </div>
             <div className={styles.pagination}>
                 {/* Placeholder for pagination */}

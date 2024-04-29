@@ -81,18 +81,75 @@
     border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
 
     .avatar {
-        width: 120px; // Hoặc bất kỳ kích thước nào bạn muốn
-        height: 120px; // Đảm bảo đây là kích thước vuông vắn để giữ hình tròn
-        border-radius: 50%; // Làm hình ảnh tròn
-        margin-bottom: 10px; // Khoảng cách giữa avatar và tên
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Thêm bóng nếu bạn thích
+        width: 150px;
+        height: 150px;
+        box-sizing: border-box;
+        border: 5px rgb(13, 121, 31) solid;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
+        transform: translatey(0px);
+        animation: float 6s ease-in-out infinite;
+        animation:  rainbow-spin rainbow-spin 6s ease-in-out infinite;
+   
+        position: relative;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img { width: 100%; height: auto; }
+        
+      
+        
         // Thêm các thuộc tính CSS khác cho avatar nếu cần
     }
-
+    @keyframes float {
+        0% {
+            box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
+            transform: translatey(0px);
+        }
+        50% {
+            box-shadow: 0 25px 15px 0px rgba(0,0,0,0.2);
+            transform: translatey(-20px);
+        }
+        100% {
+            box-shadow: 0 5px 15px 0px rgba(0,0,0,0.6);
+            transform: translatey(0px);
+        }
+    }
+    @keyframes rainbow-spin {
+        0% {
+          border-color: red;
+          transform: rotate(0deg);
+        }
+        14% {
+          border-color: orange;
+        }
+        28% {
+          border-color: yellow;
+        }
+        42% {
+          border-color: green;
+        }
+        56% {
+          border-color: blue;
+        }
+        70% {
+          border-color: indigo;
+        }
+        84% {
+          border-color: violet;
+        }
+        100% {
+          border-color: red;
+          transform: rotate(360deg);
+        }
+      }
     .userName {
         font-size: 1.5em; // Thay đổi kích thước font cho tên người dùng
         font-weight: bold;
-        margin-bottom: 5px; // Khoảng cách giữa tên và email
+        margin-bottom: 9px; // Khoảng cách giữa tên và email
+        margin-top: 1rem;
     }
 
     .userEmail {
@@ -221,7 +278,7 @@
         border-radius: 20px; // Bo tròn góc
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Bóng mờ nhẹ
         width: 120%; // Chiều rộng card
-
+        overflow: hidden;
         margin-bottom: 20px; // Khoảng cách giữa các card
         overflow: hidden; // Ẩn nội dung tràn ra khỏi card
         transition: all 0.4s ease-in-out; // Thêm hiệu ứng cho card

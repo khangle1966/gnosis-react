@@ -1,0 +1,93 @@
+.calendarComponent {
+  
+    .reactCalendar {
+      width: 100%;
+      max-width: 350px; // Chỉnh sửa chiều rộng để phù hợp với thiết kế
+      background-color: #fff;
+      border: 1px solid #dfdfdf; // Viền màu xám nhạt
+      border-radius: 15px; // Góc bo tròn
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); // Bóng mờ nhẹ
+      padding: 10px;
+      margin: auto;
+     
+    }
+    :global {
+    .react-calendar__navigation {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 10px;
+      
+      button {
+        color: #888;
+        min-width: 44px;
+        background: none;
+        font-size: 16px;
+
+        &:enabled:hover,
+        &:enabled:focus {
+          background-color: #ececec;
+        }
+
+        &:disabled {
+          background-color: transparent;
+        }
+      }
+      
+      .react-calendar__navigation__label {
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .react-calendar__navigation__prev2-button,
+      .react-calendar__navigation__next2-button {
+        display: none; // Ẩn các nút không cần thiết
+      }
+    }
+
+    .react-calendar__month-view__weekdays {
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: #555;
+
+      .react-calendar__month-view__weekdays__weekday {
+        padding: 0.5em;
+      }
+    }
+
+    .react-calendar__month-view__days {
+      button {
+        color: #555;
+        margin: 2px;
+        border-radius: 8px;
+        padding: 5px 0;
+        font-size: 0.75rem;
+        background-color: transparent;
+
+        &:enabled:hover,
+        &:enabled:focus {
+          background-color: #ececec;
+        }
+
+        &.react-calendar__tile--now {
+          background-color: #f0f0f0;
+        }
+
+        &.react-calendar__tile--active {
+          background-color: #0d682b; // Màu của ngày được chọn
+          color: white;
+        }
+        
+        &.react-calendar__tile--active:enabled:hover,
+        &.react-calendar__tile--active:enabled:focus {
+          background-color: darken(#0d682b, 10%);
+        }
+      }
+    }
+    
+    .react-calendar__tile--hasActive {
+      background-color: #e6e6e6; // Màu nền cho ngày được chọn
+    }
+  }
+}

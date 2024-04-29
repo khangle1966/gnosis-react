@@ -1,0 +1,307 @@
+
+.HomeContent {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+    width: 85vw;
+}
+.leftcolumn,
+.rightcolumn {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.leftcolumn {
+    display: flex;
+    flex-direction: column;
+
+    padding: 50px;
+    border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
+  
+
+    .header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between; // Đảm bảo khoảng trống giữa các phần tử
+        padding: 1rem;
+        padding-bottom: 2.5rem;
+
+        .welcomendate {
+            display: flex;
+            flex-grow: 1; // Cho phép .welcomendate phát triển và chiếm đủ không gian
+            align-items: center;
+           
+            h1 {
+                font-size: 1.6rem;
+                color: #333;
+                padding-bottom: 0.3rem;
+                text-transform: uppercase;
+
+            }
+
+            .date {
+                font-size: 1rem;
+                color: #777;
+            }
+        }
+
+        .searchBar {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 0.5rem;
+            border-radius: 20px;
+            margin-left: auto; // Tự động đẩy .searchBar về bên phải
+
+            input {
+                border: none;
+                margin-left: 0.5rem;
+                outline: none;
+                height: 2rem;
+                width: 20rem; // Hoặc sử dụng chiều rộng theo tỉ lệ % nếu bạn muốn input có chiều rộng đáp ứng
+            }
+
+            svg {
+                color: #333;
+            }
+        }
+    }
+
+    .navigation {
+        display: flex;
+
+        justify-content: space-between;
+        margin-top: 1rem;
+        padding-bottom: 0.7rem;
+
+        button {
+            background-color: #fff;
+            border: none;
+            color: #333;
+            border: #0c8633 solid;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-left: 2rem;
+            text-transform: none;
+            &:hover {
+                background-color: #e0e0e0;
+            }
+        }
+
+        .addIcon {
+            display: flex; // Sử dụng flexbox để căn giữa nội dung
+            justify-content: center; // Căn giữa nội dung theo trục ngang
+            align-items: center; // Căn giữa nội dung theo trục dọc
+            font-size: 1.5rem;
+            background-color: #0c8633;
+            color: #e9eeea;
+            cursor: pointer;
+            width: 40px; // Hoặc kích thước cố định mà bạn muốn
+            height: 40px; // Đồng bộ với chiều rộng để tạo thành hình vuông
+            border-radius: 18%; // Làm tròn để tạo hình dạng hình tròn
+            border: none; // Loại bỏ viền nếu có
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Thêm bóng nếu bạn muốn
+
+            &:hover {
+                background-color: darken(#0c8633, 10%); // Làm đậm màu nền khi hover
+            }
+        }
+
+    }
+
+
+
+    .courseGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        padding: 1rem;
+        margin: -10px; // Negative margin to counteract the padding on course cards
+        justify-content: center;
+    
+        .courseCard {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; // Adds space between the child elements
+            height: 100%; // Set a height for the card to make sure there is space to push the button down
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            padding: 1rem;
+            &:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            }
+    
+            .courseImageWrapper {
+                position: relative;
+                width: 100%;
+                height: 200px; // Adjust height as needed
+                
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    
+                }
+            }
+    
+            .courseDetails {
+                h3 {
+                    font-size: 0.9rem;
+                    margin: 0 0 5px 0;
+                }
+                p {
+                    font-size: 0.8rem;
+                    color: grey;
+                    margin: 0;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    padding-bottom: 1rem;
+                }
+            }
+    
+            .courseActions {
+                margin-top: auto;
+                width: 100%; // Ensure the width fills the parent
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+    
+                button {
+                    background-color: #124b21;
+                    color: #ffffff;
+                    border: none;
+                    padding: 10px 20px;
+                    font-size: 0.875rem;
+                    font-weight: bold;
+                    border-radius: 20px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+                    &:hover {
+                        background-color: #e0e0e0;
+                        box-shadow: 0 4px 11px rgba(0, 0, 0, 0.3);
+                    }
+                }
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .courseGrid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+    }
+
+    @media (max-width: 576px) {
+        .courseGrid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+
+}
+
+.rightcolumn {
+    
+    display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 20px;
+  padding-top: 55px;
+  transition: all 0.3s ease; /* Thêm hiệu ứng di chuyển mềm mại */
+  position: fixed; /* Cho phần cột phải cố định */
+  top: 0; /* Đặt phần cột phải ở đầu trang */
+  bottom: 0; /* Đặt phần cột phải ở cuối trang */
+  right: 0; /* Đặt phần cột phải ở bên phải của trang */
+  overflow-y: auto; /* Cho phép cuộn nếu nội dung quá dài */
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 1rem;
+
+    h1 {
+        margin-right: 16rem;
+      font-size: 1.25rem;
+      color: #333;
+    }
+
+    .editButton {
+      background-color: #0d682b;
+      color: white;
+      border: none;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+        font-weight: bold;
+      &:hover {
+        background-color: #062708;
+      }
+
+      svg {
+        font-size: 1rem;
+      }
+    }
+  }
+
+  .avatarWrapper {
+    .avatar {
+      width: 150px;
+      height: 150px;
+      border-radius: 10%;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .userName {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+  }
+
+  .userEmail {
+    font-size: 1rem;
+    color: #777;
+    margin-bottom: 0.5rem;
+  }
+
+  .membership {
+    font-size: 0.875rem;
+    color: #333;
+    margin-bottom: 1rem;
+  }
+
+  // Assume you have other components for statistics and calendar
+  // Add additional SCSS for those components as needed
+
+  .footer {
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 1rem;
+    font-weight: bold;
+    position: fixed; /* Cho footer nằm ở dưới cùng của viewport */
+    bottom: 2rem; /* Đặt footer ở phía dưới của viewport */
+    width: 100%; /* Chiều rộng bằng 100% để giữ footer nằm trên toàn bộ chiều rộng */
+    
+    
+    
+  
+  }
+
+}
