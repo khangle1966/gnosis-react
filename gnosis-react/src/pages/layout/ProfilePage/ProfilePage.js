@@ -13,7 +13,7 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const { user } = useSelector(state => state.auth);
     const { profile, loading, error } = useSelector(state => state.profile);
-    const [notification, setNotification] = useState({ message: '', type: '' });
+    const [notification, setNotification] = useState({ show: false, message: '' });
     console.log(profile)
 
     const [formData, setFormData] = useState({
@@ -50,12 +50,15 @@ const ProfilePage = () => {
         event.preventDefault();
         try {
             await dispatch(updateProfile(formData, user.uid));
-            setNotification({ message: 'Profile updated successfully!', type: 'success' });
+            setNotification({ show: true,message: `Profile "${user.uid}" updated successfully!`});
         } catch (err) {
-            setNotification({ message: 'Failed to update profile. Please try again.', type: 'error' });
+            setNotification({ show: false,message: 'Failed to update profile. Please try again.' });
         }
+        setTimeout(() => {
+            setNotification({ show: false, message: '' });
+          }, 3000);
     };
-
+   
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
@@ -66,11 +69,13 @@ const ProfilePage = () => {
 
     return (
         <div className={styles.profilePage}>
-            {notification.message && (
-                <div className={notification.type === 'success' ? styles.successMessage : styles.errorMessage}>
+           
+           {notification.show && (
+                <div className={styles.notification}>
                     {notification.message}
                 </div>
             )}
+             <div className={styles.breadcrumbs}>Home &gt;&gt; Profile</div>
             <header className={styles.profileHeader}>
                 <h1>Profile</h1>
                 <button onClick={handleLogout} className={styles.logoutButton}>

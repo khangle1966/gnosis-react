@@ -1,160 +1,255 @@
-// CartPage.scss
-$primary-color: #4CAF50;
-$secondary-color: #00796b;
-$text-color: #333;
-$border-color: #ccc;
-$background-color: #f9f9f9;
-
 .cartPage {
-    font-family: 'Arial', sans-serif;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: white;
+    gap: 20px;
+    width: 85vw; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
     padding: 20px;
-    width: 1300px;
-    max-width: none;
-    margin: 0 auto;
-    box-sizing: border-box;
-    max-height: 100%;
-    text-align: center;
-    h2 {
-        color: black;
-        margin-bottom: 20px;
-        padding-right: 850px;
-        padding-bottom: 50px;
+    animation-name: zoomIn; /* Sử dụng animation slideInRight */
+    animation-duration: 1s; /* Thời gian chuyển động */
+    transition: all 0.3s ease; 
+
+    .breadcrumbs {
+
+        font-size: 0.85rem;
+        color: rgb(4, 136, 4);
+        font-weight: bold;
     }
 
-    .item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid $border-color;
-        padding: 10px;
-        width: 100%;
-
-        .course, .price, .quantity, .remove {
-            flex: 1;
-            text-align: left; // Đặt text-align để các text nằm về bên trái
-        }
-        
-        .quantity {
-            display: flex;
-            justify-content: space-evenly; // Đặt các nút và số lượng cách đều nhau
-            cursor: pointer;
-         
-            border: 1px #4CAF50 solid 10%;
-            border-radius: 10px;
-           
-
-            button {
-                color: black;
-                 // Màu nền trong suốt để chỉ thấy màu của .remove
-                border: none; // Bỏ viền của button
-                padding: 5px 10px; // Padding cho button để tăng kích thước clickable
-                border-radius: 5px; // Bo tròn góc cho button
-                cursor: pointer;
-
-                &:hover {
-                    background-color: darken(green, 10%); // Màu nền tối hơn khi hover
-                }
-            }
-        }
     
+}
 
-        .remove {
-            // Xóa thuộc tính border có độ dày 1px ở đây nếu không cần thiết
-            border: none; // Nếu không muốn có viền
-            border-radius: 10px; // Giữ nguyên viền bo tròn
-            cursor: pointer; // Thay đổi con trỏ khi di chuyển chuột vào phần tử
-            display: flex; // Sử dụng flexbox để căn giữa nội dung bên trong
-            align-items: center; // Căn giữa theo chiều dọc
-            justify-content: center; // Căn giữa theo chiều ngang
-            width: 10px; // Chiều rộng cố định của nút
-            height: 30px; // Chiều cao cố định của nút
+.cartContent {
+    display: flex;
+  justify-content: center; // Centers the child elements horizontally
+  align-items: start; // Aligns items to the top
+  gap: 30px; // Provides space between the two columns
+  margin-top: 20px;
+  padding: 20px;
+  .leftColumn, .rightColumn {
+    background-color: #fff;
+    border-radius: 8px;
+  }
+    .leftColumn {
+        width: calc(100% - 300px); // Chiếm đa số không gian, trừ đi chiều rộng của rightColumn
+        flex: 1; // Allows this column to grow
+        max-width: 800px; // Prevents the column from growing too large
+        margin-left: 10rem;
         
-            button {
-                color: white; // Màu chữ trắng để nổi bật trên nền đỏ
-                background-color: red; // Màu nền của button là màu đỏ
-                border: none; // Bỏ viền của button
-                border-radius: 5px; // Bo tròn góc cho button
-                cursor: pointer; // Kế thừa con trỏ từ .remove
-                width: 40%; // Chiều rộng của button bằng với .remove
-                height: 100%; // Chiều cao của button bằng với .remove
-        
-                &:hover {
-                    background-color: darken(red, 10%); // Màu nền tối hơn khi hover
-                }
-            }
-        }
-        span {
-            color: $text-color;
-            margin-right: 10px;
-        }
-
-        .controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-
-            button {
-                background-color: red;
-                border: 1px solid #ccc;
-                padding: 5px 10px;
-                border-radius: 4px;
-                cursor: pointer;
-
-                &:hover {
-                    background-color: #e0e0e0;
-                }
-            }
-        }
-    }
-
-    .checkoutButton {
-        background-color: $secondary-color;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-top: 20px;
-        width: 100%;
-        transition: background-color 0.3s ease;
-
-        &:hover {
-            background-color: darken($secondary-color, 10%);
-        }
-    }
-
-    .totalSection {
-        padding: 20px;
-        margin-top: 20px;
-        border-top: 2px solid $border-color;
-        text-align: center;
-        width: 100%;
-
-        .buyAllButton {
-            background-color: $primary-color;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-
-            &:hover {
-                background-color: darken($primary-color, 10%);
-            }
-        }
-    }
-
-    @media (max-width: 1000px) {
-        padding: 10px;
-
-        .item {
+        h2 {
+            display: inline-flex; // Use inline-flex to fit the width of the content
             flex-direction: column;
             align-items: flex-start;
+            position: relative; // Position relative for the pseudo-element to position absolutely within
+            font-size: 1.5rem; // Adjust the font size as needed
+            color: #333; // Adjust the text color as needed
+            padding: 20px;
+            border-bottom: 2px dashed #ccc;
+            width: 100%;
+            background-color: #fdfdf6;
+            box-shadow: none;
+            
+          }
+        .item {
+            display: flex;
+            align-items: center;
+            background: #fff;
+            margin-bottom: 10px;
+            padding: 20px;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+            .course {
+                flex-grow: 1;
+                display: flex;
+                align-items: center;
+
+                img {
+                    width: 80px; // Kích thước của hình ảnh
+                    height: 80px; // Kích thước của hình ảnh
+                    object-fit: cover; // Đảm bảo ảnh phủ kín không gian
+                    margin-right: 20px;
+                    border-radius: 4px;
+                }
+
+                h3 {
+                    margin: 0;
+                    font-size: 1.1rem;
+                }
+            }
+
+            .price {
+                font-weight: bold;
+                margin-right: 20px;
+            }
+
+            .quantity {
+                display: flex;
+                align-items: center;
+
+                button {
+                    
+                background-color: #155f07;
+                    border: none;
+                    color: white;
+                    border-radius: 4px;
+                    padding: 8px 16px; // Slightly larger padding for a more balanced look
+                    margin: 0 15px;
+
+                    cursor: pointer;
+                    transition: background-color 0.3s ease, color 0.3s ease; // Smooth transition for hover effect
+                    &:hover {
+                        background-color: #0e2906; // Darker background on hover
+                        color: #f8f5f5; // Optional: Change text color on hover
+                      }
+                }
+                span {
+                  min-width: 20px;
+                  text-align: center;
+                  font-size: 1rem; // Adjust font size for better readability
+                  padding: 4px 8px; // Padding to align with the height of the buttons
+                  user-select: none; // Prevents the quantity number from being selected
+                }
+              }
+
+            .remove {
+                button {
+                    background-color: #ff4d4f;
+                    border: none;
+                    color: white;
+                    padding: 8px 16px; // Slightly larger padding for a more balanced look
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+            }
         }
+    }
+
+    .rightColumn {
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+        width: 250px; // Adjust width as needed
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: auto; // Center the column if it's the only item
+        font-family: 'Arial', sans-serif;
+        flex-shrink: 0; // Prevents the right column from shrinking
+        align-self: flex-start; // Aligns the right column to the top
+       
+        .totalSection {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px; // Creates consistent spacing between items
+          width: 100%;
+
+          h3 {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 15px;
+          }
+      
+          .lineItem {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.95rem;
+            color: #333;
+          }
+      
+          .totalPrice {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #333;
+            margin-top: 15px; // Space before the total price
+          }
+      
+          hr {
+            border: 0;
+            height: 1px;
+            background-color: #E0E0E0;
+            width: 100%; // Divider spans the full width
+            margin: 10px 0; // Spacing above and below the divider
+          }
+      
+          .buyAllButton {
+            width: 100%;
+            padding: 12px 0;
+            background-color: #28a745;
+            color: white;
+            font-weight: bold;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin-top: 20px; // Space above the button
+      
+            &:hover {
+              background-color: darken(#28a745, 10%);
+            }
+          }
+        }
+      }
+}
+
+.cartHeader {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+
+    .searchBar {
+        display: flex;
+        align-items: center;
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 0.5rem;
+        border-radius: 20px;
+        margin-left: auto; // Tự động đẩy .searchBar về bên phải
+        border: #333 1px solid;
+
+        input {
+            border: none;
+            margin-left: 0.5rem;
+            outline: none;
+            height: 1.7rem;
+            width: 20rem; // Hoặc sử dụng chiều rộng theo tỉ lệ % nếu bạn muốn input có chiều rộng đáp ứng
+
+        }
+
+        svg {
+            color: #333;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }

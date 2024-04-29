@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../../../redux/action/courseActions';
@@ -11,6 +11,7 @@ const BrowseCoursePage = () => {
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector(state => state.course);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+    const [notification, setNotification] = useState({ show: false, message: '' });
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -19,7 +20,15 @@ const BrowseCoursePage = () => {
             dispatch(fetchCourses());
         }
     }, [isLoggedIn, navigate, dispatch]);
-
+    const handleAddToCart = (course) => {
+        dispatch(addToCart(course));
+        // Show the notification
+        setNotification({ show: true, message: `Added "${course.name}" to cart.` });
+        // Hide the notification after 3 seconds
+        setTimeout(() => {
+          setNotification({ show: false, message: '' });
+        }, 3000);
+      };
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
@@ -35,6 +44,11 @@ const BrowseCoursePage = () => {
 
     return (
         <div className={styles.homePageContent}>
+             {notification.show && (
+                <div className={styles.notification}>
+                    {notification.message}
+                </div>
+            )}
             <div className={styles.breadcrumbs}>Home &gt; Browse</div>
             <div className={styles.promotions}>
                 {/* Placeholder for promotions */}
@@ -66,7 +80,7 @@ const BrowseCoursePage = () => {
                    
                             
                                   <div className={styles.courseActions}>
-                                  <button onClick={() => dispatch(addToCart(course))}>Add to Cart</button>
+                                  <button onClick={() => handleAddToCart(course)}>Add to Cart</button>
 
                                 <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
                                 {/* Thêm nút "Cancel" nếu cần */}

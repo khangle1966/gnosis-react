@@ -20,7 +20,12 @@
     padding: 50px;
     border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
     transition: all 0.3s ease; 
-
+    .breadcrumbs {
+        margin-bottom: 20px;
+        font-size: 0.85rem;
+        color: rgb(4, 136, 4);
+        font-weight: bold;
+    }
 
     .header {
         display: flex;

@@ -6,8 +6,29 @@
     padding: 20px;
     width: 80vw; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
     background-color: #fdfdf6;
-    animation: fadeIn 1s ease-in-out forwards;
-
+    > *:not(.notification) { 
+        animation: fadeIn 1s ease-in-out forwards;
+    }
+    .notification {
+        position: fixed;
+        top: 20px; // Khoảng cách từ đầu trang
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1050; // Đảm bảo thông báo ở trên cùng, có thể tăng nếu cần
+        padding: 10px 20px;
+        background-color: #dff0d8; // Màu xanh nhạt cho thông báo thành công
+        color: #3c763d; // Màu xanh đậm cho văn bản
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        max-width: calc(100% - 40px); // Đảm bảo thông báo không vượt quá màn hình
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        // Hiệu ứng xuất hiện và biến mất
+        animation: fadeInOut 3s forwards;
+    }
+      
     .breadcrumbs {
         margin-bottom: 20px;
         font-size: 0.85rem;
@@ -210,4 +231,8 @@
             transform: scale(1);
         }
     }
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0; visibility: hidden; }
+        10%, 90% { opacity: 1; visibility: visible; }
+      }
 }

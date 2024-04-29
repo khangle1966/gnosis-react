@@ -74,14 +74,18 @@ const InstructorsPage = () => {
     };
 
     return (
+        
         <div className={styles.Container}>
             {courseSubmitted && (
                 <div className={styles.successMessage}>
                     Khóa học đã được tạo thành công!
                 </div>
             )}
+            <div className={styles.breadcrumbs}>Home &gt; InstructorsPage</div>
+
             <div className={styles.Header}>
                 <h1 className={styles.Title}>New Course Creation</h1>
+
                 <div className={styles.Container_Button}>
                     <button type="button" className={styles.Cancel_Button} onClick={() => { dispatch(resetCourse()); handleReset(); }}>Reset</button>
                     <button type="button" className={styles.Publish_Button} onClick={handleSubmit}>Publish</button>

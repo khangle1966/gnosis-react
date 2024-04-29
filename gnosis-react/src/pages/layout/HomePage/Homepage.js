@@ -56,7 +56,9 @@ const HomePage = () => {
 
     return (
         <main className={styles.HomeContent}>
+
             <div className={styles.leftcolumn}>
+         
 
                 <header className={styles.header}>
 
