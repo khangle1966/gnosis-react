@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 
+import * as mongoose from 'mongoose'; // Import mongoose
 
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
@@ -60,19 +61,35 @@ export class ProfileService {
     }
   }
   
-
-  async update(id: string, updateProfileDto: UpdateProfileDto) {
+  async update(id: string, updateProfileDto: UpdateProfileDto): Promise<Profile> {
     try {
-      const updatedProfile = await this.profileModel.findOneAndUpdate(
-        { id: id },
-        { ...updateProfileDto },
-        { new: true },
-      );
-      return updatedProfile;
+        if (updateProfileDto.courses) {
+            const currentProfile = await this.profileModel.findOne({ id: id });
+            if (!currentProfile) {
+                throw new NotFoundException(`Profile with id ${id} not found.`);
+            }
+
+            // Chuyển đổi ID của khóa học thành chuỗi
+            const currentCourseIds = currentProfile.courses.map(course => course.toString());
+            const newCourseIds = updateProfileDto.courses;
+            const uniqueCourses = Array.from(new Set([...currentCourseIds, ...newCourseIds]));
+            updateProfileDto.courses = uniqueCourses; // Giữ nguyên dạng chuỗi
+        }
+
+        const updatedProfile = await this.profileModel.findOneAndUpdate(
+            { id: id },
+            { $set: updateProfileDto },
+            { new: true }
+        );
+        if (!updatedProfile) {
+            throw new NotFoundException(`Profile with id ${id} not found.`);
+        }
+        return updatedProfile;
     } catch (error) {
-      throw new HttpException(error.message, error.status);
+        throw new HttpException(error.message, error.status);
     }
-  }
+}
+
 
   async remove(id: string) {
     try {
@@ -91,6 +108,7 @@ export class ProfileService {
       throw new HttpException(error.message, error.status);
     }
   }
+
 
   getAllCourseOfProfile(id: string): Promise<Profile> {
     try {

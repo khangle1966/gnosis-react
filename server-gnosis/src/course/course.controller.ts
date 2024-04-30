@@ -50,7 +50,11 @@ export class CourseController {
       throw new HttpException(error.message, error.status);
     }
   }
-
+  @Post('userCourses')
+  async getUserCourses(@Body('courseIds') courseIds: string[]) {
+      const courses = await this.courseService.findCoursesByIds(courseIds);
+      return courses;
+  }
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Course> {
     try {

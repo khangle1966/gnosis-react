@@ -4,34 +4,36 @@ import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import styles from './HomePage.module.scss';
-import { fetchCourses } from '../../../redux/action/courseActions';
 
 import StatisticsComponent from './component/StatisticsComponent/StatisticsComponent';
 import CalendarComponent from './component/CalendarComponent/CalendarComponent';
 import { fetchProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
+import { fetchUserCourses } from '../../../redux/action/courseActions';
 
 const HomePage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { courses, loading, error } = useSelector(state => state.course);
-    const {user} = useSelector (state => state.auth)
+    const { userCourses, loading, error } = useSelector(state => state.course);
+    const { user } = useSelector(state => state.auth)
     const { profile } = useSelector(state => state.profile);
-    console.log(profile.userName)
+    console.log(profile.course)
 
     useEffect(() => {
         dispatch(fetchProfile(user.uid));
-    }, [dispatch,user.uid]);
+    }, [dispatch, user.uid]);
 
- 
+
 
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     useEffect(() => {
         if (!isLoggedIn) {
             navigate('/login');
-        } else {
-            dispatch(fetchCourses());
+        } else if (profile && profile.courses) {
+            dispatch(fetchUserCourses(profile.courses));
         }
-    }, [isLoggedIn, navigate, dispatch]);
+    }, [isLoggedIn, profile, dispatch, navigate]);
+
+
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
@@ -51,14 +53,14 @@ const HomePage = () => {
         const currentDate = new Date();
         const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
         return currentDate.toLocaleDateString('en-US', options);
-      };
-      const currentDate = getCurrentDate();
+    };
+    const currentDate = getCurrentDate();
 
     return (
         <main className={styles.HomeContent}>
 
             <div className={styles.leftcolumn}>
-         
+
 
                 <header className={styles.header}>
 
@@ -92,18 +94,18 @@ const HomePage = () => {
 
                 </nav>
                 <div className={styles.courseGrid}>
+
                     {loading && <div>Loading courses...</div>}
                     {error && <div>Error fetching courses: {error.message}</div>}
-                    {courses && courses.map((course) => (
+                    {userCourses && userCourses.map(course => (
                         <div key={course._id} className={styles.courseCard}>
+
                             <div className={styles.courseImageWrapper}>
                                 <img src={course.img} alt={course.name} />
                             </div>
                             <div className={styles.courseDetails}>
                                 <h3>{truncateNameCourse(course.name)}</h3>
-                                <p>{truncateDescription(course.description || '')}</p>
-
-
+                                <p>{truncateDescription(course.description)}</p>
                                 <div className={styles.courseActions}>
                                     <button onClick={() => handleDescriptionClick(course._id)}>Start</button>
                                     {/* Thêm nút "Cancel" nếu cần */}
@@ -116,7 +118,7 @@ const HomePage = () => {
 
 
             </div>
-            
+
             <div className={`${styles.rightcolumn} show`}>
 
                 <header className={styles.header}>
@@ -127,28 +129,28 @@ const HomePage = () => {
                     </button>
                 </header>
                 <div className={styles.avatarWrapper}>
-                <img src={user?.picture} alt={`Avatar of ${user?.name}`} className={styles.avatar} />
-       
+                    <img src={user?.picture} alt={`Avatar of ${user?.name}`} className={styles.avatar} />
+
                 </div>
                 <h2 className={styles.userName}>{profile.userName}</h2>
                 <p className={styles.userEmail}>{profile.email}</p>
 
                 <p className={styles.membership}>Role : {user.role}</p>
                 <StatisticsComponent
-                rating={10}
-                timeSpent="2h"
-                coursesCompleted={12}
+                    rating={10}
+                    timeSpent="2h"
+                    coursesCompleted={12}
                 />
-                
+
                 <CalendarComponent />
-      
+
                 <footer className={styles.footer}>
                     <p>Learn with passion, excel with dedication, and keep studying to infinity</p>
                 </footer>
             </div>
-           
 
-            </main>
+
+        </main>
     );
 };
 

@@ -19,6 +19,7 @@
     animation-duration: 1s; /* Thời gian chuyển động */
     padding: 50px;
     border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
+    height: 100vh;
     transition: all 0.3s ease; 
     .breadcrumbs {
         margin-bottom: 20px;

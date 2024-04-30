@@ -1,23 +1,43 @@
-import React from 'react';
+import React, { useEffect,useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeFromCart, increaseQuantity, decreaseQuantity } from '../../../redux/action/cartActions';
+import { removeFromCart } from '../../../redux/action/cartActions';
 import styles from './cart.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { buyCourses } from '../../../redux/action/cartActions';
+import { fetchProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
 
 const CartPage = () => {
-    const cartItems = useSelector(state => state.cart.cartItems);
-    console.log('Images:', cartItems.map(item => item.img));
     const dispatch = useDispatch();
+
+
+    const cartItems = useSelector(state => state.cart.cartItems);
+    const {profile} = useSelector (state => state.profile)
+    const {user} = useSelector (state => state.auth)
+    const [notification, setNotification] = useState({ show: false, message: '' });
+
+    console.log ("halo",profile._id);
+    useEffect(() => {
+        dispatch(fetchProfile(user.uid));
+    }, [dispatch,user.uid]);
+
+    console.log('Images:', cartItems.map(item => item.img));
+   
 
     const handleRemoveFromCart = (id) => {
         dispatch(removeFromCart(id));
     };
 
     const handleBuyAll = () => {
-        console.log('Buying all items:', cartItems);
-        // Thêm logic để xử lý mua hàng ở đây, ví dụ chuyển hướng tới trang thanh toán
+        dispatch(buyCourses(user.uid, cartItems));
+
+        setNotification({ show: true, message: `Mua thành công "${cartItems.length}" khóa học.` });
+        // Hide the notification after 3 seconds
+        setTimeout(() => {
+          setNotification({ show: false, message: '' });
+        }, 3000);
     };
+   
     const truncateNameCourse = (name) => {
         if (!name) return ''; // Kiểm tra nếu không tồn tại mô tả
         return name.length > 35 ? name.substring(0, 35) + '...' : name;
@@ -30,6 +50,11 @@ const CartPage = () => {
     return (
 
         <div className={styles.cartPage}>
+            {notification.show && (
+                <div className={styles.notification}>
+                    {notification.message}
+                </div>
+            )}
             <header className={styles.cartHeader}>
                 <div className={styles.breadcrumbs}>Home &gt;&gt; Cart</div>
 
