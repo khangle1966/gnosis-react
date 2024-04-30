@@ -4,6 +4,7 @@
     grid-template-columns: 2fr 1fr;
     gap: 20px;
     width: 85vw;
+ 
 }
 .leftcolumn,
 .rightcolumn {
@@ -18,8 +19,7 @@
     animation-name: zoomIn; /* Sử dụng animation slideInRight */
     animation-duration: 1s; /* Thời gian chuyển động */
     padding: 50px;
-    border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
-    height: 100vh;
+
     transition: all 0.3s ease; 
     .breadcrumbs {
         margin-bottom: 20px;
@@ -236,6 +236,8 @@
   overflow-y: auto; 
   animation-name: zoomIn; 
   animation-duration: 1s; 
+  border-left: 2px solid #ccc; // Thêm viền ngăn cách bên phải
+
   .header {
     display: flex;
     justify-content: space-between;
