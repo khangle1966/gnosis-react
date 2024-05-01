@@ -1,29 +1,40 @@
-import React,{ useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { logout, fetchProfile, updateProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
 
 import styles from './ProfilePage.module.scss';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { logout } from '../../../redux/action/authActions';
-import { updateProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
 
 const ProfilePage = () => {
-    const { user } = useSelector(state => state.auth);
-    const { name, picture ,email } = user || {};
-    const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [notification, setNotification] = useState({ message: '', type: '' });
-
+    const navigate = useNavigate();
+    const { user } = useSelector(state => state.auth);
     const { profile, loading, error } = useSelector(state => state.profile);
-    console.log ("halo",profile.userName)
+    const [notification, setNotification] = useState({ message: '', type: '' });
     const [formData, setFormData] = useState({
-        userName: profile?.userName || '',
-        gender: profile?.gender || '',
-        country: profile?.country || '',
-        bio: profile?.bio || ''
+        userName: '',
+        gender: 'male',
+        country: '',
+        bio: ''
     });
+
+    useEffect(() => {
+        if (profile) {
+            setFormData({
+                userName: profile.userName || '',
+                gender: profile.gender || 'male',
+                country: profile.country || '',
+                bio: profile.bio || ''
+            });
+        }
+    }, [profile]);
+
+    useEffect(() => {
+        dispatch(fetchProfile());
+    }, [dispatch]);
+
     const handleChange = (event) => {
         setFormData({
             ...formData,
@@ -31,7 +42,6 @@ const ProfilePage = () => {
         });
     };
 
-    // Xử lý nộp biểu mẫu
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -42,15 +52,17 @@ const ProfilePage = () => {
         }
     };
 
-    // Xử lý đăng xuất
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
     };
-    return (
 
-            <div className={styles.profilePage}>
-                 {notification.message && (
+    if (loading) return <p>Loading...</p>;
+    if (error) return <p>Error: {error}</p>;
+
+    return (
+        <div className={styles.profilePage}>
+            {notification.message && (
                 <div className={notification.type === 'success' ? styles.successMessage : styles.errorMessage}>
                     {notification.message}
                 </div>
@@ -63,10 +75,9 @@ const ProfilePage = () => {
                 </button>
             </header>
             <main className={styles.profileContent}>
-           
                 <section className={styles.leftColumn}>
                     <img src={user?.picture} alt={`Avatar of ${user?.name}`} className={styles.avatar} />
-                    <h2 className={styles.userName}>{profile?.userName}</h2>
+                    <h2 className={styles.userName}>{formData.userName}</h2>
                     <p className={styles.userEmail}>{user?.email}</p>
                 </section>
                 <section className={styles.middleColumn}>
@@ -77,7 +88,6 @@ const ProfilePage = () => {
                                 <label htmlFor="userName">User Name</label>
                                 <input type="text" id="userName" value={formData.userName} onChange={handleChange} placeholder="User Name..." />
                             </div>
-                           
                             <div className={styles.inputGroup}>
                                 <label htmlFor="gender">Gender</label>
                                 <select id="gender" value={formData.gender} onChange={handleChange}>
@@ -88,17 +98,16 @@ const ProfilePage = () => {
                             </div>
                         </div>
                         <div className={styles.inputGroupSingle}>
-                            <label htmlFor="email">Email Address </label>
-                            <input type="email" id="email" placeholder="Email..." value=  {email}  disabled />
-
+                            <label htmlFor="email">Email Address</label>
+                            <input type="email" id="email" placeholder="Email..." value="" disabled />
                         </div>
                         <div className={styles.inputGroupSingle}>
                             <label htmlFor="country">Country</label>
-                            <input type="text" id="country" value={profile.country} onChange={handleChange} placeholder="Country" />
+                            <input type="text" id="country" value={formData.country} onChange={handleChange} placeholder="Country" />
                         </div>
                         <div className={styles.inputGroupSingle}>
                             <label htmlFor="bio">Bio</label>
-                            <textarea id="bio" value={profile.bio} onChange={handleChange} placeholder="Describe yourself..."></textarea>
+                            <textarea id="bio" value={formData.bio} onChange={handleChange} placeholder="Describe yourself..."></textarea>
                         </div>
                         <button type="submit" className={styles.updateProfileButton}>Update Profile</button>
                     </form>

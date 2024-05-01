@@ -7,7 +7,10 @@ import {
     PROFILE_UPDATE_FAILURE,
     PROFILE_DELETE_REQUEST,
     PROFILE_DELETE_SUCCESS,
-    PROFILE_DELETE_FAILURE
+    PROFILE_DELETE_FAILURE,
+    PROFILE_FETCH_REQUEST,
+    PROFILE_FETCH_SUCCESS,
+    PROFILE_FETCH_FAILURE,
 } from '../types/profileActionTypes';
 
 const initialState = {
@@ -52,6 +55,12 @@ const profileReducer = (state = initialState, action) => {
                 isCheckingDuplicate: false,
                 error: action.payload
             };
+        case PROFILE_FETCH_REQUEST:
+            return { ...state, loading: true, error: null };
+        case PROFILE_FETCH_SUCCESS:
+            return { ...state, loading: false, profile: action.payload, error: null };
+        case PROFILE_FETCH_FAILURE:
+            return { ...state, loading: false, error: action.payload };
         default:
             return state;
     }
