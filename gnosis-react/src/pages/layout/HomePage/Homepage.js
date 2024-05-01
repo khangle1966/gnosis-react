@@ -19,19 +19,25 @@ const HomePage = () => {
     console.log(profile.course)
 
     useEffect(() => {
-        dispatch(fetchProfile(user.uid));
-    }, [dispatch, user.uid]);
-
+        if (user && user.uid) {
+            dispatch(fetchProfile(user.uid));
+        } else {
+            console.log('User is not defined or user.uid is not available');
+        }
+    }, [dispatch, user]);
 
 
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     useEffect(() => {
         if (!isLoggedIn) {
             navigate('/login');
-        } else if (profile && profile.courses) {
-            dispatch(fetchUserCourses(profile.courses));
+        } else {
+            if (profile && profile.courses) {
+                dispatch(fetchUserCourses(profile.courses));
+            }
         }
     }, [isLoggedIn, profile, dispatch, navigate]);
+    
 
 
     const handleDescriptionClick = (courseId) => {
@@ -134,7 +140,6 @@ const HomePage = () => {
                 </div>
                 <h2 className={styles.userName}>{profile.userName}</h2>
                 <p className={styles.userEmail}>{profile.email}</p>
-
                 <p className={styles.membership}>Role : {user.role}</p>
                 <StatisticsComponent
                     rating={10}
