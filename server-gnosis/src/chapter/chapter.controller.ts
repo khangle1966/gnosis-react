@@ -53,6 +53,21 @@ export class ChapterController {
     }
   }
 
+  @Put('chap/order')
+  async updateChapterOrder(@Body() updateOrderDto: { chapters: { id: string; chapterNumber: number }[] }) {
+    if (!updateOrderDto || !updateOrderDto.chapters || updateOrderDto.chapters.length === 0) {
+      throw new HttpException('Invalid input data', HttpStatus.BAD_REQUEST);
+    }
+
+    try {
+      const result = await this.chapterService.updateChapterOrder(updateOrderDto.chapters);
+      return { statusCode: HttpStatus.OK, message: 'Chapters order updated successfully', data: result };
+    } catch (error) {
+      throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

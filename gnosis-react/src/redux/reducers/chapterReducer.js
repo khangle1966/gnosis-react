@@ -8,7 +8,10 @@ import {
     REMOVE_CHAPTER_SUCCESS,
     UPDATE_CHAPTER_REQUEST,
     UPDATE_CHAPTER_SUCCESS,
-    UPDATE_CHAPTER_FAILURE //Đảm bảo rằng bạn đã khai báo action type này trong file chapterTypes.js
+    UPDATE_CHAPTER_FAILURE,
+    UPDATE_CHAPTER_ORDER_REQUEST,
+    UPDATE_CHAPTER_ORDER_SUCCESS,
+    UPDATE_CHAPTER_ORDER_FAILURE, //Đảm bảo rằng bạn đã khai báo action type này trong file chapterTypes.js
 } from '../types/chapterTypes';
 
 const initialState = {
@@ -50,6 +53,19 @@ export const chapterReducer = (state = initialState, action) => {
             };
         case UPDATE_CHAPTER_FAILURE:
             return { ...state, loading: false, error: action.payload };
+        case UPDATE_CHAPTER_ORDER_REQUEST:
+            return { ...state, loading: true };
+        case UPDATE_CHAPTER_ORDER_SUCCESS:
+            // Assuming the payload contains the updated list of chapters
+            return { ...state, loading: false, chapters: action.payload.chapters, error: null };
+        case UPDATE_CHAPTER_ORDER_FAILURE:
+            return { ...state, loading: false, error: action.payload };
+        // Other cases remain unchanged
+        case 'SET_CHAPTERS':
+            return {
+                ...state,
+                chapters: action.payload
+            };
         default:
             return state;
     }

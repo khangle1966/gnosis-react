@@ -9,7 +9,10 @@ import {
     REMOVE_CHAPTER_SUCCESS,
     UPDATE_CHAPTER_REQUEST,
     UPDATE_CHAPTER_SUCCESS,
-    UPDATE_CHAPTER_FAILURE
+    UPDATE_CHAPTER_FAILURE,
+    UPDATE_CHAPTER_ORDER_REQUEST,
+    UPDATE_CHAPTER_ORDER_SUCCESS,
+    UPDATE_CHAPTER_ORDER_FAILURE,
 } from '../types/chapterTypes';
 
 export const addChapter = (newChapter) => async (dispatch) => {
@@ -20,6 +23,7 @@ export const addChapter = (newChapter) => async (dispatch) => {
         console.error('Add Chapter Failed:', error);
     }
 };
+
 
 export const removeChapter = (chapterId) => async (dispatch) => {
     try {
@@ -62,6 +66,21 @@ export const updateChapterTitle = (chapterId, title) => async (dispatch) => {
         dispatch({
             type: UPDATE_CHAPTER_FAILURE,
             payload: error.response ? error.response.data : "Unknown error"
+        });
+    }
+};
+export const updateChapterOrder = (chapters) => async (dispatch) => {
+    dispatch({ type: UPDATE_CHAPTER_ORDER_REQUEST });
+    try {
+        const response = await axios.put(`http://localhost:3000/v1/chapter/chap/order`, { chapters });
+        dispatch({
+            type: UPDATE_CHAPTER_ORDER_SUCCESS,
+            payload: response.data
+        });
+    } catch (error) {
+        dispatch({
+            type: UPDATE_CHAPTER_ORDER_FAILURE,
+            payload: error.response ? error.response.data.message : "Unknown error"
         });
     }
 };

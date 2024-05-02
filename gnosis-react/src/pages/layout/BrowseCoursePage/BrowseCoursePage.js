@@ -1,4 +1,4 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../../../redux/action/courseActions';
@@ -26,25 +26,25 @@ const BrowseCoursePage = () => {
         setNotification({ show: true, message: `Added "${course.name}" to cart.` });
         // Hide the notification after 3 seconds
         setTimeout(() => {
-          setNotification({ show: false, message: '' });
+            setNotification({ show: false, message: '' });
         }, 3000);
-      };
+    };
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
     const truncateDescription = (description) => {
         if (!description) return ''; // Kiểm tra nếu không tồn tại mô tả
         return description.length > 50 ? description.substring(0, 50) + '...' : description;
-      };
-      const truncateNameCourse = (name) => {
+    };
+    const truncateNameCourse = (name) => {
         if (!name) return ''; // Kiểm tra nếu không tồn tại mô tả
         return name.length > 50 ? name.substring(0, 50) + '...' : name;
-      };
+    };
 
 
     return (
         <div className={styles.homePageContent}>
-             {notification.show && (
+            {notification.show && (
                 <div className={styles.notification}>
                     {notification.message}
                 </div>
@@ -77,10 +77,10 @@ const BrowseCoursePage = () => {
                         <div className={styles.courseDetails}>
                             <h3>{truncateNameCourse(course.name)}</h3>
                             <p>{truncateDescription(course.description || '')}</p>
-                   
-                            
-                                  <div className={styles.courseActions}>
-                                  <button onClick={() => handleAddToCart(course)}>Add to Cart</button>
+
+
+                            <div className={styles.courseActions}>
+                                <button onClick={() => handleAddToCart(course)}>Add to Cart</button>
 
                                 <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
                                 {/* Thêm nút "Cancel" nếu cần */}

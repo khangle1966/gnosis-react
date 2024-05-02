@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './CourseDetailPage.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLessonsByCourseId, fetchLessonsBychapterId, addLesson } from '../../../../../redux/action/lessonActions';
@@ -6,30 +6,31 @@ import { fetchChaptersByCourseId, addChapter, removeChapter, updateChapterTitle 
 import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
 import { useParams } from 'react-router-dom';
-import { Tooltip } from 'react-tooltip'; // Import Tooltip from react-tooltip
 import { addToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
-
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { updateChapterOrder } from '../../../../../redux/action/chapterActions';
 
 
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
-    console.log(chapterId); // Kiểm tra giá trị này trong console để xác nhận
 
     const dispatch = useDispatch();
     const { courseDetail, loading: loadingCourse, error: errorCourse } = useSelector(state => state.courseDetail);
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
-    const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail);
+    const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail || { chapters: [] });
+    const chapterdnd = useSelector(state => state.chapterDetail.chapters || []);
+
+
     const { rating } = courseDetail;
 
     const { user } = useSelector(state => state.auth);
     const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0 });
     const [showAddLessonForm, setShowAddLessonForm] = useState(null); // Quản lý việc hiển thị form của từng chapter
-    console.log(chapters); // Kiểm tra giá trị này trong console để xác nhận
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
 
-   
-     
+
+
 
     const [selectedChapterId, setSelectedChapterId] = useState("");
 
@@ -40,7 +41,25 @@ export const CourseDetailPage = () => {
     console.log("edit ", editableCourse)
     const [editMode, setEditMode] = useState(false);
 
+    const { totalChapters, totalLessons, totalHours, totalMinutes } = useMemo(() => {
+        const totalChapters = chapterdnd.length;
+        const totalLessons = chapterdnd.reduce((total, chapter) => {
+            // Chỉ tính số bài học nếu chapter.lessons là một mảng
+            return total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0);
+        }, 0);
 
+        const totalDurationSeconds = chapterdnd.reduce((total, chapter) => {
+            return total + (Array.isArray(chapter.lessons) ? chapter.lessons.reduce((chapterTotal, lesson) => {
+                // Chỉ tính duration nếu lesson.duration được định nghĩa
+                return chapterTotal + ((typeof lesson.duration === 'number') ? lesson.duration * 3600 : 0);
+            }, 0) : 0);
+        }, 0);
+
+        const totalHours = Math.floor(totalDurationSeconds / 3600);
+        const totalMinutes = Math.floor((totalDurationSeconds % 3600) / 60);
+
+        return { totalChapters, totalLessons, totalHours, totalMinutes };
+    }, [chapters]);
     useEffect(() => {
         if (courseId) {
             dispatch(fetchCourseDetail(courseId));
@@ -55,8 +74,12 @@ export const CourseDetailPage = () => {
     useEffect(() => {
         setEditableCourse({ ...courseDetail });
     }, [courseDetail]);
+
     useEffect(() => {
-        const sortedChapters = chapters.sort((a, b) => a.chapterNumber - b.chapterNumber);
+        // Kiểm tra chapters trước khi sử dụng
+        if (!chapters || !Array.isArray(chapters)) return;
+
+        const sortedChapters = [...chapters].sort((a, b) => a.chapterNumber - b.chapterNumber);
         const chaptersMap = sortedChapters.reduce((acc, chapter) => {
             acc[chapter._id] = {
                 title: `Chapter ${chapter.chapterNumber}: ${chapter.title}`,
@@ -66,8 +89,7 @@ export const CourseDetailPage = () => {
             return acc;
         }, {});
 
-        // Chỉ thêm lessons vào các chapter nếu có lessons liên quan
-        if (lessons.length > 0) {
+        if (lessons && lessons.length > 0) {
             lessons.forEach(lesson => {
                 if (chaptersMap[lesson.chapterId]) {
                     chaptersMap[lesson.chapterId].lessons.push(lesson);
@@ -78,7 +100,29 @@ export const CourseDetailPage = () => {
         setGroupedChapters(Object.values(chaptersMap));
     }, [lessons, chapters]);
 
-    
+
+    const onDragEnd = async (result) => {
+        const { source, destination } = result;
+
+        if (!destination) {
+            return;
+        }
+
+        if (source.index === destination.index && source.droppableId === destination.droppableId) {
+            return;
+        }
+
+        const newChapters = [...groupedChapters];
+        const [removed] = newChapters.splice(source.index, 1);
+        newChapters.splice(destination.index, 0, removed);
+
+        setGroupedChapters(newChapters);
+        await dispatch(updateChapterOrder(newChapters.map((chap, index) => ({
+            id: chap._id,
+            chapterNumber: index + 1
+        }))));
+    };
+
 
     const handleAddToCart = () => {
         console.log(courseDetail);
@@ -125,6 +169,7 @@ export const CourseDetailPage = () => {
         }
     };
 
+
     const handleAddLesson = (event, chapterId) => {
         event.preventDefault();
         const lessonData = { ...newLesson, chapterId, courseId: courseId };  // Assuming `courseId` is available in your component
@@ -154,7 +199,9 @@ export const CourseDetailPage = () => {
     };
 
 
-
+    if (!groupedChapters || groupedChapters.length === 0) {
+        return <div>Loading chapters...</div>;
+    }
     if (loadingCourse || loadingLessons || loadingChapters) {
         return <div>Đang tải...</div>;
     }
@@ -179,20 +226,8 @@ export const CourseDetailPage = () => {
 
 
 
-    const totalChapters = chapters.length; // Tổng số chương dựa vào số lượng chương nhóm được
-    const totalLessons = chapters.reduce((total, chapter) => total + chapter.lessons.length, 0); // Tổng số bài học
-
     // Tổng thời lượng bằng giây
-    const totalDurationSeconds = chapters.reduce((total, chapter) => {
-        return total + chapter.lessons.reduce((chapterTotal, lesson) => {
-            // Chuyển đổi thời lượng từ giờ sang giây
-            return chapterTotal + lesson.duration * 3600; // Giả sử duration là giờ
-        }, 0);
-    }, 0);
 
-    // Chuyển tổng thời lượng từ giây sang giờ và phút
-    const totalHours = Math.floor(totalDurationSeconds / 3600);
-    const totalMinutes = Math.floor((totalDurationSeconds % 3600) / 60);
 
 
 
@@ -220,8 +255,8 @@ export const CourseDetailPage = () => {
                         dangerouslySetInnerHTML={{ __html: `$${courseDetail.price}` }}
                     />
 
-                    <button className={styles.addToCartButton}onClick={handleAddToCart}>Add to Cart</button>
-                    <button className={styles.buyNowButton}onClick={handleBuyCourse}>Buy Now</button>
+                    <button className={styles.addToCartButton} onClick={handleAddToCart}>Add to Cart</button>
+                    <button className={styles.buyNowButton} onClick={handleBuyCourse}>Buy Now</button>
                     <div className={styles.moneyBackGuarantee}>Đảm bảo hoàn tiền trong 30 ngày</div>
                 </div>
                 <div className={styles.courseIncludes}>
@@ -295,7 +330,7 @@ export const CourseDetailPage = () => {
 
                 <div className={styles.courseContent2}>
                     <h2>Nội dung bài học</h2>
-                   
+
 
 
 
@@ -337,71 +372,86 @@ export const CourseDetailPage = () => {
                     </>
                 )}
                 <div className={styles.courseContent}>
-                    {groupedChapters.map((chapter, index) => (
-                        <div key={chapter._id} className={styles.list}>
-                            <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
 
-
-                                <div key={chapter._id}>
-                                    {selectedChapter && selectedChapter._id === chapter._id ? (
-                                        <input
-                                            type="text"
-                                            value={selectedChapter.title}
-                                            onChange={handleTitleChange}
-                                            onBlur={() => handleSaveTitle(chapter._id, selectedChapter.title)}
-                                        />
-                                    ) : (
-                                        <h4 onClick={() => handleSelectChapter(chapter)}>{chapter.title}</h4>
-                                    )}
-                                </div>
-
-
-                                <div className={styles.duration}>{chapter.lessons.length} Bài</div>
-                            </div>
-                            {editMode && (
-                                <>
-                                    <button onClick={() => setShowAddLessonForm(index)} className={styles.addLessonButton}>
-                                        Thêm Lesson
-                                    </button>
-                                    {showAddLessonForm === index && (
-                                        <form onSubmit={(e) => handleAddLesson(e, chapter._id)}>
-                                            <input
-                                                type="text"
-                                                required
-                                                value={newLesson.title}
-                                                onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
-                                                placeholder="Lesson Title"
-                                            />
-                                            <textarea
-                                                required
-                                                value={newLesson.description}
-                                                onChange={(e) => setNewLesson({ ...newLesson, description: e.target.value })}
-                                                placeholder="Lesson Description"
-                                            />
-                                            <input
-                                                type="number"
-                                                required
-                                                value={newLesson.duration}
-                                                onChange={(e) => setNewLesson({ ...newLesson, duration: e.target.value })}
-                                                placeholder="Duration (in hours)"
-                                            />
-                                            <button type="submit">Lưu Lesson</button>
-                                        </form>
-                                    )}
-                                </>
-                            )}
-                            {openChapters.includes(chapter._id) && (
-                                <ul className={styles.sublist}>
-                                    {chapter.lessons.map(lesson => (
-                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
-                                            <span className={styles.lessonTitle}>{lesson.title}</span>
-                                            <span className={styles.lessonDuration}>{lesson.duration}</span>
-                                        </li>
+                    <DragDropContext onDragEnd={onDragEnd}>
+                        <Droppable droppableId="chapters">
+                            {(provided) => (
+                                <div {...provided.droppableProps} ref={provided.innerRef}>
+                                    {groupedChapters.map((chapter, index) => (
+                                        <Draggable key={chapter._id} draggableId={chapter._id.toString()} index={index}>
+                                            {(provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}
+                                                    className={styles.list}
+                                                >
+                                                    <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
+                                                        <div>
+                                                            {selectedChapter && selectedChapter._id === chapter._id ? (
+                                                                <input
+                                                                    type="text"
+                                                                    value={selectedChapter.title}
+                                                                    onChange={handleTitleChange}
+                                                                    onBlur={() => handleSaveTitle(chapter._id, selectedChapter.title)}
+                                                                />
+                                                            ) : (
+                                                                <h4 onClick={() => handleSelectChapter(chapter)}>{chapter.title}</h4>
+                                                            )}
+                                                        </div>
+                                                        <div className={styles.duration}>{chapter.lessons.length} Bài</div>
+                                                    </div>
+                                                    {editMode && (
+                                                        <>
+                                                            <button onClick={() => setShowAddLessonForm(index)} className={styles.addLessonButton}>
+                                                                Thêm Lesson
+                                                            </button>
+                                                            {showAddLessonForm === index && (
+                                                                <form onSubmit={(e) => handleAddLesson(e, chapter._id)}>
+                                                                    <input
+                                                                        type="text"
+                                                                        required
+                                                                        value={newLesson.title}
+                                                                        onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
+                                                                        placeholder="Lesson Title"
+                                                                    />
+                                                                    <textarea
+                                                                        required
+                                                                        value={newLesson.description}
+                                                                        onChange={(e) => setNewLesson({ ...newLesson, description: e.target.value })}
+                                                                        placeholder="Lesson Description"
+                                                                    />
+                                                                    <input
+                                                                        type="number"
+                                                                        required
+                                                                        value={newLesson.duration}
+                                                                        onChange={(e) => setNewLesson({ ...newLesson, duration: e.target.value })}
+                                                                        placeholder="Duration (in hours)"
+                                                                    />
+                                                                    <button type="submit">Lưu Lesson</button>
+                                                                </form>
+                                                            )}
+                                                        </>
+                                                    )}
+                                                    {openChapters.includes(chapter._id) && (
+                                                        <ul className={styles.sublist}>
+                                                            {chapter.lessons.map(lesson => (
+                                                                <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
+                                                                    <span className={styles.lessonTitle}>{lesson.title}</span>
+                                                                    <span className={styles.lessonDuration}>{lesson.duration}</span>
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    )}
+                                                </div>
+                                            )}
+                                        </Draggable>
                                     ))}
-                                </ul>
+                                    {provided.placeholder}
+                                </div>
                             )}
-                        </div>
-                    ))}
+                        </Droppable>
+                    </DragDropContext>
                 </div>
                 <div className={styles.requirements}>
                     <h3>Yêu cầu</h3>
@@ -428,7 +478,7 @@ export const CourseDetailPage = () => {
 
 
 
-                 
+
                 </div>
 
             </div>

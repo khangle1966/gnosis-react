@@ -49,7 +49,24 @@ export class ChapterService {
     }
     return updatedChapter;
   }
-
+  async updateChapterOrder(chapters: { id: string; chapterNumber: number }[]): Promise<any> {
+    const session = await this.chapterModel.db.startSession();
+    session.startTransaction();
+    try {
+      for (const { id, chapterNumber } of chapters) {
+        const updateResult = await this.chapterModel.findByIdAndUpdate(id, { chapterNumber }, { session });
+        console.log(updateResult); // Logging the result
+      }
+      await session.commitTransaction();
+      return { status: 'success', message: 'Chapters order updated successfully' };
+    } catch (error) {
+      console.error('Error during transaction:', error); // Log detailed error
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
   // Delete a chapter by ID
   async remove(id: string): Promise<Chapter> {
     const deletedChapter = await this.chapterModel.findByIdAndRemove(id).exec();
