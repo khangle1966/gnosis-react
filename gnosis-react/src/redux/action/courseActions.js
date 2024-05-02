@@ -7,6 +7,11 @@ import {
     SUBMIT_COURSE,
     SUBMIT_COURSE_SUCCESS,
     SUBMIT_COURSE_FAILURE,
+    // src/redux/types.js
+
+FETCH_USER_COURSES_REQUEST ,
+FETCH_USER_COURSES_SUCCESS ,
+FETCH_USER_COURSES_FAILURE
 
 } from '../types/courseType';
 
@@ -25,6 +30,21 @@ export const fetchCourses = () => async (dispatch) => {
         });
     }
 };
+export const fetchUserCourses = (courseIds) => async (dispatch) => {
+    dispatch({ type: FETCH_USER_COURSES_REQUEST });
+    try {
+        const { data } = await axios.post('http://localhost:3000/v1/course/userCourses', { courseIds });
+        dispatch({ type: FETCH_USER_COURSES_SUCCESS, payload: data });
+    } catch (error) {
+        dispatch({
+            type: FETCH_USER_COURSES_FAILURE,
+            payload: error.response && error.response.data.message 
+                     ? error.response.data.message 
+                     : error.message
+        });
+    }
+};
+
 export const fetchCourseDetail = (courseId) => async (dispatch) => {
     try {
         dispatch({ type: 'FETCH_COURSE_DETAIL_REQUEST' });

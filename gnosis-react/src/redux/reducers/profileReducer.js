@@ -14,7 +14,7 @@ import {
 } from '../types/profileActionTypes';
 
 const initialState = {
-    profile: null,
+    profile: '',
     loading: false,
     error: null,
     isCheckingDuplicate: false,
@@ -24,6 +24,7 @@ const initialState = {
 
 const profileReducer = (state = initialState, action) => {
     switch (action.type) {
+
         case PROFILE_CREATE_REQUEST:
         case PROFILE_UPDATE_REQUEST:
         case PROFILE_DELETE_REQUEST:

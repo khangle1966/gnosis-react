@@ -30,10 +30,11 @@ export const checkDuplicateProfileFailure = (error) => {
     return { type: 'CHECK_DUPLICATE_PROFILE_FAILURE', payload: error };
 }
 
-export const fetchProfile = () => async (dispatch) => {
+export const fetchProfile = (userId) => async (dispatch) => {
     dispatch({ type: PROFILE_FETCH_REQUEST });
     try {
-        const response = await axios.get('http://localhost:3000/v1/profile');
+        const response = await axios.get(`http://localhost:3000/v1/profile/by-id/${userId}`);
+        console.log(response)
         dispatch({ type: PROFILE_FETCH_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({
@@ -46,6 +47,7 @@ export const updateProfile = (profileData, userId) => async (dispatch) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });
     try {
         const response = await axios.put(`http://localhost:3000/v1/profile/${userId}`, profileData);
+        console.log(response);
         dispatch({ type: PROFILE_UPDATE_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({

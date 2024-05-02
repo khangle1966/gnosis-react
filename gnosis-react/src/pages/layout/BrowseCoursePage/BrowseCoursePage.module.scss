@@ -4,10 +4,31 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    width: 85vw; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
+    width: 80vw; // Đảm bảo rằng nội dung chiếm toàn bộ chiều rộng có sẵn
     background-color: #fdfdf6;
-    animation: fadeIn 0.5s ease-in-out forwards;
-
+    > *:not(.notification) { 
+        animation: fadeIn 1s ease-in-out forwards;
+    }
+    .notification {
+        position: fixed;
+        top: 20px; // Khoảng cách từ đầu trang
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1050; // Đảm bảo thông báo ở trên cùng, có thể tăng nếu cần
+        padding: 10px 20px;
+        background-color: #dff0d8; // Màu xanh nhạt cho thông báo thành công
+        color: #3c763d; // Màu xanh đậm cho văn bản
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        max-width: calc(100% - 40px); // Đảm bảo thông báo không vượt quá màn hình
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        // Hiệu ứng xuất hiện và biến mất
+        animation: fadeInOut 3s forwards;
+    }
+      
     .breadcrumbs {
         margin-bottom: 20px;
         font-size: 0.85rem;
@@ -51,7 +72,7 @@
             border-radius: 15px;
             font-size: 0.85rem;
             cursor: pointer;
-            color: rgb(4, 136, 4);
+            color: rgb(2, 59, 2);
             border-style: solid;
 
 
@@ -67,81 +88,102 @@
         }
     }
 
-    .course {
-        display: flex;
-        flex-wrap: wrap;
+    .courseGrid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
         gap: 20px;
-        margin-bottom: 20px;
-
-
-        .courseGrid {
-
-            display: flex; // Enables Flexbox
-            flex-wrap: wrap; // Allows items to wrap to the next line
-            margin: -10px; // Negative margin to counteract the padding on course cards
-            justify-content: center;
-
-
-            @media (max-width: 768px) {
-                flex-basis: calc(50% - 20px); // 2 cột trên mỗi hàng khi màn hình nhỏ hơn 768px
-            }
-
-            @media (max-width: 576px) {
-                flex-basis: calc(100% - 20px); // 1 cột trên mỗi hàng khi màn hình nhỏ hơn 576px
-            }
-        }
-
+        padding: 2rem 6rem 6rem 6rem;
+        margin: -10px; // Negative margin to counteract the padding on course cards
+        justify-content: center;
+    
         .courseCard {
-            flex: 0 1 calc(28% - 50px); // Each card will take up 1/3 of the container width minus the padding
-            margin: 10px; // Margin for spacing between cards
-            display: flex; // Enables Flexbox for the content of the courseCard
-            flex-direction: column; // Stack the children of courseCard vertically
-            align-items: center; // Center-aligns the items
-            border-radius: 1rem;
-            background-color: #f9f9f9;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            animation: zoomIn 0.5s ease-in-out forwards;
-
-            img {
-                width: 100%; // Thu nhỏ hình ảnh để vừa với khung card
-                height: auto;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-                object-fit: cover;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between; // Adds space between the child elements
+            height: 100%; // Set a height for the card to make sure there is space to push the button down
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            padding: 1rem;
+            &:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
             }
-
-            .courseInfo {
-                padding: 10px;
-
+    
+            .courseImageWrapper {
+                position: relative;
+                width: 100%;
+                height: 200px; // Adjust height as needed
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                   
+   
+                }
+            }
+    
+            .courseDetails {
+                padding-top: 1rem;
                 h3 {
-                    font-size: 0.9rem; // Thu nhỏ kích thước tiêu đề
+                    font-size: 0.9rem;
                     margin: 0 0 5px 0;
                 }
-
                 p {
-                    font-size: 0.8rem; // Thu nhỏ kích thước văn bản
+                    font-size: 0.8rem;
                     color: grey;
-                    margin: 0 0 5px 0;
+                    margin: 0;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    padding-bottom: 1rem;
                 }
-
+            }
+    
+            .courseActions {
+                margin-top: auto;
+                width: 100%; // Ensure the width fills the parent
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+    
                 button {
-                    background-color: #00A86B;
-                    color: white;
+                    background-color: #124b21;
+                    color: #ffffff;
                     border: none;
-                    padding: 0.5rem 12px; // Thu nhỏ kích thước của nút
-                    margin-top: auto; // Đẩy nút lên dưới cùng của card
-                    border-radius: 0 0 8px 8px;
-                    margin-left: 1rem;
+                    padding: 10px 20px;
+                    font-size: 0.875rem;
+                    font-weight: bold;
+                    border-radius: 20px;
                     cursor: pointer;
-                    transition: background-color 0.3s ease;
-
+                    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+                    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
                     &:hover {
-                        background-color: darken(#00A86B, 5%);
+                        background-color: #e0e0e0;
+                        box-shadow: 0 4px 11px rgba(0, 0, 0, 0.3);
                     }
                 }
             }
         }
     }
+
+    @media (max-width: 768px) {
+        .courseGrid {
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        }
+    }
+
+    @media (max-width: 576px) {
+        .courseGrid {
+            grid-template-columns: 1fr;
+        }
+    }
+
 
 
 
@@ -189,4 +231,8 @@
             transform: scale(1);
         }
     }
+    @keyframes fadeInOut {
+        0%, 100% { opacity: 0; visibility: hidden; }
+        10%, 90% { opacity: 1; visibility: visible; }
+      }
 }

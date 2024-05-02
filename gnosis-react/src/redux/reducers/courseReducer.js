@@ -1,5 +1,14 @@
 // Trong file reducers/courseReducer.js
-import { UPDATE_COURSE, RESET_COURSE, SUBMIT_COURSE, SUBMIT_COURSE_SUCCESS, SUBMIT_COURSE_FAILURE } from '../types/courseType';
+import { 
+    UPDATE_COURSE,
+     RESET_COURSE, 
+     SUBMIT_COURSE,
+      SUBMIT_COURSE_SUCCESS,
+       SUBMIT_COURSE_FAILURE ,
+       FETCH_USER_COURSES_REQUEST ,
+       FETCH_USER_COURSES_SUCCESS ,
+       FETCH_USER_COURSES_FAILURE
+} from '../types/courseType';
 
 const initialState = {
     courses: [],
@@ -54,6 +63,23 @@ export const courseReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
+            case FETCH_USER_COURSES_REQUEST:
+                return {
+                    ...state,
+                    loading: true
+                };
+            case FETCH_USER_COURSES_SUCCESS:
+                return {
+                    ...state,
+                    loading: false,
+                    userCourses: action.payload
+                };
+            case FETCH_USER_COURSES_FAILURE:
+                return {
+                    ...state,
+                    loading: false,
+                    error: action.payload
+                };
         default:
             return state;
     }

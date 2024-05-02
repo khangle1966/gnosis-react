@@ -58,7 +58,7 @@ const Sidebar = () => {
             </div>
 
             <div className={styles.menu}>
-                <Link to="/welcome  " className={styles.menuItem}><FontAwesomeIcon icon={faHome} /> HOME</Link>
+                <Link to="/home  " className={styles.menuItem}><FontAwesomeIcon icon={faHome} /> HOME</Link>
                 <Link to="/browsecourse" className={styles.menuItem}><FontAwesomeIcon icon={faBook} /> BROWSE COURSES</Link>
                 <Link to="/profile" className={styles.menuItem}><FontAwesomeIcon icon={faUser} /> PROFILE</Link>
                 <Link to="/cart" className={styles.menuItem}><FontAwesomeIcon icon={faShoppingCart} /> CART</Link>

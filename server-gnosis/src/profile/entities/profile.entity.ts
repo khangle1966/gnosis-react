@@ -7,7 +7,7 @@ export type ProfileDocument = HydratedDocument<Profile>;
 
 @Schema({ timestamps: true })
 export class Profile {
-    @Prop({ required: true, unique: true })
+    @Prop({ required: true, unique: true,index: true  })
     id: string;
 
     @Prop({ required: true, unique: true })

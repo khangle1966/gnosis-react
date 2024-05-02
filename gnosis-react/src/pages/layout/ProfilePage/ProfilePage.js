@@ -3,7 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { logout, fetchProfile, updateProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
+import { fetchProfile, updateProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
+import { logout } from '../../../redux/action/authActions';
+import { fetchUserCourses } from '../../../redux/action/courseActions';
 
 import styles from './ProfilePage.module.scss';
 
@@ -11,8 +13,12 @@ const ProfilePage = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { user } = useSelector(state => state.auth);
-    const { profile, loading, error } = useSelector(state => state.profile);
-    const [notification, setNotification] = useState({ message: '', type: '' });
+    const { profile } = useSelector(state => state.profile);
+    const [notification, setNotification] = useState({ show: false, message: '' });
+    const { userCourses, loading, error } = useSelector(state => state.course);
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+
+
     const [formData, setFormData] = useState({
         userName: '',
         gender: 'male',
@@ -32,26 +38,45 @@ const ProfilePage = () => {
     }, [profile]);
 
     useEffect(() => {
-        dispatch(fetchProfile());
-    }, [dispatch]);
+        dispatch(fetchProfile(user.uid));
+    }, [dispatch, user.uid]);
 
+    useEffect(() => {
+        if (!isLoggedIn) {
+            navigate('/login');
+        } else if (profile && profile.courses) {
+            dispatch(fetchUserCourses(profile.courses));
+        }
+    }, [isLoggedIn, profile, dispatch, navigate]);
     const handleChange = (event) => {
         setFormData({
             ...formData,
             [event.target.id]: event.target.value
         });
     };
-
+    const truncateDescription = (description) => {
+        if (!description) return ''; // Kiểm tra nếu không tồn tại mô tả
+        return description.length > 50 ? description.substring(0, 50) + '...' : description;
+    };
+    const truncateNameCourse = (name) => {
+        if (!name) return ''; // Kiểm tra nếu không tồn tại mô tả
+        return name.length > 50 ? name.substring(0, 50) + '...' : name;
+    };
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
             await dispatch(updateProfile(formData, user.uid));
-            setNotification({ message: 'Profile updated successfully!', type: 'success' });
+            setNotification({ show: true, message: `Profile "${user.uid}" updated successfully!` });
         } catch (err) {
-            setNotification({ message: 'Failed to update profile. Please try again.', type: 'error' });
+            setNotification({ show: false, message: 'Failed to update profile. Please try again.' });
         }
+        setTimeout(() => {
+            setNotification({ show: false, message: '' });
+        }, 3000);
     };
-
+    const handleDescriptionClick = (courseId) => {
+        navigate(`/course/${courseId}`);
+    };
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
@@ -62,11 +87,13 @@ const ProfilePage = () => {
 
     return (
         <div className={styles.profilePage}>
-            {notification.message && (
-                <div className={notification.type === 'success' ? styles.successMessage : styles.errorMessage}>
+
+            {notification.show && (
+                <div className={styles.notification}>
                     {notification.message}
                 </div>
             )}
+            <div className={styles.breadcrumbs}>Home &gt;&gt; Profile</div>
             <header className={styles.profileHeader}>
                 <h1>Profile</h1>
                 <button onClick={handleLogout} className={styles.logoutButton}>
@@ -77,7 +104,7 @@ const ProfilePage = () => {
             <main className={styles.profileContent}>
                 <section className={styles.leftColumn}>
                     <img src={user?.picture} alt={`Avatar of ${user?.name}`} className={styles.avatar} />
-                    <h2 className={styles.userName}>{formData.userName}</h2>
+                    <h2 className={styles.userName}>{profile.userName}</h2>
                     <p className={styles.userEmail}>{user?.email}</p>
                 </section>
                 <section className={styles.middleColumn}>
@@ -99,11 +126,25 @@ const ProfilePage = () => {
                         </div>
                         <div className={styles.inputGroupSingle}>
                             <label htmlFor="email">Email Address</label>
-                            <input type="email" id="email" placeholder="Email..." value="" disabled />
+                            <input type="email" id="email" placeholder="Email..." value={user?.email} disabled />
                         </div>
                         <div className={styles.inputGroupSingle}>
                             <label htmlFor="country">Country</label>
-                            <input type="text" id="country" value={formData.country} onChange={handleChange} placeholder="Country" />
+                            <select id="country" value={formData.country} onChange={handleChange}>
+                                <option value="">Select a country...</option>
+                                <option value="Vietnam">Việt Nam</option>
+                                <option value="United States">United States</option>
+                                <option value="Canada">Canada</option>
+                                <option value="United Kingdom">United Kingdom</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Germany">Germany</option>
+                                <option value="France">France</option>
+                                <option value="Japan">Japan</option>
+                                <option value="South Korea">South Korea</option>
+                                <option value="China">China</option>
+                                <option value="Singapore">Singapore</option>
+                                <option value="New Zealand">New Zealand</option>
+                            </select>
                         </div>
                         <div className={styles.inputGroupSingle}>
                             <label htmlFor="bio">Bio</label>
@@ -114,33 +155,26 @@ const ProfilePage = () => {
                 </section>
                 <section className={styles.rightColumn}>
                     <h2 className={styles.coursesHeader}>Courses</h2>
-                    <div className={styles.courseCard}>
-                        <div className={styles.courseImageWrapper}>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPvQLTxQkoXnT2W9bAC6FhhVbwrIjnchyPP-uCNVphXw&s" alt="Responsive Web Design" />
-                        </div>
-                        <div className={styles.courseContent}>
-                            <h3 className={styles.courseTitle}>Responsive Web Design</h3>
-                            <p className={styles.courseSubtitle}>Web Developer</p>
-                            <div className={styles.courseButtons}>
-                                <button>Start</button>
-                                <button>Cancel</button>
+                    {loading && <div>Loading courses...</div>}
+                    {error && <div>Error fetching courses: {error.message}</div>}
+                    {userCourses && userCourses.map(course => (
+                        <div className={styles.courseCard}>
+
+
+                            <div className={styles.courseImageWrapper}>
+                                <img src={course.img} alt={course.name} />
+                            </div>
+                            <div className={styles.courseContent}>
+                                <h3 className={styles.courseTitle}>{truncateNameCourse(course.name)}</h3>
+                                <p className={styles.courseSubtitle}>{truncateDescription(course.description)}</p>
+                                <div className={styles.courseButtons}>
+                                    <button onClick={() => handleDescriptionClick(course._id)}>Start</button>
+                                    <button>Cancel</button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div className={styles.courseCard}>
-                        <div className={styles.courseImageWrapper}>
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSPvQLTxQkoXnT2W9bAC6FhhVbwrIjnchyPP-uCNVphXw&s" alt="Responsive Web Design" />
-                        </div>
-                        <div className={styles.courseContent}>
-                            <h3 className={styles.courseTitle}>Responsive Web Design</h3>
-                            <p className={styles.courseSubtitle}>Web Developer</p>
-                            <div className={styles.courseButtons}>
-                                <button>Start</button>
-                                <button>Cancel</button>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Thêm các courseCard khác tương tự */}
+                    ))}
+
                 </section>
 
             </main>

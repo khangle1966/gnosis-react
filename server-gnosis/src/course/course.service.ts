@@ -23,7 +23,9 @@ export class CourseService {
       throw new HttpException(error.message, error.status);
     }
   }
-
+  async findCoursesByIds(courseIds: string[]): Promise<Course[]> {
+    return await this.courseModel.find({ '_id': { $in: courseIds } });
+}
   async findAll(): Promise<Course[]> {
     try {
       return await this.courseModel.find({}).exec();

@@ -9,6 +9,7 @@ import {
   HttpException,
   HttpStatus,
   Query,
+  NotFoundException,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
@@ -23,6 +24,7 @@ export class ProfileController {
     private userService: UserService,
     private userGoogleService: UsergoogleService,
   ) { }
+
   @Get(':email')
   async checkEmailExists(@Param('email') email: string): Promise<{ exists: boolean }> {
     const exists = await this.profileService.findByEmail(email);
@@ -111,16 +113,18 @@ export class ProfileController {
     }
   }
 
-  @Get(':id')
+  @Get('by-id/:id')
   async findOne(@Param('id') id: string) {
     try {
       const profile = await this.profileService.findOne(id);
       if (!profile) {
-        throw new HttpException('Profile not found', HttpStatus.BAD_REQUEST);
+        // Chỉ cần truyền thông điệp lỗi vào NotFoundException
+        throw new NotFoundException(`Profile not found with ID: ${id}`);
       }
       return profile;
     } catch (error) {
-      throw error;
+      // Trong trường hợp bắt được lỗi khác, ném ra NotFoundException với thông điệp chung
+      throw new NotFoundException('Profile not found');
     }
   }
 
