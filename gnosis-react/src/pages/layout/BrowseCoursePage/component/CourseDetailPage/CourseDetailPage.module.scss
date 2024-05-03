@@ -395,7 +395,9 @@
 
 
 
-        .addLessonButton {
+        .addLessonButton,
+        .removechapterButton,
+        .addchapterButton {
 
             padding: 10px 20px;
             background: linear-gradient(135deg, #4CAF50, #2E7D32);

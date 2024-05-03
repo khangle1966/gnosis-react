@@ -18,7 +18,6 @@ export const CourseDetailPage = () => {
     const { courseDetail, loading: loadingCourse, error: errorCourse } = useSelector(state => state.courseDetail);
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
     const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail || { chapters: [] });
-    const chapterdnd = useSelector(state => state.chapterDetail.chapters || []);
 
 
     const { rating } = courseDetail;
@@ -26,10 +25,16 @@ export const CourseDetailPage = () => {
     const { user } = useSelector(state => state.auth);
     const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0 });
     const [showAddLessonForm, setShowAddLessonForm] = useState(null); // Quản lý việc hiển thị form của từng chapter
+
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
 
 
+    useEffect(() => {
+        const totalChapters = groupedChapters.length;
+        const totalLessons = groupedChapters.reduce((total, chapter) => total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0), 0);
+        console.log("Total chapters:", totalChapters, "Total lessons:", totalLessons);
+    }, [groupedChapters]);
 
 
     const [selectedChapterId, setSelectedChapterId] = useState("");
@@ -38,19 +43,15 @@ export const CourseDetailPage = () => {
     const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
     const [selectedChapter, setSelectedChapter] = useState(null);
 
-    console.log("edit ", editableCourse)
     const [editMode, setEditMode] = useState(false);
-
     const { totalChapters, totalLessons, totalHours, totalMinutes } = useMemo(() => {
-        const totalChapters = chapterdnd.length;
-        const totalLessons = chapterdnd.reduce((total, chapter) => {
-            // Chỉ tính số bài học nếu chapter.lessons là một mảng
+        const totalChapters = groupedChapters.length;
+        const totalLessons = groupedChapters.reduce((total, chapter) => {
             return total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0);
         }, 0);
 
-        const totalDurationSeconds = chapterdnd.reduce((total, chapter) => {
+        const totalDurationSeconds = groupedChapters.reduce((total, chapter) => {
             return total + (Array.isArray(chapter.lessons) ? chapter.lessons.reduce((chapterTotal, lesson) => {
-                // Chỉ tính duration nếu lesson.duration được định nghĩa
                 return chapterTotal + ((typeof lesson.duration === 'number') ? lesson.duration * 3600 : 0);
             }, 0) : 0);
         }, 0);
@@ -59,7 +60,9 @@ export const CourseDetailPage = () => {
         const totalMinutes = Math.floor((totalDurationSeconds % 3600) / 60);
 
         return { totalChapters, totalLessons, totalHours, totalMinutes };
-    }, [chapters]);
+    }, [groupedChapters]);
+
+
     useEffect(() => {
         if (courseId) {
             dispatch(fetchCourseDetail(courseId));
@@ -82,7 +85,7 @@ export const CourseDetailPage = () => {
         const sortedChapters = [...chapters].sort((a, b) => a.chapterNumber - b.chapterNumber);
         const chaptersMap = sortedChapters.reduce((acc, chapter) => {
             acc[chapter._id] = {
-                title: `Chapter ${chapter.chapterNumber}: ${chapter.title}`,
+                title: `${chapter.title}`,
                 lessons: [], // Khởi tạo mảng rỗng cho lessons
                 _id: chapter._id
             };
@@ -101,18 +104,19 @@ export const CourseDetailPage = () => {
     }, [lessons, chapters]);
 
 
+    console.log('Grouped Chapters:', groupedChapters);
+
+
     const onDragEnd = async (result) => {
+        if (!editMode) {
+            return; // Không cho phép drag and drop nếu không ở chế độ chỉnh sửa
+        }
         const { source, destination } = result;
-
-        if (!destination) {
+        if (!destination || (source.index === destination.index && source.droppableId === destination.droppableId)) {
             return;
         }
 
-        if (source.index === destination.index && source.droppableId === destination.droppableId) {
-            return;
-        }
-
-        const newChapters = [...groupedChapters];
+        const newChapters = Array.from(groupedChapters);
         const [removed] = newChapters.splice(source.index, 1);
         newChapters.splice(destination.index, 0, removed);
 
@@ -124,13 +128,14 @@ export const CourseDetailPage = () => {
     };
 
 
+
+
     const handleAddToCart = () => {
         console.log(courseDetail);
         dispatch(addToCart(courseDetail));
     };
     const handleBuyCourse = (course) => {
         console.log("Purchasing course:", course.name);
-        // Thêm logic thanh toán ở đây hoặc chuyển hướng người dùng tới trang thanh toán
     }
     const handleSelectChapter = (chapter) => {
         if (editMode) {
@@ -147,26 +152,29 @@ export const CourseDetailPage = () => {
         setSelectedChapter(null);
 
     };
-    const handleAddChapter = () => {
-        const newChapterNumber = chapters.length + 1; // Tạo số thứ tự cho chương mới
+    const handleAddChapter = (currentChapterId) => {
+        const index = groupedChapters.findIndex(chapter => chapter._id === currentChapterId);
+        const newChapterNumber = groupedChapters.length + 1; // Cập nhật số thứ tự của chapter mới
         const newChapter = {
             title: `Chapter ${newChapterNumber}`,
             chapterNumber: newChapterNumber,
-            courseId: courseId, // Sử dụng courseId đã có từ useParams
+            courseId: courseId,
             lessons: []
         };
+
+        // Tạo một bản sao của mảng groupedChapters và chèn chapter mới vào vị trí ngay sau chapter hiện tại
+        const newChapters = [
+            ...groupedChapters.slice(0, index + 1),
+            newChapter,
+            ...groupedChapters.slice(index + 1)
+        ];
+
+        setGroupedChapters(newChapters); // Cập nhật state
         dispatch(addChapter(newChapter)); // Gửi đến Redux store
     };
-    const handleRemoveChapter = () => {
-        const chapterToRemove = selectedChapterId;
-        if (!chapterToRemove) {
-            alert("Vui lòng chọn chương để xoá.");
-            return;
-        }
+    const handleRemoveChapter = (chapterId) => {
+        dispatch(removeChapter(chapterId)); // Gửi đến Redux store để xóa
 
-        if (window.confirm('Bạn có chắc chắn muốn xoá chương này không?')) {
-            dispatch(removeChapter(chapterToRemove)); // Gửi đến Redux store để xóa
-        }
     };
 
 
@@ -356,21 +364,7 @@ export const CourseDetailPage = () => {
                     <button onClick={handleToggleAllChapters}>Mở rộng/tắt tất cả các chương</button>
 
                 </div>
-                {editMode && (
-                    <>
-                        <button className={styles.addChapterButton} onClick={handleAddChapter}>Thêm chương mới</button>
 
-                        <button className={styles.removeChapterButton} onClick={() => handleRemoveChapter(chapterId)}>Xoá chương hiện tại</button>
-                        <div className={styles.customselect}>
-                            <select value={selectedChapterId} onChange={(e) => setSelectedChapterId(e.target.value)}>
-                                <option value="">Chọn chương để xoá</option>
-                                {chapters.map(chapter => (
-                                    <option key={chapter._id} value={chapter._id}>{chapter.title}</option>
-                                ))}
-                            </select>
-                        </div>
-                    </>
-                )}
                 <div className={styles.courseContent}>
 
                     <DragDropContext onDragEnd={onDragEnd}>
@@ -378,14 +372,81 @@ export const CourseDetailPage = () => {
                             {(provided) => (
                                 <div {...provided.droppableProps} ref={provided.innerRef}>
                                     {groupedChapters.map((chapter, index) => (
-                                        <Draggable key={chapter._id} draggableId={chapter._id.toString()} index={index}>
-                                            {(provided) => (
-                                                <div
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                    {...provided.dragHandleProps}
-                                                    className={styles.list}
-                                                >
+                                        <div key={chapter._id} className={styles.list}>
+                                            {editMode ? (
+                                                <Draggable draggableId={chapter._id} index={index}>
+                                                    {(provided) => (
+                                                        <div
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                            {...provided.dragHandleProps}
+                                                        >
+                                                            <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
+                                                                <div>
+                                                                    {selectedChapter && selectedChapter._id === chapter._id ? (
+                                                                        <input
+                                                                            type="text"
+                                                                            value={selectedChapter.title}
+                                                                            onChange={handleTitleChange}
+                                                                            onBlur={() => handleSaveTitle(chapter._id, selectedChapter.title)}
+                                                                        />
+                                                                    ) : (
+                                                                        <h4 onClick={() => handleSelectChapter(chapter)}>{chapter.title}</h4>
+                                                                    )}
+                                                                </div>
+                                                                <div className={styles.duration}>{chapter.lessons.length} Bài</div>
+                                                            </div>
+                                                            {editMode && (
+                                                                <>
+                                                                    <button onClick={() => setShowAddLessonForm(index)} className={styles.addLessonButton}>
+                                                                        Thêm Lesson
+                                                                    </button>
+                                                                    <div className={styles.chapterControls}>
+                                                                        <button onClick={() => handleAddChapter(chapter._id)} className={styles.addChapterButton}>+</button>
+                                                                        <button onClick={() => handleRemoveChapter(chapter._id)} className={styles.removeChapterButton}>-</button>
+                                                                    </div>
+                                                                    {showAddLessonForm === index && (
+                                                                        <form onSubmit={(e) => handleAddLesson(e, chapter._id)}>
+                                                                            <input
+                                                                                type="text"
+                                                                                required
+                                                                                value={newLesson.title}
+                                                                                onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
+                                                                                placeholder="Lesson Title"
+                                                                            />
+                                                                            <textarea
+                                                                                required
+                                                                                value={newLesson.description}
+                                                                                onChange={(e) => setNewLesson({ ...newLesson, description: e.target.value })}
+                                                                                placeholder="Lesson Description"
+                                                                            />
+                                                                            <input
+                                                                                type="number"
+                                                                                required
+                                                                                value={newLesson.duration}
+                                                                                onChange={(e) => setNewLesson({ ...newLesson, duration: e.target.value })}
+                                                                                placeholder="Duration (in hours)"
+                                                                            />
+                                                                            <button type="submit">Lưu Lesson</button>
+                                                                        </form>
+                                                                    )}
+                                                                </>
+                                                            )}
+                                                            {openChapters.includes(chapter._id) && (
+                                                                <ul className={styles.sublist}>
+                                                                    {chapter.lessons.map(lesson => (
+                                                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
+                                                                            <span className={styles.lessonTitle}>{lesson.title}</span>
+                                                                            <span className={styles.lessonDuration}>{lesson.duration}</span>
+                                                                        </li>
+                                                                    ))}
+                                                                </ul>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                            ) : (
+                                                <div>
                                                     <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
                                                         <div>
                                                             {selectedChapter && selectedChapter._id === chapter._id ? (
@@ -445,7 +506,7 @@ export const CourseDetailPage = () => {
                                                     )}
                                                 </div>
                                             )}
-                                        </Draggable>
+                                        </div>
                                     ))}
                                     {provided.placeholder}
                                 </div>
