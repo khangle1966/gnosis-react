@@ -7,7 +7,10 @@ import {
     FETCH_LESSONS_FAILURE,
     ADD_LESSON_REQUEST,
     ADD_LESSON_SUCCESS,
-    ADD_LESSON_FAILURE
+    ADD_LESSON_FAILURE,
+    DELETE_LESSON_REQUEST,
+    DELETE_LESSON_SUCCESS,
+    DELETE_LESSON_FAILURE
 } from '../types/lessonTypes';
 
 export const fetchLessonsByCourseId = (courseId) => async (dispatch) => {
@@ -45,6 +48,21 @@ export const addLesson = (lessonData) => async (dispatch) => {
         dispatch({
             type: ADD_LESSON_FAILURE,
             payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+    }
+};
+export const deleteLesson = (lessonId) => async (dispatch) => {
+    dispatch({ type: DELETE_LESSON_REQUEST });
+    try {
+        await axios.delete(`http://localhost:3000/v1/lesson/${lessonId}`);
+        dispatch({
+            type: DELETE_LESSON_SUCCESS,
+            payload: lessonId
+        });
+    } catch (error) {
+        dispatch({
+            type: DELETE_LESSON_FAILURE,
+            payload: error.response ? error.response.data.message : "Unknown error"
         });
     }
 };

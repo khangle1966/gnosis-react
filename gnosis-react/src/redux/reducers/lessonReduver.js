@@ -7,6 +7,9 @@ import {
     ADD_LESSON_REQUEST,
     ADD_LESSON_SUCCESS,
     ADD_LESSON_FAILURE,
+    DELETE_LESSON_REQUEST,
+    DELETE_LESSON_SUCCESS,
+    DELETE_LESSON_FAILURE
 
 } from '../types/lessonTypes';
 
@@ -30,6 +33,17 @@ const lessonReducer = (state = initialState, action) => {
             return { ...state, loading: false, lessons: [...state.lessons, action.payload], error: '' };
         case ADD_LESSON_FAILURE:
             return { ...state, loading: false, error: action.payload };
+        case DELETE_LESSON_REQUEST:
+            return { ...state, loading: true };
+        case DELETE_LESSON_SUCCESS:
+            return {
+                ...state,
+                lessons: state.lessons.filter(lesson => lesson._id !== action.payload),
+                loading: false
+            };
+        case DELETE_LESSON_FAILURE:
+            return { ...state, loading: false, error: action.payload };
+
         default:
             return state;
     }

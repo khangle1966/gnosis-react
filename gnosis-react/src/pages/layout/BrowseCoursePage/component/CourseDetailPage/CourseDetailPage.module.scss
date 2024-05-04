@@ -226,59 +226,24 @@
     }
 
 
-    .addChapterButton,
-    .removeChapterButton {
-        padding: 10px 20px;
-        font-size: 16px;
-        color: white;
-        background-color: #158d35;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        display: block; // Thay vì inline-block, sử dụng block để chúng chiếm trọn một dòng
-        width: 35%; // Đặt chiều rộng tối đa
-        margin-bottom: 10px; // Thêm khoảng cách dưới nút 'Thêm Chương Mới'
+    .chapterControls {
+        display: flex;
+        gap: 10px;
 
-        transition: all 0.3s ease, box-shadow 0.3s ease;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        button {
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            width: 35px;
 
-        &:hover {
-            transform: scale(1.05);
-            box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.2);
-        }
+            height: 35px;
 
-        &:active {
-            transform: scale(0.95);
-            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        }
-
-
-        &:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.4), 0 0 0 4px rgba(22, 160, 133, 0.7);
-        }
-
-
-        &:last-child {
-            margin-bottom: 0; // Loại bỏ margin-bottom cho nút cuối cùng để không ảnh hưởng đến khoảng cách
-        }
-    }
-
-    .addChapterButton {
-        background-color: #158d35; // Green for add button
-
-
-        &:hover {
-            background-color: #0f6b29;
-        }
-    }
-
-    .removeChapterButton {
-        background-color: #d61a1a; // Red for remove button
-
-        &:hover {
-            background-color: #ab1616;
+            &:hover {
+                background-color: darken(#007BFF, 10%);
+            }
         }
     }
 
@@ -395,9 +360,28 @@
 
 
 
-        .addLessonButton,
-        .removechapterButton,
-        .addchapterButton {
+
+
+
+        .chapterControls {
+            display: flex;
+            gap: 10px;
+
+            button {
+                padding: 5px 10px;
+                background-color: #007BFF;
+                color: white;
+                border-radius: 5px;
+                border: none;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: darken(#007BFF, 10%);
+                }
+            }
+        }
+
+        .addLessonButton {
 
             padding: 10px 20px;
             background: linear-gradient(135deg, #4CAF50, #2E7D32);
@@ -456,7 +440,10 @@
             padding: 0;
             list-style: none;
 
+
             .item {
+                flex-grow: 1;
+
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
@@ -483,6 +470,13 @@
                 .duration {
                     font-size: 0.9rem;
                     color: #999;
+                    margin-right: 10px;
+                }
+
+                .right {
+                    display: flex;
+                    align-items: center;
+
                 }
             }
 
@@ -545,6 +539,35 @@
                     &:not(:last-child) {
                         border-bottom: 1px solid #d96161;
                     }
+                }
+
+                .left {
+                    display: flex;
+                    align-items: center;
+
+                    .lessonDuration {
+                        margin: 0 1rem;
+                    }
+
+                }
+
+                .deleteLesson {
+
+                    padding: 5px 10px;
+                    background-color: #d60a0a;
+                    color: white;
+                    border-radius: 5px;
+                    border: none;
+                    cursor: pointer;
+                    width: 35px;
+
+                    height: 35px;
+
+                    &:hover {
+                        background-color: darken(#8e0808, 10%);
+                    }
+
+
                 }
             }
         }
@@ -665,6 +688,7 @@
         }
     }
 }
+
 
 // Continue from previous SCSS
 

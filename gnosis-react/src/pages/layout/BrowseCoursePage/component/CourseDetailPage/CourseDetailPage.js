@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './CourseDetailPage.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLessonsByCourseId, fetchLessonsBychapterId, addLesson } from '../../../../../redux/action/lessonActions';
+import { fetchLessonsByCourseId, fetchLessonsBychapterId, addLesson, deleteLesson } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId, addChapter, removeChapter, updateChapterTitle } from '../../../../../redux/action/chapterActions';
 import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
@@ -9,6 +9,8 @@ import { useParams } from 'react-router-dom';
 import { addToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { updateChapterOrder } from '../../../../../redux/action/chapterActions';
+import { ObjectId } from 'bson';
+import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn đã import LessonModal đúng
 
 
 export const CourseDetailPage = () => {
@@ -25,6 +27,7 @@ export const CourseDetailPage = () => {
     const { user } = useSelector(state => state.auth);
     const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0 });
     const [showAddLessonForm, setShowAddLessonForm] = useState(null); // Quản lý việc hiển thị form của từng chapter
+    const [showModal, setShowModal] = useState(false);
 
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
@@ -37,7 +40,7 @@ export const CourseDetailPage = () => {
     }, [groupedChapters]);
 
 
-    const [selectedChapterId, setSelectedChapterId] = useState("");
+    const [selectedChapterId, setSelectedChapterId] = useState(null);
 
 
     const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
@@ -156,6 +159,7 @@ export const CourseDetailPage = () => {
         const index = groupedChapters.findIndex(chapter => chapter._id === currentChapterId);
         const newChapterNumber = groupedChapters.length + 1; // Cập nhật số thứ tự của chapter mới
         const newChapter = {
+            _id: new ObjectId().toString(), // Tạo ObjectId mới
             title: `Chapter ${newChapterNumber}`,
             chapterNumber: newChapterNumber,
             courseId: courseId,
@@ -178,12 +182,17 @@ export const CourseDetailPage = () => {
     };
 
 
-    const handleAddLesson = (event, chapterId) => {
+    const handleAddLesson = (event) => {
         event.preventDefault();
-        const lessonData = { ...newLesson, chapterId, courseId: courseId };  // Assuming `courseId` is available in your component
-        dispatch(addLesson(lessonData));
-        setNewLesson({ title: '', description: '', duration: 0 }); // Reset form fields after dispatch
-        setShowAddLessonForm(null); // Hide the form after submission
+        const lessonData = { ...newLesson, chapterId: selectedChapterId };
+        dispatch(addLesson(lessonData));  // Gửi action đến Redux store
+
+        setShowModal(false); // Đóng modal sau khi submit
+        setNewLesson({ title: '', description: '', duration: 0 }); // Reset form
+    };
+
+    const handleDeleteLesson = (lessonId) => {
+        dispatch(deleteLesson(lessonId));
     };
     const handleSaveChanges = () => {
         dispatch(updateCourseDetails(editableCourse));
@@ -367,7 +376,7 @@ export const CourseDetailPage = () => {
 
                 <div className={styles.courseContent}>
 
-                    <DragDropContext onDragEnd={onDragEnd}>
+                    <DragDropContext onDragEnd={onDragEnd} >
                         <Droppable droppableId="chapters">
                             {(provided) => (
                                 <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -380,6 +389,8 @@ export const CourseDetailPage = () => {
                                                             ref={provided.innerRef}
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
+                                                            className={styles.chapterRow} // Use a flex container for the row
+
                                                         >
                                                             <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
                                                                 <div>
@@ -394,52 +405,48 @@ export const CourseDetailPage = () => {
                                                                         <h4 onClick={() => handleSelectChapter(chapter)}>{chapter.title}</h4>
                                                                     )}
                                                                 </div>
-                                                                <div className={styles.duration}>{chapter.lessons.length} Bài</div>
-                                                            </div>
-                                                            {editMode && (
-                                                                <>
-                                                                    <button onClick={() => setShowAddLessonForm(index)} className={styles.addLessonButton}>
-                                                                        Thêm Lesson
-                                                                    </button>
+                                                                <div className={styles.right}>
+                                                                    <div className={styles.duration}>{chapter.lessons.length} Bài</div>
                                                                     <div className={styles.chapterControls}>
                                                                         <button onClick={() => handleAddChapter(chapter._id)} className={styles.addChapterButton}>+</button>
                                                                         <button onClick={() => handleRemoveChapter(chapter._id)} className={styles.removeChapterButton}>-</button>
                                                                     </div>
-                                                                    {showAddLessonForm === index && (
-                                                                        <form onSubmit={(e) => handleAddLesson(e, chapter._id)}>
-                                                                            <input
-                                                                                type="text"
-                                                                                required
-                                                                                value={newLesson.title}
-                                                                                onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
-                                                                                placeholder="Lesson Title"
-                                                                            />
-                                                                            <textarea
-                                                                                required
-                                                                                value={newLesson.description}
-                                                                                onChange={(e) => setNewLesson({ ...newLesson, description: e.target.value })}
-                                                                                placeholder="Lesson Description"
-                                                                            />
-                                                                            <input
-                                                                                type="number"
-                                                                                required
-                                                                                value={newLesson.duration}
-                                                                                onChange={(e) => setNewLesson({ ...newLesson, duration: e.target.value })}
-                                                                                placeholder="Duration (in hours)"
-                                                                            />
-                                                                            <button type="submit">Lưu Lesson</button>
-                                                                        </form>
-                                                                    )}
+                                                                </div>
+
+                                                            </div>
+                                                            {editMode && (
+                                                                <>
+
+
+                                                                    <button className={styles.addLessonButton} onClick={() => {
+                                                                        setShowModal(true);
+                                                                        setSelectedChapterId(chapter._id); // Lấy ID chương hiện tại từ state hoặc props
+                                                                    }}>
+                                                                        Thêm Lesson
+                                                                    </button>
+                                                                    <LessonModal
+                                                                        isOpen={showModal}
+                                                                        onClose={() => setShowModal(false)}
+                                                                        onSubmit={handleAddLesson}
+                                                                        lesson={newLesson}
+                                                                        setLesson={setNewLesson}
+                                                                    />
                                                                 </>
                                                             )}
                                                             {openChapters.includes(chapter._id) && (
                                                                 <ul className={styles.sublist}>
                                                                     {chapter.lessons.map(lesson => (
                                                                         <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
+
                                                                             <span className={styles.lessonTitle}>{lesson.title}</span>
-                                                                            <span className={styles.lessonDuration}>{lesson.duration}</span>
+                                                                            <div className={styles.left}>
+                                                                                <span className={styles.lessonDuration}>{lesson.duration}</span>
+                                                                                <button className={styles.deleteLesson} onClick={() => handleDeleteLesson(lesson._id)}>-</button>
+                                                                            </div>
                                                                         </li>
+
                                                                     ))}
+
                                                                 </ul>
                                                             )}
                                                         </div>
@@ -462,38 +469,7 @@ export const CourseDetailPage = () => {
                                                         </div>
                                                         <div className={styles.duration}>{chapter.lessons.length} Bài</div>
                                                     </div>
-                                                    {editMode && (
-                                                        <>
-                                                            <button onClick={() => setShowAddLessonForm(index)} className={styles.addLessonButton}>
-                                                                Thêm Lesson
-                                                            </button>
-                                                            {showAddLessonForm === index && (
-                                                                <form onSubmit={(e) => handleAddLesson(e, chapter._id)}>
-                                                                    <input
-                                                                        type="text"
-                                                                        required
-                                                                        value={newLesson.title}
-                                                                        onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
-                                                                        placeholder="Lesson Title"
-                                                                    />
-                                                                    <textarea
-                                                                        required
-                                                                        value={newLesson.description}
-                                                                        onChange={(e) => setNewLesson({ ...newLesson, description: e.target.value })}
-                                                                        placeholder="Lesson Description"
-                                                                    />
-                                                                    <input
-                                                                        type="number"
-                                                                        required
-                                                                        value={newLesson.duration}
-                                                                        onChange={(e) => setNewLesson({ ...newLesson, duration: e.target.value })}
-                                                                        placeholder="Duration (in hours)"
-                                                                    />
-                                                                    <button type="submit">Lưu Lesson</button>
-                                                                </form>
-                                                            )}
-                                                        </>
-                                                    )}
+
                                                     {openChapters.includes(chapter._id) && (
                                                         <ul className={styles.sublist}>
                                                             {chapter.lessons.map(lesson => (

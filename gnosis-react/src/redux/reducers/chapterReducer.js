@@ -26,7 +26,13 @@ export const chapterReducer = (state = initialState, action) => {
         case FETCH_CHAPTERS_REQUEST:
             return { ...state, loading: true };
         case FETCH_CHAPTERS_SUCCESS:
-            return { ...state, loading: false, chapters: action.payload, error: null };
+            return {
+                ...state,
+                loading: false,
+                chapters: Array.isArray(action.payload) ? action.payload : [],
+                error: null
+            };
+
         case FETCH_CHAPTERS_FAILURE:
             return { ...state, loading: false, error: action.payload };
         case SET_CHAPTER_ID: // Xử lý action mới để set chapterId
@@ -56,8 +62,14 @@ export const chapterReducer = (state = initialState, action) => {
         case UPDATE_CHAPTER_ORDER_REQUEST:
             return { ...state, loading: true };
         case UPDATE_CHAPTER_ORDER_SUCCESS:
-            // Assuming the payload contains the updated list of chapters
-            return { ...state, loading: false, chapters: action.payload.chapters, error: null };
+            // Kiểm tra xem payload có phải là mảng không trước khi cập nhật state
+            return {
+                ...state,
+                loading: false,
+                chapters: Array.isArray(action.payload.chapters) ? action.payload.chapters : [],
+                error: null
+            };
+
         case UPDATE_CHAPTER_ORDER_FAILURE:
             return { ...state, loading: false, error: action.payload };
         // Other cases remain unchanged

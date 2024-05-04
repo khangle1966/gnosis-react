@@ -73,10 +73,14 @@ export const updateChapterOrder = (chapters) => async (dispatch) => {
     dispatch({ type: UPDATE_CHAPTER_ORDER_REQUEST });
     try {
         const response = await axios.put(`http://localhost:3000/v1/chapter/chap/order`, { chapters });
-        dispatch({
-            type: UPDATE_CHAPTER_ORDER_SUCCESS,
-            payload: response.data
-        });
+        if (response.data && Array.isArray(response.data.chapters)) {
+            dispatch({
+                type: UPDATE_CHAPTER_ORDER_SUCCESS,
+                payload: response.data
+            });
+        } else {
+            throw new Error("Invalid data format");
+        }
     } catch (error) {
         dispatch({
             type: UPDATE_CHAPTER_ORDER_FAILURE,
