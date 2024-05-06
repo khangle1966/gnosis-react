@@ -25,8 +25,7 @@ export const CourseDetailPage = () => {
     const { rating } = courseDetail;
 
     const { user } = useSelector(state => state.auth);
-    const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0 });
-    const [showAddLessonForm, setShowAddLessonForm] = useState(null); // Quản lý việc hiển thị form của từng chapter
+    const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0 ,courseId : courseId});
     const [showModal, setShowModal] = useState(false);
 
     const [groupedChapters, setGroupedChapters] = useState([]);
@@ -47,23 +46,28 @@ export const CourseDetailPage = () => {
     const [selectedChapter, setSelectedChapter] = useState(null);
 
     const [editMode, setEditMode] = useState(false);
-    const { totalChapters, totalLessons, totalHours, totalMinutes } = useMemo(() => {
+    const { totalChapters, totalLessons, formattedDuration } = useMemo(() => {
         const totalChapters = groupedChapters.length;
         const totalLessons = groupedChapters.reduce((total, chapter) => {
             return total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0);
         }, 0);
-
+    
         const totalDurationSeconds = groupedChapters.reduce((total, chapter) => {
             return total + (Array.isArray(chapter.lessons) ? chapter.lessons.reduce((chapterTotal, lesson) => {
-                return chapterTotal + ((typeof lesson.duration === 'number') ? lesson.duration * 3600 : 0);
+                return chapterTotal + ((typeof lesson.duration === 'number') ? lesson.duration : 0);
             }, 0) : 0);
         }, 0);
-
-        const totalHours = Math.floor(totalDurationSeconds / 3600);
-        const totalMinutes = Math.floor((totalDurationSeconds % 3600) / 60);
-
-        return { totalChapters, totalLessons, totalHours, totalMinutes };
+    
+        // Format duration from seconds to a readable format
+        const hours = Math.floor(totalDurationSeconds / 3600);
+        const minutes = Math.floor((totalDurationSeconds % 3600) / 60);
+        const seconds = Math.floor(totalDurationSeconds % 60);
+        const formattedDuration = `${hours} giờ ${minutes} phút ${seconds} giây`;
+    
+        return { totalChapters, totalLessons, formattedDuration };
     }, [groupedChapters]);
+    
+    
 
 
     useEffect(() => {
@@ -132,7 +136,23 @@ export const CourseDetailPage = () => {
 
 
 
-
+    const formatDurationFromSeconds = (seconds) => {
+        const hours = Math.floor(seconds / 3600); 
+        const minutes = Math.floor((seconds % 3600) / 60); 
+        const remainingSeconds = Math.round(seconds % 60); 
+    
+        let formattedDuration = ''; 
+    
+       
+        if (hours > 0) {
+            formattedDuration += `${hours} giờ `;
+        }
+       
+        formattedDuration += `${minutes} phút ${remainingSeconds} giây`;
+    
+        return formattedDuration;
+    };
+    
     const handleAddToCart = () => {
         console.log(courseDetail);
         dispatch(addToCart(courseDetail));
@@ -188,8 +208,10 @@ export const CourseDetailPage = () => {
         dispatch(addLesson(lessonData));  // Gửi action đến Redux store
 
         setShowModal(false); // Đóng modal sau khi submit
-        setNewLesson({ title: '', description: '', duration: 0 }); // Reset form
+        setNewLesson({ title: '', description: '', duration: 0 ,courseId : courseId}); // Reset form
+       
     };
+    
 
     const handleDeleteLesson = (lessonId) => {
         dispatch(deleteLesson(lessonId));
@@ -369,7 +391,7 @@ export const CourseDetailPage = () => {
                 </div>
                 <div className={styles.courseContentOverview}>
                     <h2>Nội dung khóa học</h2>
-                    <span>{totalChapters} phần · {totalLessons} bài giảng · {totalHours} giờ {totalMinutes} phút tổng thời lượng</span>
+                    <span>{totalChapters} phần · {totalLessons} bài giảng · {formattedDuration} tổng thời lượng</span>
                     <button onClick={handleToggleAllChapters}>Mở rộng/tắt tất cả các chương</button>
 
                 </div>
@@ -440,7 +462,7 @@ export const CourseDetailPage = () => {
 
                                                                             <span className={styles.lessonTitle}>{lesson.title}</span>
                                                                             <div className={styles.left}>
-                                                                                <span className={styles.lessonDuration}>{lesson.duration}</span>
+                                                                                <span className={styles.lessonDuration}>{formatDurationFromSeconds(lesson.duration)}</span>
                                                                                 <button className={styles.deleteLesson} onClick={() => handleDeleteLesson(lesson._id)}>-</button>
                                                                             </div>
                                                                         </li>
@@ -475,7 +497,7 @@ export const CourseDetailPage = () => {
                                                             {chapter.lessons.map(lesson => (
                                                                 <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
                                                                     <span className={styles.lessonTitle}>{lesson.title}</span>
-                                                                    <span className={styles.lessonDuration}>{lesson.duration}</span>
+                                                                    <span className={styles.lessonDuration}>{formatDurationFromSeconds(lesson.duration)}</span>
                                                                 </li>
                                                             ))}
                                                         </ul>
