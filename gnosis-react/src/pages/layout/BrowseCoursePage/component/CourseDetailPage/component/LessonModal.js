@@ -1,9 +1,12 @@
 // LessonModal.js
 import React, { useState } from 'react';
 import styles from './LessonModal.module.scss'; // Import SCSS module
+import { uploadVideo } from '../../../../../../redux/action/uploadActions';
+import { useDispatch } from 'react-redux';
 
 function LessonModal({ isOpen, onClose, onSubmit, lesson, setLesson }) {
     const [videoFile, setVideoFile] = useState(null);
+    const dispatch = useDispatch();
 
     // Handle video file selection
     const handleVideoChange = event => {
@@ -28,9 +31,20 @@ function LessonModal({ isOpen, onClose, onSubmit, lesson, setLesson }) {
         });
     };
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (videoFile) {
+            const videoUrl = await dispatch(uploadVideo(videoFile));
+            setLesson({ ...lesson, videoUrl }); // Cập nhật state
+            onSubmit({ ...lesson, videoUrl }); // Sử dụng videoUrl mới ngay lập tức
+        } else {
+            onSubmit(lesson); // Nếu không có video mới, gửi lesson như bình thường
+        }
+    };
+
     return (
         <div className={isOpen ? `${styles.modal} ${styles.open}` : styles.modal}>
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleSubmit}>
                 <input
                     type="text"
                     required

@@ -6,7 +6,7 @@ import lessonReduver from './reducers/lessonReduver'; // Đã sửa tên biến 
 import { chapterReducer } from './reducers/chapterReducer';
 import profileReducer from './reducers/profileReducer';
 import cartReducer from './reducers/cartReducer';
-
+import { videoUploadReducer } from './reducers/uploadReducer';
 
 // Combine reducers để tạo rootReducer
 const rootReducer = combineReducers({
@@ -17,6 +17,8 @@ const rootReducer = combineReducers({
     lessonDetail: lessonReduver,
     chapterDetail: chapterReducer,
     cart: cartReducer,
+    uploadVideo: videoUploadReducer
+
 });
 
 // Tạo store với rootReducer và middleware

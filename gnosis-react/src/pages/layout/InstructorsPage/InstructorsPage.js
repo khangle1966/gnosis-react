@@ -4,7 +4,7 @@ import { updateCourse, submitCourse, resetCourse } from '../../../redux/action/c
 import styles from "./InstructorsPage.module.scss";
 import axios from 'axios';
 import { imagedb } from '../../.././firebaseConfig';  // Sửa lại đường dẫn nhập khẩu cho đúng
-import  {uploadImage} from '../../../redux/action/uploadActions'
+import { uploadImage } from '../../../redux/action/uploadActions'
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
@@ -15,7 +15,7 @@ const InstructorsPage = () => {
 
     const dispatch = useDispatch();
     const [courseSubmitted, setCourseSubmitted] = useState(false);
-    const [img, setImg] = useState(null); 
+    const [img, setImg] = useState(null);
     const [isImageUploaded, setIsImageUploaded] = useState(false);
 
     const [course, setCourse] = useState({
@@ -47,30 +47,32 @@ const InstructorsPage = () => {
         if (imageFile) {
             try {
                 const imageUrl = await dispatch(uploadImage(imageFile)); // Upload image and get back the URL
-                console.log (imageUrl)
                 setIsImageUploaded(true);
+                setImg(imageUrl);  // Cập nhật state img để kiểm tra điều kiện render hình ảnh
                 setCourse(prevCourse => ({
                     ...prevCourse,
                     img: imageUrl // Store image URL in the course state
                 }));
+                console.log('Image URL:', imageUrl);  // Log URL mới để kiểm tra
+
             } catch (error) {
                 console.error('Error uploading image:', error);
                 alert("Lỗi tải ảnh lên. Vui lòng thử lại."); // Thông báo lỗi trực quan
             }
         }
     };
-    
-    
+
+
 
 
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-       
+
         dispatch(submitCourse(course));
-        setCourseSubmitted(true); 
+        setCourseSubmitted(true);
     };
-    
+
 
     const handleReset = () => {
         setCourse({
@@ -141,7 +143,7 @@ const InstructorsPage = () => {
                     <button type="button" className={styles.uploadBtn} onClick={() => document.getElementById('imageInput').click()}>
                         Choose File
                     </button>
-                    {img && <img src={course.img} alt="Course Cover" className={styles.uploadedImage} />}
+                    {course.img && <img src={course.img} alt="Course Cover" className={styles.uploadedImage} />}
                 </div>
 
 
