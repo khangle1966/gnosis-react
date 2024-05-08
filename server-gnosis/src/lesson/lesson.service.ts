@@ -124,4 +124,15 @@ export class LessonService {
       throw new HttpException(error.message, error.status);
     }
   }
+  async getVideoUrl(lessonId: string): Promise<string> {
+    try {
+        const lesson = await this.lessonModel.findById(lessonId);
+        if (!lesson) {
+            throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
+        }
+        return lesson.videoUrl;
+    } catch (error) {
+        throw new HttpException(error.message, error.status);
+    }
+}
 }

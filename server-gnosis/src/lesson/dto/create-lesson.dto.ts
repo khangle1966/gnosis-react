@@ -6,5 +6,6 @@ export class CreateLessonDto {
     public courseId: string,
     public description: string,
     public duration: number, // Thời lượng khóa học tính bằng giờ
+    public videoUrl :string,
   ) { }
 }

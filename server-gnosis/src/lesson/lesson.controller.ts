@@ -28,8 +28,16 @@ export class LessonController {
       throw new HttpException(error.message, error.status);
     }
   }
+  @Get(':lessonId/videoUrl') // Corrected the route
+  async getVideoUrl(@Param('lessonId') lessonId: string): Promise<{ url: string }> {
+    try {
+      const videoUrl = await this.lessonsService.getVideoUrl(lessonId);
+      return { url: videoUrl };
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
 
-  // src/lesson/lesson.controller.ts
 
   @Post()
   async create(@Body() createLessonDto: CreateLessonDto): Promise<Lesson> {

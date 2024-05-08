@@ -18,6 +18,9 @@ export class Lesson {
     description: string;
     @Prop({ required: true })
     duration: number; // In hours
+    @Prop()
+    videoUrl: string; // This should be a URL to the image
+
 }
 
 export const LessonSchema = SchemaFactory.createForClass(Lesson);

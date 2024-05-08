@@ -4,12 +4,17 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Image } from './entities/image.entity';
-
+import { Video } from './entities/video.entity';
 @Injectable()
 export class UploadService {
   private bucket: Bucket; // Sử dụng kiểu Bucket từ @google-cloud/storage
 
-  constructor(@InjectModel(Image.name) private readonly imageModel: Model<Image>) {
+  constructor(
+    @InjectModel(Image.name) private readonly imageModel: Model<Image>,
+    @InjectModel(Video.name) private readonly videoModel: Model<Video> // Inject Video model
+
+
+  ) {
     const firebaseParams = {
       type: "service_account",
       projectId: "gnosis-reactjs",
@@ -26,33 +31,57 @@ export class UploadService {
     this.bucket = firebaseAdmin.storage().bucket(); // Lấy bucket từ Firebase
   }
 
-  async uploadToFirebase(file: Express.Multer.File): Promise<string> {
+  async uploadToFirebase(file: Express.Multer.File, directory: string = 'uploads'): Promise<string> {
     if (!file || !file.buffer) {
-        throw new Error("File is undefined or does not have a buffer.");
+      throw new Error("File is undefined or does not have a buffer.");
     }
-    const filename = `uploads/${file.originalname}`;
-    const fileRef = this.bucket.file(filename);
-    await fileRef.save(file.buffer, {
+    try {
+      const filename = `${directory}/${Date.now()}-${file.originalname}`;
+      const fileRef = this.bucket.file(filename);
+      await fileRef.save(file.buffer, {
         metadata: { contentType: file.mimetype },
-    });
-    const [url] = await fileRef.getSignedUrl({
-        action: 'read',
-        expires: '03-09-2491'
-    });
-    return url;
-}
+      });
 
-async createImageRecord(file: Express.Multer.File): Promise<any> {
+      const [url] = await fileRef.getSignedUrl({
+        action: 'read',
+        expires: Date.now() + 86400 * 1000, // 1 day in the future
+      });
+
+      return url;
+    } catch (error) {
+      console.error('Failed to upload to Firebase:', error);
+      throw new Error(`Failed to upload file: ${error.message}`);
+    }
+  }
+
+
+
+  async createImageRecord(file: Express.Multer.File): Promise<any> {
     if (!file) throw new Error("File is not provided.");
 
     const imageUrl = await this.uploadToFirebase(file);
     const newImage = new this.imageModel({
-        url: imageUrl,
-        filename: file.originalname,
-        contentType: file.mimetype,
-        size: file.size,
+      url: imageUrl,
+      filename: file.originalname,
+      contentType: file.mimetype,
+      size: file.size,
     });
     await newImage.save();
     return { url: imageUrl };
-}
+  }
+
+  async createVideoRecord(file: Express.Multer.File): Promise<any> {
+    if (!file) throw new Error("File is not provided.");
+
+    const videoUrl = await this.uploadToFirebase(file, 'videos');
+    const newVideo = new this.videoModel({
+      url: videoUrl,
+      filename: file.originalname,
+      contentType: file.mimetype,
+      size: file.size,
+    });
+    await newVideo.save();
+    return { url: videoUrl };
+  }
+
 }
