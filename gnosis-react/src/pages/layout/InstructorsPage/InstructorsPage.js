@@ -4,12 +4,18 @@ import { updateCourse, submitCourse, resetCourse } from '../../../redux/action/c
 import styles from "./InstructorsPage.module.scss";
 import axios from 'axios';
 import { imagedb } from '../../.././firebaseConfig';  // Sửa lại đường dẫn nhập khẩu cho đúng
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; const InstructorsPage = () => {
+import  {uploadImage} from '../../../redux/action/uploadActions'
+
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+
+const InstructorsPage = () => {
+
     const { user } = useSelector(state => state.auth);
 
     const dispatch = useDispatch();
     const [courseSubmitted, setCourseSubmitted] = useState(false);
-    const [img, setImg] = useState('');
+    const [img, setImg] = useState(null); 
     const [isImageUploaded, setIsImageUploaded] = useState(false);
 
     const [course, setCourse] = useState({
@@ -30,50 +36,41 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; const Instr
     });
     // get user info from reducer 
     console.log('Course Data:', course); // Kiểm tra toàn bộ object course
+
+
     const handleChange = (event) => {
         const { id, value } = event.target;
         setCourse(prevCourse => ({ ...prevCourse, [id]: value }));
     };
-    const handleUploadClick = () => {
-        // Kích hoạt input file ẩn khi người dùng nhấn vào nút "Upload"
-        document.getElementById('imageInput').click();
-    };
-
-
-    const handleImageChange = (event) => {
+    const handleImageChange = async (event) => {
         const imageFile = event.target.files[0];
         if (imageFile) {
-            console.log(imageFile);  // Kiểm tra để đảm bảo đây là một File object
-            setImg(imageFile);  // Lưu File object vào state
-            setIsImageUploaded(false);  // Đặt lại trạng thái tải lên
-        }
-    };
-
-    const uploadImage = async () => {
-        if (img) {
-            const fileRef = ref(imagedb, `images/${img.name}`);
             try {
-                await uploadBytes(fileRef, img);
-                const downloadURL = await getDownloadURL(fileRef);
-                console.log('Image uploaded and URL received:', downloadURL);
+                const imageUrl = await dispatch(uploadImage(imageFile)); // Upload image and get back the URL
+                console.log (imageUrl)
                 setIsImageUploaded(true);
                 setCourse(prevCourse => ({
                     ...prevCourse,
-                    img: downloadURL // Cập nhật URL vào state của khóa học
+                    img: imageUrl // Store image URL in the course state
                 }));
             } catch (error) {
                 console.error('Error uploading image:', error);
+                alert("Lỗi tải ảnh lên. Vui lòng thử lại."); // Thông báo lỗi trực quan
             }
         }
     };
+    
+    
 
 
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
+       
         dispatch(submitCourse(course));
-        setCourseSubmitted(true); // Đặt trạng thái thành công khi gửi khóa học
+        setCourseSubmitted(true); 
     };
+    
 
     const handleReset = () => {
         setCourse({
@@ -140,24 +137,11 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'; const Instr
                     </div>
                 </div>
                 <div className={styles.rightSection}>
+                    <input type="file" id="imageInput" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                     <button type="button" className={styles.uploadBtn} onClick={() => document.getElementById('imageInput').click()}>
                         Choose File
                     </button>
-
-                    <input type="file" id="imageInput" accept="image/*" style={{ display: 'none' }} onChange={handleImageChange} />
-
-                    {img && (
-                        <>
-                            <button type="button" className={styles.uploadBtn} onClick={uploadImage} style={{ opacity: isImageUploaded ? 0 : 1 }}>
-                                Upload Image
-                            </button>
-                            {/* Xem trước hình ảnh đã chọn */}
-                            <img src={URL.createObjectURL(img)} alt="Course Cover" className={styles.uploadedImage} />
-                            {isImageUploaded && (
-                                <img src={course.img} alt="Course Cover" className={styles.uploadedImage} />
-                            )}
-                        </>
-                    )}
+                    {img && <img src={course.img} alt="Course Cover" className={styles.uploadedImage} />}
                 </div>
 
 
