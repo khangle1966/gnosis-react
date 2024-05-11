@@ -1,3 +1,4 @@
+
 // LessonPage.module.scss
 .container {
     display: flex;
@@ -9,8 +10,9 @@
         display: flex;
         flex-direction: row;
         justify-content: flex-end;
+        margin:0 2rem;
     }
-
+  
 }
 
 .header {
@@ -93,8 +95,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 20px;
-
+    position: relative; // Có thể sử dụng absolute tùy thuộc vào layout của bạn
+    height: auto; // Đảm bảo container phù hợp với kích thước video
+    width: 100%; // Chiều rộng có thể điều chỉnh theo nhu cầu
 
 }
 
@@ -105,15 +108,41 @@
 }
 
 .videoList {
-    width: 400px;
+    width: 20%;
     background-color: #fff;
-    overflow-y: auto;
+    overflow-y: auto; // Cho phép scroll độc lập
+    overflow-x: hidden; // Cho phép scroll độc lập
+
     padding: 0;
     font-family: 'Arial', sans-serif;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1); // Tăng cường bóng đổ
     border-radius: 8px; // Bo góc cho khối
     transition: all 0.3s ease;
+    max-height: 100vh; // Giới hạn chiều cao và cho phép scroll
+    &::-webkit-scrollbar {
+        width: 3px; // Giảm kích thước rộng của thanh cuộn
+    }
 
+    &::-webkit-scrollbar-track {
+        background: #f1f1f1; // Màu nền của track cuộn
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background: #228B22; // Màu của thumb cuộn
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: #555; // Màu của thumb khi hover
+    }
+    .courseContentHeader {
+        font-size: 18px; // Kích thước chữ lớn hơn
+        font-weight: bold; // Chữ đậm
+        color: #333; // Màu chữ tối
+        padding-bottom: 10px; // Đệm dưới để tạo khoảng cách với danh sách
+        border-bottom: 2px solid #e1e4e8; // Đường kẻ ngăn cách giữa tiêu đề và danh sách
+        margin-bottom: 20px; // Khoảng cách giữa tiêu đề và danh sách
+        padding:20px
+    }
     ul {
         list-style: none;
         margin: 0;
@@ -195,7 +224,7 @@
         align-items: center;
         margin-bottom: 5px;
         transition: background-color 0.3s ease;
-
+        cursor: pointer;
         .lessonIcon {
             color: #4CAF50;
             margin-right: 10px;
