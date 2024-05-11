@@ -28,7 +28,6 @@ function App() {
             <Route path="/home" element={<HomePage />} />
 
             <Route path="course/:courseId" element={<CourseDetailPage />} />
-            <Route path="lesson/:lessonId" element={<LessonPage />} />
             <Route path="/profile" element={< ProfilePage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/instructor" element={<InstructorsPage />} />
@@ -36,6 +35,8 @@ function App() {
 
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="course/:courseId/lesson/:lessonId" element={<LessonPage />} />
+
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/register" element={<Register />} />
           <Route path="/createprofile" element={<CreateProfilePage />} />

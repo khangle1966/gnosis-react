@@ -178,7 +178,7 @@ export const CourseDetailPage = () => {
 
     };
     const handleLessonClick = (lessonId) => {
-        navigate(`/lesson/${lessonId}`);
+        navigate(`lesson/${lessonId}`);
     };
     const handleAddChapter = (currentChapterId) => {
         const index = groupedChapters.findIndex(chapter => chapter._id === currentChapterId);

@@ -68,7 +68,7 @@ function LessonModal({ isOpen, onClose, onSubmit, lesson, setLesson }) {
                 {videoFile && (
                     <p>Duration: {lesson.duration ? `${Math.floor(lesson.duration / 60)} min ${Math.floor(lesson.duration % 60)} sec` : "Calculating..."}</p>
                 )}
-                {uploadProgress > 0 && (
+                {isLoading && uploadProgress > 0 && (
                     <div className={styles.progress}>
                         <div className={styles.progressBar} style={{ width: `${uploadProgress}%` }}>
                             Uploading: {uploadProgress}%
