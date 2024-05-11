@@ -7,6 +7,7 @@ import {
     UPLOAD_VIDEO_REQUEST,
     UPLOAD_VIDEO_SUCCESS,
     UPLOAD_VIDEO_FAILURE,
+    UPLOAD_VIDEO_PROGRESS,
     FETCH_VIDEO_REQUEST,
     FETCH_VIDEO_SUCCESS,
     FETCH_VIDEO_FAILURE
@@ -43,7 +44,6 @@ export const uploadImage = (fileData) => {
         }
     };
 };
-
 export const uploadVideo = (fileData) => async (dispatch) => {
     dispatch({ type: UPLOAD_VIDEO_REQUEST });
     try {
@@ -52,6 +52,13 @@ export const uploadVideo = (fileData) => async (dispatch) => {
         const response = await axios.post('http://localhost:3000/upload/video', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress: progressEvent => {
+                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                dispatch({
+                    type: UPLOAD_VIDEO_PROGRESS,
+                    payload: percentCompleted
+                });
             }
         });
 

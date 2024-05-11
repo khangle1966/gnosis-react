@@ -5,6 +5,7 @@ import {
     UPLOAD_VIDEO_REQUEST,
     UPLOAD_VIDEO_SUCCESS,
     UPLOAD_VIDEO_FAILURE,
+    UPLOAD_VIDEO_PROGRESS,
     FETCH_VIDEO_REQUEST,
     FETCH_VIDEO_SUCCESS,
     FETCH_VIDEO_FAILURE
@@ -18,7 +19,9 @@ const initialState = {
 const initialVideoState = {
     loading: false,
     videoURL: null,
-    error: null
+    uploadProgress: 0,
+    error: null,
+
 };
 export const imageUploadReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -47,11 +50,13 @@ export const imageUploadReducer = (state = initialState, action) => {
 export const videoUploadReducer = (state = initialVideoState, action) => {
     switch (action.type) {
         case UPLOAD_VIDEO_REQUEST:
-            return { ...state, loading: true, error: null };
+            return { ...state, loading: true, error: null, uploadProgress: 0 };
+        case UPLOAD_VIDEO_PROGRESS:
+            return { ...state, uploadProgress: action.payload }; // Cập nhật tiến trình
         case UPLOAD_VIDEO_SUCCESS:
-            return { ...state, loading: false, videoURL: action.payload, error: null };
+            return { ...state, loading: false, videoURL: action.payload, uploadProgress: 100, error: null };
         case UPLOAD_VIDEO_FAILURE:
-            return { ...state, loading: false, error: action.payload };
+            return { ...state, loading: false, error: action.payload, uploadProgress: 0 };
         case FETCH_VIDEO_REQUEST:
             return { ...state, loading: true, error: null };
         case FETCH_VIDEO_SUCCESS:

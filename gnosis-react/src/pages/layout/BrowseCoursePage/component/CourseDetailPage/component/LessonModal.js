@@ -2,17 +2,18 @@
 import React, { useState } from 'react';
 import styles from './LessonModal.module.scss'; // Import SCSS module
 import { uploadVideo } from '../../../../../../redux/action/uploadActions';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function LessonModal({ isOpen, onClose, onSubmit, lesson, setLesson }) {
     const [videoFile, setVideoFile] = useState(null);
     const dispatch = useDispatch();
-
+    const uploadProgress = useSelector(state => state.uploadVideo.uploadProgress); // Lấy tiến trình upload từ Redux store
+    const isLoading = useSelector(state => state.uploadVideo.loading); // Lấy trạng thái loading từ Redux store
+    console.log(isLoading)
     // Handle video file selection
     const handleVideoChange = event => {
         const file = event.target.files[0];
         setVideoFile(file);
-        // Assuming we have a function to calculate video duration
         calculateVideoDuration(file).then(duration => {
             setLesson({ ...lesson, duration });
         });
@@ -35,10 +36,10 @@ function LessonModal({ isOpen, onClose, onSubmit, lesson, setLesson }) {
         e.preventDefault();
         if (videoFile) {
             const videoUrl = await dispatch(uploadVideo(videoFile));
-            setLesson({ ...lesson, videoUrl }); // Cập nhật state
-            onSubmit({ ...lesson, videoUrl }); // Sử dụng videoUrl mới ngay lập tức
+            setLesson({ ...lesson, videoUrl });
+            onSubmit({ ...lesson, videoUrl });
         } else {
-            onSubmit(lesson); // Nếu không có video mới, gửi lesson như bình thường
+            onSubmit(lesson);
         }
     };
 
@@ -67,8 +68,17 @@ function LessonModal({ isOpen, onClose, onSubmit, lesson, setLesson }) {
                 {videoFile && (
                     <p>Duration: {lesson.duration ? `${Math.floor(lesson.duration / 60)} min ${Math.floor(lesson.duration % 60)} sec` : "Calculating..."}</p>
                 )}
-                <button type="submit">Lưu Lesson</button>
-                <button type="button" onClick={onClose}>Đóng</button>
+                {uploadProgress > 0 && (
+                    <div className={styles.progress}>
+                        <div className={styles.progressBar} style={{ width: `${uploadProgress}%` }}>
+                            Uploading: {uploadProgress}%
+                        </div>
+                    </div>
+                )}
+                <button type="submit" className={styles.button} disabled={isLoading}>
+                    {isLoading ? <><span className={styles.spinner}></span> Đang Lưu...</> : 'Lưu Lesson'}
+                </button>
+                <button type="button" className={styles.button} disabled={isLoading} onClick={onClose}>Đóng</button>
             </form>
         </div>
     );

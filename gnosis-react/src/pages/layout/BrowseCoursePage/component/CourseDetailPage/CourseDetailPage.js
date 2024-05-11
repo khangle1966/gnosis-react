@@ -466,9 +466,9 @@ export const CourseDetailPage = () => {
                                                             {openChapters.includes(chapter._id) && (
                                                                 <ul className={styles.sublist}>
                                                                     {chapter.lessons.map(lesson => (
-                                                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description} onClick={() => handleLessonClick(lesson._id)}>
+                                                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description} >
 
-                                                                            <span className={styles.lessonTitle}>{lesson.title}</span>
+                                                                            <span onClick={() => handleLessonClick(lesson._id)} className={styles.lessonTitle}>{lesson.title}</span>
                                                                             <div className={styles.left}>
                                                                                 <span className={styles.lessonDuration}>{formatDurationFromSeconds(lesson.duration)}</span>
                                                                                 <button className={styles.deleteLesson} onClick={() => handleDeleteLesson(lesson._id)}>-</button>

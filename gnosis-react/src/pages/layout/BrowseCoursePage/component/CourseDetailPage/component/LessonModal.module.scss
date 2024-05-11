@@ -4,6 +4,7 @@ $background-color: #fff; // Màu nền cho modal
 $text-color: #333; // Màu chữ chính
 $placeholder-color: #888; // Màu placeholder
 $video-accent-color: #ebeaea; // Màu sắc nổi bật cho các phần liên quan đến video
+$disabled-color: #a5a0a0;
 
 .modal {
     position: fixed;
@@ -72,16 +73,24 @@ $video-accent-color: #ebeaea; // Màu sắc nổi bật cho các phần liên qu
             resize: none;
         }
 
-        button {
+        .button {
             width: 100%;
             padding: 15px 0;
             font-size: 16px;
             font-weight: bold;
             color: #fff;
+
             background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
             border: none;
             border-radius: 4px;
             cursor: pointer;
+
+
+            &:disabled {
+                background: linear-gradient(135deg, darken($disabled-color, 10%), $disabled-color) !important;
+                cursor: not-allowed !important;
+
+            }
 
             &:hover {
                 background: linear-gradient(135deg, darken($primary-color, 10%), $primary-color);
@@ -89,6 +98,31 @@ $video-accent-color: #ebeaea; // Màu sắc nổi bật cho các phần liên qu
 
             &:first-of-type {
                 margin-bottom: 15px;
+            }
+
+
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            /* Light grey border */
+            border-top-color: #fff;
+            /* White border color for the top border */
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            align-items: center;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
             }
         }
     }
