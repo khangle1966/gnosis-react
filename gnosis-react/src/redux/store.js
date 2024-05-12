@@ -8,6 +8,8 @@ import profileReducer from './reducers/profileReducer';
 import cartReducer from './reducers/cartReducer';
 import { videoUploadReducer } from './reducers/uploadReducer';
 import lessonReducer from './reducers/lessonCompleteReducer';
+import { notesReducer, noteAddReducer } from './reducers/noteReducer';
+
 // Combine reducers để tạo rootReducer
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -18,8 +20,9 @@ const rootReducer = combineReducers({
     chapterDetail: chapterReducer,
     cart: cartReducer,
     uploadVideo: videoUploadReducer,
-    lessonComplete: lessonReducer
-
+    lessonComplete: lessonReducer,
+    notesData: notesReducer,
+    noteAdd: noteAddReducer,
 });
 
 // Tạo store với rootReducer và middleware

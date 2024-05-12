@@ -1,20 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactPlayer from 'react-player';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchVideoUrl } from '../../../../../redux/action/uploadActions';
 import styles from './LessonPage.module.scss';
 import { faArrowLeft, faStickyNote } from '@fortawesome/free-solid-svg-icons';
-import { faChevronDown, faChevronUp, faCircle } from '@fortawesome/free-solid-svg-icons';
+import { faChevronDown, faChevronUp, faCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { fetchLessonsByCourseId } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
 import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
 import { completeLesson } from '../../../../../redux/action/lessonCompleteActions';
 import { fetchLessonComplete } from '../../../../../redux/action/lessonCompleteActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
+import NoteModal from './components/NoteModal';
+import NoteViewer from './components/NoteViewer'; // Đảm bảo đường dẫn đúng
+import { fetchNotes } from '../../../../../redux/action/noteActions';
 export const LessonPage = () => {
-    const { lessonId } = useParams(); // Lấy lessonId từ URL
+    const { lessonId } = useParams(); // Lấy lessonId từ UuseRef RL
     const { courseId } = useParams(); // Giả sử bạn lấy courseId từ URL
     const navigate = useNavigate();
 
@@ -24,16 +26,34 @@ export const LessonPage = () => {
     const { courseDetail } = useSelector(state => state.courseDetail);
     const { user } = useSelector(state => state.auth);
     const userId = user.uid; // Nên được thay thế bằng cách lấy ID người dùng hiện tại từ trạng thái auth hoặc session
-
-    const { chapters, } = useSelector(state => state.chapterDetail);
+    const [currentTime, setCurrentTime] = useState(0);
+    const playerRef = useRef(null);  // Reference to the ReactPlayer
+    const { chapters } = useSelector(state => state.chapterDetail);
     const { lessons } = useSelector(state => state.lessonDetail);
     const { lessonscomplete } = useSelector(state => state.lessonComplete);
     const [activeSection, setActiveSection] = useState('overview'); // Default to 'overview'
     const [lessonDescription, setLessonDescription] = useState('');
+    const [showNoteModal, setShowNoteModal] = useState(false);
+    const [showNoteViewer, setShowNoteViewer] = useState(false);
+    const [currentNote, setCurrentNote] = useState('');
+    const [playing, setPlaying] = useState(true);
 
-    console.log(lessonscomplete);
-    console.log(chapters);
-    console.log(lessons);
+
+
+
+
+
+    const { notes, loading: loadingnotes, error: errornotes } = useSelector(state => state.notesData);
+
+    console.log(notes);
+
+    const handleProgress = (state) => {
+        // state.playedSeconds is the number of seconds the video has been played
+        setCurrentTime(state.playedSeconds);
+    };
+    const handleSeek = (time) => {
+        playerRef.current.seekTo(time);
+    };
 
     useEffect(() => {
         dispatch(fetchVideoUrl(lessonId));
@@ -42,6 +62,7 @@ export const LessonPage = () => {
         dispatch(fetchCourseDetail(courseId));
 
         dispatch(fetchLessonComplete(userId));
+        dispatch(fetchNotes(userId));  // Tải ghi chú khi component được mount
 
     }, [dispatch, courseId, userId, lessonId]);
 
@@ -81,7 +102,31 @@ export const LessonPage = () => {
         };
     };
 
+    const handleNoteClick = () => {
+        setShowNoteModal(true);
+        setPlaying(false);  // Dừng video khi mở modal
 
+    };
+
+    const handleCloseModal = () => {
+        setShowNoteModal(false);
+        setPlaying(true);  // Tiếp tục phát video khi đóng modal
+
+    };
+    const handleViewNotes = () => {
+        setShowNoteViewer(true);
+    };
+
+    const handleCloseViewer = () => {
+        setShowNoteViewer(false);
+    };
+
+    const handleSaveNote = (note) => {
+        console.log('Saving note:', note); // Thực hiện lưu ghi chú
+        setShowNoteModal(false);
+        dispatch(fetchNotes(userId)); // Tải lại danh sách ghi chú
+
+    };
     const handleLessonClick = (lessonId) => {
         dispatch(fetchVideoUrl(lessonId));
         navigate(`/course/${courseId}/lesson/${lessonId}`);
@@ -90,6 +135,17 @@ export const LessonPage = () => {
 
         navigate(`/course/${courseId}`);
     };
+    function formatDuration(seconds) {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secondsRemaining = Math.floor(seconds % 60);
+
+        const paddedHours = hours.toString().padStart(2, '0');
+        const paddedMinutes = minutes.toString().padStart(2, '0');
+        const paddedSeconds = secondsRemaining.toString().padStart(2, '0');
+
+        return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
+    }
 
     const toggleExpand = chapterId => {
         setExpanded(prev => ({ ...prev, [chapterId]: !prev[chapterId] }));
@@ -119,28 +175,130 @@ export const LessonPage = () => {
                         <span className={styles.lessonCount}>{completed}/{total} bài học</span>
                     </div>
 
-                    <div className={styles.rightNav}>
-
-
+                    <div className={styles.rightNav} onClick={handleViewNotes}>
                         <FontAwesomeIcon icon={faStickyNote} className={styles.noteIcon} />
-                        Ghi chú
+                        Xem ghi chú
                     </div>
+                    <NoteViewer
+                        show={showNoteViewer}
+                        handleClose={handleCloseViewer}
+                        notes={notes}
+                        onTimeClick={handleSeek} // Truyền hàm handleSeek như một prop
+                    />
+
+
                 </div>
             </header>
             <div className={styles.main}>
-                <div className={styles.videoContainer}>
-                    {loading && <div className={styles.loading}>Loading...</div>}
-                    {error && <div className={styles.error}>Error: {error}</div>}
-                    {videoURL && <ReactPlayer
-                        url={videoURL}
-                        controls={true}
-                        width="100%"
-                        height="100%"
-                        className={styles.reactPlayer}
-                        onEnded={handleVideoEnded}
-                    />}
-                </div>
+                <div className={styles.containervideo}>
+                    <div className={styles.videoContainer}>
+                        {loading && <div className={styles.loading}>Loading...</div>}
+                        {error && <div className={styles.error}>Error: {error}</div>}
+                        {videoURL && <ReactPlayer
+                            ref={playerRef}
+                            url={videoURL}
+                            controls={true}
+                            width="100%"
+                            height="100%"
+                            className={styles.reactPlayer}
+                            onEnded={handleVideoEnded}
+                            onProgress={handleProgress}
+                            playing={playing}
 
+                        />}
+
+                    </div>
+
+                    <div className={styles.courseContainer}>
+
+                        <div className={styles.contentContainer}> {/* Container mới cho nội dung khóa học và ghi chú */}
+                            <div className={styles.courseContent}>
+
+                                <nav className={styles.courseNav}>
+                                    <ul className={styles.navList}>
+                                        <div className={styles.ratingandescription}>
+                                            <li className={styles.navItem} onClick={() => setActiveSection('overview')}>Tổng quan</li>
+
+                                            <li className={styles.navItem} onClick={() => setActiveSection('review')}>Đánh giá</li>
+                                        </div>
+
+                                        <div className={styles.notesHeader}>
+                                            <FontAwesomeIcon icon={faStickyNote} className={styles.notesIcon} />
+
+
+                                            <button className={styles.saveNoteButton} onClick={handleNoteClick}>
+                                                <FontAwesomeIcon icon={faPlus} /> Thêm ghi chú tại {formatDuration(currentTime)}
+
+                                            </button>
+                                            <NoteModal
+                                                show={showNoteModal}
+                                                handleClose={handleCloseModal}
+                                                handleSave={handleSaveNote}
+                                                initialNote={currentNote}
+                                                userId={user.uid}
+                                                lessonId={lessonId}
+                                                chapterId="123456" // Assume you have chapterId
+                                                durationlesson={currentTime.toFixed(2)}
+                                            />
+
+                                        </div>
+                                    </ul>
+
+                                </nav>
+
+
+
+
+                            </div>
+
+                        </div>
+
+                        {activeSection === 'overview' && (
+                            <div className={styles.courseOverview}>
+                                <h1>Giới thiệu về bài học</h1>
+                                <p>{currentLessonDescription}</p>
+                                <hr />
+                            </div>
+                        )}
+                        {activeSection === 'review' && (
+                            <div className={styles.reviewSection}>
+                                <div className={styles.overallRating}>
+                                    <h2>Phản hồi của học viên</h2>
+                                    <div className={styles.ratingValue}>4.7</div>
+                                    <div>{/* Stars Rendering Component Here */}</div>
+                                    <div className={styles.ratingBreakdown}>
+                                        <div>★★★★★ 66%</div>
+                                        <div>★★★★ 30%</div>
+                                        <div>★★★ 4%</div>
+                                        <div>★★ 0%</div>
+                                        <div>★ 1%</div>
+                                    </div>
+                                </div>
+                                <div className={styles.reviewList}>
+                                    <h3>Đánh giá</h3>
+                                    <div className={styles.searchSort}>
+                                        <input type="text" placeholder="Tìm kiếm đánh giá" />
+                                        <select>
+                                            <option value="all">Tất cả xếp hạng</option>
+                                            {/* Add more sorting options here */}
+                                        </select>
+                                    </div>
+                                    <ul>
+                                        {/* Map through reviews here */}
+                                        <li>
+                                            <strong>Muhammad Alim P.</strong>
+                                            <div>{/* Star Rating Here */}★★★★☆</div>
+                                            <p>my personal experience is so well what i expected but it match of my mind.</p>
+                                        </li>
+                                        {/* Repeat for other reviews */}
+                                    </ul>
+                                </div>
+                            </div>
+
+                        )}
+                    </div>
+
+                </div>
 
                 <aside className={styles.videoList}>
                     <div className={styles.courseContentHeader}>Nội dung khóa học</div>  {/* Tiêu đề mới */}
@@ -181,60 +339,7 @@ export const LessonPage = () => {
                     </ul>
                 </aside>
             </div>
-            <div className={styles.courseContainer}>
-                <nav className={styles.courseNav}>
-                    <ul className={styles.navList}>
-                        <li className={styles.navItem} onClick={() => setActiveSection('overview')}>Tổng quan</li>
-                        <li className={styles.navItem} onClick={() => setActiveSection('notes')}>Ghi chú</li>
 
-                        <li className={styles.navItem} onClick={() => setActiveSection('review')}>Đánh giá</li>
-
-                    </ul>
-                </nav>
-                {activeSection === 'overview' && (
-                    <div className={styles.courseOverview}>
-                        <h1>Giới thiệu về bài học</h1>
-                        <p>{currentLessonDescription}</p>
-                        <hr />
-                    </div>
-                )}
-                {activeSection === 'review' && (
-                    <div className={styles.reviewSection}>
-                    <div className={styles.overallRating}>
-                      <h2>Phản hồi của học viên</h2>
-                      <div className={styles.ratingValue}>4.7</div>
-                      <div>{/* Stars Rendering Component Here */}</div>
-                      <div className={styles.ratingBreakdown}>
-                        <div>★★★★★ 66%</div>
-                        <div>★★★★ 30%</div>
-                        <div>★★★ 4%</div>
-                        <div>★★ 0%</div>
-                        <div>★ 1%</div>
-                      </div>
-                    </div>
-                    <div className={styles.reviewList}>
-                      <h3>Đánh giá</h3>
-                      <div className={styles.searchSort}>
-                        <input type="text" placeholder="Tìm kiếm đánh giá" />
-                        <select>
-                          <option value="all">Tất cả xếp hạng</option>
-                          {/* Add more sorting options here */}
-                        </select>
-                      </div>
-                      <ul>
-                        {/* Map through reviews here */}
-                        <li>
-                          <strong>Muhammad Alim P.</strong>
-                          <div>{/* Star Rating Here */}★★★★☆</div>
-                          <p>my personal experience is so well what i expected but it match of my mind.</p>
-                        </li>
-                        {/* Repeat for other reviews */}
-                      </ul>
-                    </div>
-                  </div>
-                  
-                )}
-            </div>
 
 
             <footer className={styles.footer}>

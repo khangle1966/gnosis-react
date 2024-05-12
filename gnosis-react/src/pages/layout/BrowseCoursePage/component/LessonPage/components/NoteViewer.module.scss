@@ -1,0 +1,95 @@
+// File: NoteViewer.module.scss
+.detail {
+    display: flex;
+    justify-content: space-between; // Đảm bảo các phần tử được phân bổ đều trên cùng một hàng
+    align-items: center; // Căn giữa các items theo chiều dọc
+
+    p {
+        flex-grow: 1; // Cho phép phần văn bản mở rộng chiếm không gian còn lại
+        margin-right: 10px; // Tạo khoảng cách giữa văn bản và biểu tượng
+
+        strong {
+            color: #333; // Màu cho thời gian
+        }
+    }
+}
+
+.icon {
+    display: flex;
+    gap: 10px; // Khoảng cách giữa các biểu tượng
+
+    svg {
+        color: #0056b3; // Màu cho các biểu tượng
+        cursor: pointer; // Con trỏ chuột khi di chuyển qua biểu tượng
+        transition: color 0.3s ease; // Hiệu ứng chuyển màu khi hover
+
+        &:hover {
+            color: #ff4500; // Màu khi hover
+        }
+    }
+}
+
+ul {
+    list-style-type: none; // Xóa các dấu bullet điểm
+    padding-left: 0; // Xóa padding trái, điều này giúp danh sách căn đều với các phần tử khác
+}
+
+.liItem {
+    border-bottom: 1px solid #ccc;
+    padding: 10px 0;
+
+    &:last-child {
+        border-bottom: none;
+    }
+
+    .editMode {
+        background-color: #f7f7f7;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        .time {
+            padding-bottom: 5rem;
+        }
+
+        .quill {
+            .ql-toolbar {
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+            }
+
+            .ql-container {
+                border-bottom-left-radius: 8px;
+                border-bottom-right-radius: 8px;
+            }
+        }
+
+        .button {
+            margin-top: 20px;
+            margin-right: 10px;
+            padding: 8px 16px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+
+            &:first-child {
+                background-color: #007bff;
+                color: white;
+
+                &:hover {
+                    background-color: darken(#007bff, 10%);
+                }
+            }
+
+            &:last-child {
+                background-color: #6c757d;
+                color: white;
+
+                &:hover {
+                    background-color: darken(#6c757d, 10%);
+                }
+            }
+        }
+    }
+}

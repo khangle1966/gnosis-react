@@ -1,12 +1,9 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateCourse, submitCourse, resetCourse } from '../../../redux/action/courseActions';
+import { submitCourse, resetCourse } from '../../../redux/action/courseActions';
 import styles from "./InstructorsPage.module.scss";
-import axios from 'axios';
-import { imagedb } from '../../.././firebaseConfig';  // Sửa lại đường dẫn nhập khẩu cho đúng
 import { uploadImage } from '../../../redux/action/uploadActions'
 
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 
 const InstructorsPage = () => {

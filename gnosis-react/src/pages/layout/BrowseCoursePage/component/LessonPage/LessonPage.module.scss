@@ -1,255 +1,276 @@
-
 // LessonPage.module.scss
 .container {
-    display: flex;
-    flex-direction: column;
-    width: 100%; // Chiều rộng toàn bộ viewport
-    height: 100vh; // Chiều cao toàn bộ viewport
+  display: flex;
+  flex-direction: column;
+  width: 100%; // Chiều rộng toàn bộ viewport
+  height: 100vh; // Chiều cao toàn bộ viewport
 
-    .right {
-        display: flex;
-        flex-direction: row;
-        justify-content: flex-end;
-        margin:0 2rem;
-    }
-  
+  .right {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin: 0 2rem;
+  }
+
 }
 
 .header {
-    position: fixed;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;
-    background-color: #20232a;
-    color: white;
-    height: 5vh;
-    width: 100vw;
-    z-index: 1000; // Đảm bảo header nằm trên các phần tử khác
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  background-color: #20232a;
+  color: white;
+  height: 5vh;
+  width: 100vw;
+  z-index: 1000; // Đảm bảo header nằm trên các phần tử khác
 
 }
 
 .leftNav,
 .rightNav {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+}
+
+.rightNav {
+  cursor: pointer;
 }
 
 .backIcon,
 .noteIcon,
 .guideIcon {
-    font-size: 20px;
-    margin-right: 10px;
-    cursor: pointer;
+  font-size: 20px;
+  margin-right: 10px;
+  cursor: pointer;
 
 }
 
 .noteIcon {
-    padding-left: 2rem;
+  padding-left: 2rem;
 }
 
 .progressContainer {
-    display: flex;
-    align-items: center;
-    color: white;
+  display: flex;
+  align-items: center;
+  color: white;
 }
 
 .progressCircle {
-    width: 33px;
-    height: 33px;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: conic-gradient(rgb(10, 175, 46) 0%, rgb(5, 109, 45) 52%, transparent 52%, transparent 100%); // Tạo gradient theo cung tròn
-    position: relative;
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: conic-gradient(rgb(10, 175, 46) 0%, rgb(5, 109, 45) 52%, transparent 52%, transparent 100%); // Tạo gradient theo cung tròn
+  position: relative;
 }
 
 .progressPercentage {
-    position: absolute;
-    color: rgb(255, 255, 255);
-    font-weight: bold;
-    font-size: 13px;
-    z-index: 1;
+  position: absolute;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  font-size: 13px;
+  z-index: 1;
 }
 
 .lessonCount {
-    margin-left: 10px;
-    font-weight: normal;
+  margin-left: 10px;
+  font-weight: normal;
 }
 
 
 
 .main {
-    display: flex;
-    flex: 1; // Sử dụng toàn bộ không gian còn lại sau header
-    background: #f9f9f9; // Màu nền cho phần main
-    padding-top: 5vh; // Đảm bảo nội dung không bị che bởi header cố định
+  display: flex;
+  flex: 1; // Sử dụng toàn bộ không gian còn lại sau header
+  background: #f9f9f9; // Màu nền cho phần main
+  padding-top: 5vh; // Đảm bảo nội dung không bị che bởi header cố định
 
+  .containervideo {
+    flex: 3;
+    display: flex;
+    flex-direction: column;
+    padding-right: 20vw; // Để chừa không gian cho videolist
+
+  }
 }
 
 .videoContainer {
-    flex: 3;
-    background: url('https://wallpaperaccess.com/full/1129028.jpg') no-repeat center center;
-    background-size: cover;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative; // Có thể sử dụng absolute tùy thuộc vào layout của bạn
-    height: auto; // Đảm bảo container phù hợp với kích thước video
-    width: 100%; // Chiều rộng có thể điều chỉnh theo nhu cầu
+  flex: 3;
+  background: url('https://wallpaperaccess.com/full/1129028.jpg') no-repeat center center;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative; // Có thể sử dụng absolute tùy thuộc vào layout của bạn
+  height: auto; // Đảm bảo container phù hợp với kích thước video
+  width: 100%; // Chiều rộng có thể điều chỉnh theo nhu cầu
 
 }
 
 .reactPlayer {
-    max-width: 100%;
-    max-height: 70vh; // Giới hạn chiều cao tối đa của video
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); // Thêm bóng để tách biệt video ra khỏi nền
+  max-width: 100%;
+  max-height: 70vh; // Giới hạn chiều cao tối đa của video
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); // Thêm bóng để tách biệt video ra khỏi nền
 }
 
 .videoList {
-    width: 20%;
-    background-color: #fff;
-    overflow-y: auto; // Cho phép scroll độc lập
-    overflow-x: hidden; // Cho phép scroll độc lập
+  width: 20%;
+  background-color: #fff;
+  overflow-y: auto; // Cho phép scroll độc lập
+  overflow-x: hidden; // Cho phép scroll độc lập
+  position: fixed;
+  right: 0;
+  padding: 0;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Tăng cường bóng đổ
+  border-radius: 8px; // Bo góc cho khối
+  transition: all 0.3s ease;
+  max-height: 100vh; // Giới hạn chiều cao và cho phép scroll
+  z-index: 1000;
 
+  &::-webkit-scrollbar {
+    width: 3px; // Giảm kích thước rộng của thanh cuộn
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1; // Màu nền của track cuộn
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #228B22; // Màu của thumb cuộn
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555; // Màu của thumb khi hover
+  }
+
+  .courseContentHeader {
+    font-size: 18px; // Kích thước chữ lớn hơn
+    font-weight: bold; // Chữ đậm
+    color: #333; // Màu chữ tối
+    padding-bottom: 10px; // Đệm dưới để tạo khoảng cách với danh sách
+    border-bottom: 2px solid #e1e4e8; // Đường kẻ ngăn cách giữa tiêu đề và danh sách
+    margin-bottom: 20px; // Khoảng cách giữa tiêu đề và danh sách
+    padding: 20px
+  }
+
+
+  ul {
+    list-style: none;
+    margin: 0;
     padding: 0;
-    font-family: 'Arial', sans-serif;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1); // Tăng cường bóng đổ
-    border-radius: 8px; // Bo góc cho khối
-    transition: all 0.3s ease;
-    max-height: 100vh; // Giới hạn chiều cao và cho phép scroll
-    &::-webkit-scrollbar {
-        width: 3px; // Giảm kích thước rộng của thanh cuộn
+  }
+
+  li {
+    border-bottom: 1px solid #e1e4e8;
+    padding: 12px 20px; // Tăng padding cho mỗi item
+    transition: background-color 0.3s ease, transform 0.3s ease; // Thêm hiệu ứng chuyển đổi cho background và transform
+
+    &:last-child {
+      border-bottom: none;
     }
 
-    &::-webkit-scrollbar-track {
-        background: #f1f1f1; // Màu nền của track cuộn
+    &:hover {
+      background-color: #f7f7f7;
+      transform: translateX(5px); // Dịch chuyển nhẹ item khi hover
+    }
+  }
+
+  .chapterHeader {
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    color: #333;
+
+    .iconntittle {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 5px;
+
+      span {
+        font-weight: bold;
+        font-size: 16px;
+        transition: color 0.3s ease; // Hiệu ứng màu sắc cho tiêu đề
+      }
+
+      .faChevronUp,
+      .faChevronDown {
+        font-size: 16px;
+        transition: transform 0.3s ease; // Hiệu ứng xoay cho icon
+      }
     }
 
-    &::-webkit-scrollbar-thumb {
-        background: #228B22; // Màu của thumb cuộn
+    .chapterDetails {
+      display: flex;
+      align-items: center;
+      font-size: 14px;
+      color: #666;
+
+      .goingcourse,
+      .durationchapter {
+        font-size: 13px;
+        transition: color 0.3s ease; // Hiệu ứng màu sắc cho các thông tin chi tiết
+      }
+
+      .divider {
+        color: #ccc;
+        margin: 0 10px; // Tăng khoảng cách cho dấu gạch đứng
+      }
     }
 
-    &::-webkit-scrollbar-thumb:hover {
-        background: #555; // Màu của thumb khi hover
-    }
-    .courseContentHeader {
-        font-size: 18px; // Kích thước chữ lớn hơn
-        font-weight: bold; // Chữ đậm
-        color: #333; // Màu chữ tối
-        padding-bottom: 10px; // Đệm dưới để tạo khoảng cách với danh sách
-        border-bottom: 2px solid #e1e4e8; // Đường kẻ ngăn cách giữa tiêu đề và danh sách
-        margin-bottom: 20px; // Khoảng cách giữa tiêu đề và danh sách
-        padding:20px
-    }
-    ul {
-        list-style: none;
-        margin: 0;
-        padding: 0;
+    &:hover .faChevronUp,
+    &:hover .faChevronDown {
+      transform: rotate(180deg);
     }
 
-    li {
-        border-bottom: 1px solid #e1e4e8;
-        padding: 12px 20px; // Tăng padding cho mỗi item
-        transition: background-color 0.3s ease, transform 0.3s ease; // Thêm hiệu ứng chuyển đổi cho background và transform
-     
-        &:last-child {
-            border-bottom: none;
-        }
+    &:hover span {
+      color: #15af15; // Thay đổi màu khi hover vào tiêu đề
+    }
+  }
 
-        &:hover {
-            background-color: #f7f7f7;
-            transform: translateX(5px); // Dịch chuyển nhẹ item khi hover
-        }
+  .lessonList {
+    padding: 0 20px;
+    display: block;
+  }
+
+  .lessonItem {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+
+    .lessonIcon {
+      color: #4CAF50;
+      margin-right: 10px;
+      font-size: 12px;
     }
 
-    .chapterHeader {
-        display: flex;
-        flex-direction: column;
-        cursor: pointer;
-        color: #333;
-
-        .iconntittle {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 5px;
-
-            span {
-                font-weight: bold;
-                font-size: 16px;
-                transition: color 0.3s ease; // Hiệu ứng màu sắc cho tiêu đề
-            }
-
-            .faChevronUp, .faChevronDown {
-                font-size: 16px;
-                transition: transform 0.3s ease; // Hiệu ứng xoay cho icon
-            }
-        }
-
-        .chapterDetails {
-            display: flex;
-            align-items: center;
-            font-size: 14px;
-            color: #666;
-
-            .goingcourse, .durationchapter {
-                font-size: 13px;
-                transition: color 0.3s ease; // Hiệu ứng màu sắc cho các thông tin chi tiết
-            }
-
-            .divider {
-                color: #ccc;
-                margin: 0 10px; // Tăng khoảng cách cho dấu gạch đứng
-            }
-        }
-
-        &:hover .faChevronUp, &:hover .faChevronDown {
-            transform: rotate(180deg);
-        }
-
-        &:hover span {
-            color: #15af15; // Thay đổi màu khi hover vào tiêu đề
-        }
+    .lessonName {
+      flex-grow: 1;
+      color: #555;
+      font-size: 14px;
+      transition: font-weight 0.3s ease; // Hiệu ứng font-weight khi hover
     }
 
-    .lessonList {
-        padding: 0 20px;
-        display: block;
+    .lessonDuration {
+      color: #888;
+      font-size: 14px;
     }
 
-    .lessonItem {
-        display: flex;
-        align-items: center;
-        margin-bottom: 5px;
-        transition: background-color 0.3s ease;
-        cursor: pointer;
-        .lessonIcon {
-            color: #4CAF50;
-            margin-right: 10px;
-            font-size: 12px;
-        }
+    &:hover {
+      background-color: #f0f0f0; // Nhẹ nhàng thay đổi màu nền khi hover
 
-        .lessonName {
-            flex-grow: 1;
-            color: #555;
-            font-size: 14px;
-            transition: font-weight 0.3s ease; // Hiệu ứng font-weight khi hover
-        }
-
-        .lessonDuration {
-            color: #888;
-            font-size: 14px;
-        }
-
-        &:hover {
-            background-color: #f0f0f0; // Nhẹ nhàng thay đổi màu nền khi hover
-            .lessonName {
-                font-weight: bold; // Làm đậm tên bài học khi hover
-            }
-        }
+      .lessonName {
+        font-weight: bold; // Làm đậm tên bài học khi hover
+      }
     }
+  }
 }
 
 
@@ -257,149 +278,206 @@
 
 .loading,
 .error {
-    color: #cc0000;
-    font-size: 20px;
-    text-align: center;
-    padding: 20px;
+  color: #cc0000;
+  font-size: 20px;
+  text-align: center;
+  padding: 20px;
 }
+
 .courseContainer {
-    background-color: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
-  
-    .courseNav {
-      background-color: #f9f9f9; // Light grey background for differentiation
-      padding: 15px 20px;
-      border-bottom: 1px solid #e0e0e0; // Adds a subtle border line
-  
-      ul {
-        list-style: none;
-        display: flex;
-        margin: 0;
-        padding: 0;
-        align-items: center;
-  
-        li {
-          margin-right: 25px; // Space between items
-          font-size: 16px;
-          color: #333;
-          padding: 8px 12px;
-          cursor: pointer;
-          border-radius: 5px; // Slightly rounded corners for a modern look
-          transition: background-color 0.3s, color 0.3s;
-  
-          &:hover, &.active {
-            
-            color: #1a1919; // White text on active/hover
-          }
-        }
-      }
+  background-color: #fff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+
+  .courseNav {
+    background-color: #f9f9f9; // Light grey background for differentiation
+    padding: 15px 20px;
+    border-bottom: 1px solid #e0e0e0; // Adds a subtle border line
+
+
+    .ratingandescription {
+
+      display: flex;
     }
-  
-    .courseOverview {
-      padding: 3rem 15rem 15rem 15rem;
-      h1 {
-        margin-top: 0;
-        margin-bottom: 10px; // Adjust space between the title and text
-        color: #333;
-        font-size: 24px;
-        font-weight: bold; // Bold for the title
-      }
-  
-      p {
-        margin-top: 0;
-        margin-bottom: 20px;
-        color: #666;
-        font-size: 16px;
-        line-height: 1.5; // Improving readability with line height
-      }
-  
-      hr {
-        border: 0;
-        height: 2px; // Thicker line for more prominence
-        background-color: #e0e0e0;
-        margin-bottom: 0;
-      }
+
+    .navList {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
     }
-  }
-  .reviewSection {
-    display: flex;
-    flex-direction: column;
-    margin: 20px;
-    font-family: Arial, sans-serif; 
-    padding: 0 15rem 15rem 15rem;
-  
-    .overallRating, .reviewList {
-      background: #fff;
-      padding: 20px;
+
+    .notesContainer {
+      padding: 10px;
+      border-left: 2px solid #ccc;
+      /* Thêm đường viền phân cách nếu cần */
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notesHeader {
+      display: flex;
+      align-items: center;
+      margin-right: 7rem;
+    }
+
+    .notesIcon {
+      margin-right: 10px;
+    }
+
+    .notesInput {
+      flex-grow: 1;
+      /* Cho phép textarea chiếm phần lớn không gian trong container */
+      margin: 10px 0;
+    }
+
+    .saveNoteButton {
+      align-self: flex-end;
+      /* Đặt nút ở cuối bên phải của container */
+      padding: 5px 10px;
+      cursor: pointer;
+      background-color: #007BFF;
+      /* Màu nền cho nút */
+      color: white;
+      /* Màu chữ cho nút */
+      border: none;
       border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-      margin-bottom: 20px;
     }
-  
-    .overallRating {
-      h2 {
-        margin-top: 0;
-      }
-  
-      .ratingValue {
-        font-size: 48px;
-        color: #FFA500; // Gold color for rating
-      }
-  
-      .ratingBreakdown {
-        div {
-          margin-bottom: 5px;
-        }
-      }
-    }
-  
-    .reviewList {
-      h3 {
-        margin-top: 0;
-      }
-  
-      .searchSort {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 20px;
-  
-        input {
-          flex-grow: 1;
-          margin-right: 10px;
-          padding: 8px;
-          border: 1px solid #ccc;
-          border-radius: 4px;
-        }
-  
-        select {
-          width: 200px;
-          padding: 8px;
-          border-radius: 4px;
-          border: 1px solid #ccc;
-        }
-      }
-  
-      ul {
-        list-style: none;
-        padding: 0;
-  
-        li {
-          border-bottom: 1px solid #eee;
-          padding: 10px 0;
-  
-          strong {
-            display: block;
-            color: #333;
-          }
+
+    ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+      align-items: center;
+
+      li {
+        margin-right: 25px; // Space between items
+        font-size: 16px;
+        color: #333;
+        padding: 8px 12px;
+        cursor: pointer;
+        border-radius: 5px; // Slightly rounded corners for a modern look
+        transition: background-color 0.3s, color 0.3s;
+
+        &:hover,
+        &.active {
+
+          color: #1a1919; // White text on active/hover
         }
       }
     }
   }
-  
+
+  .courseOverview {
+    padding: 3rem 15rem 15rem 15rem;
+
+    h1 {
+      margin-top: 0;
+      margin-bottom: 10px; // Adjust space between the title and text
+      color: #333;
+      font-size: 24px;
+      font-weight: bold; // Bold for the title
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #666;
+      font-size: 16px;
+      line-height: 1.5; // Improving readability with line height
+    }
+
+    hr {
+      border: 0;
+      height: 2px; // Thicker line for more prominence
+      background-color: #e0e0e0;
+      margin-bottom: 0;
+    }
+  }
+}
+
+.reviewSection {
+  display: flex;
+  flex-direction: column;
+  margin: 20px;
+  font-family: Arial, sans-serif;
+  padding: 0 15rem 15rem 15rem;
+
+  .overallRating,
+  .reviewList {
+    background: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+  }
+
+  .overallRating {
+    h2 {
+      margin-top: 0;
+    }
+
+    .ratingValue {
+      font-size: 48px;
+      color: #FFA500; // Gold color for rating
+    }
+
+    .ratingBreakdown {
+      div {
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  .reviewList {
+    h3 {
+      margin-top: 0;
+    }
+
+    .searchSort {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+
+      input {
+        flex-grow: 1;
+        margin-right: 10px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      select {
+        width: 200px;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+
+      li {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+
+        strong {
+          display: block;
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
 .footer {
-    background-color: #1a1a1a;
-    color: #fff;
-    text-align: center;
-    padding: 10px 20px;
-    width: 100vw;
+
+  background-color: #1a1a1a;
+  color: #fff;
+  text-align: center;
+  padding: 10px 20px;
+  width: 80%;
 }

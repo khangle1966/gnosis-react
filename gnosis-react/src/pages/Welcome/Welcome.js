@@ -76,7 +76,7 @@ const Welcome = () => {
                     </div>
                 </div>
                 <div className={styles.footer_white}>
-                    <b className={styles.hotline}>Hotline: 0808123508</b>
+                    <b className={styles.hotline}>Hotline: 0868202827</b>
                     <div className={styles.container_social}>
                         <b className={styles.socialLabel}>Follow us on:</b>
                         <div className={styles.icon_social}>
