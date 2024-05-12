@@ -28,6 +28,8 @@ export const LessonPage = () => {
     const { chapters, } = useSelector(state => state.chapterDetail);
     const { lessons } = useSelector(state => state.lessonDetail);
     const { lessonscomplete } = useSelector(state => state.lessonComplete);
+    const [activeSection, setActiveSection] = useState('overview'); // Default to 'overview'
+    const [lessonDescription, setLessonDescription] = useState('');
 
     console.log(lessonscomplete);
     console.log(chapters);
@@ -43,6 +45,7 @@ export const LessonPage = () => {
 
     }, [dispatch, courseId, userId, lessonId]);
 
+    const currentLessonDescription = lessons.find(lesson => lesson._id === lessonId)?.description || "Loading lesson description...";
 
     const formatDurationFromSeconds = (seconds) => {
         const hours = Math.floor(seconds / 3600);
@@ -177,6 +180,60 @@ export const LessonPage = () => {
                         ))}
                     </ul>
                 </aside>
+            </div>
+            <div className={styles.courseContainer}>
+                <nav className={styles.courseNav}>
+                    <ul className={styles.navList}>
+                        <li className={styles.navItem} onClick={() => setActiveSection('overview')}>Tổng quan</li>
+                        <li className={styles.navItem} onClick={() => setActiveSection('notes')}>Ghi chú</li>
+
+                        <li className={styles.navItem} onClick={() => setActiveSection('review')}>Đánh giá</li>
+
+                    </ul>
+                </nav>
+                {activeSection === 'overview' && (
+                    <div className={styles.courseOverview}>
+                        <h1>Giới thiệu về bài học</h1>
+                        <p>{currentLessonDescription}</p>
+                        <hr />
+                    </div>
+                )}
+                {activeSection === 'review' && (
+                    <div className={styles.reviewSection}>
+                    <div className={styles.overallRating}>
+                      <h2>Phản hồi của học viên</h2>
+                      <div className={styles.ratingValue}>4.7</div>
+                      <div>{/* Stars Rendering Component Here */}</div>
+                      <div className={styles.ratingBreakdown}>
+                        <div>★★★★★ 66%</div>
+                        <div>★★★★ 30%</div>
+                        <div>★★★ 4%</div>
+                        <div>★★ 0%</div>
+                        <div>★ 1%</div>
+                      </div>
+                    </div>
+                    <div className={styles.reviewList}>
+                      <h3>Đánh giá</h3>
+                      <div className={styles.searchSort}>
+                        <input type="text" placeholder="Tìm kiếm đánh giá" />
+                        <select>
+                          <option value="all">Tất cả xếp hạng</option>
+                          {/* Add more sorting options here */}
+                        </select>
+                      </div>
+                      <ul>
+                        {/* Map through reviews here */}
+                        <li>
+                          <strong>Muhammad Alim P.</strong>
+                          <div>{/* Star Rating Here */}★★★★☆</div>
+                          <p>my personal experience is so well what i expected but it match of my mind.</p>
+                        </li>
+                        {/* Repeat for other reviews */}
+                      </ul>
+                    </div>
+                  </div>
+                  
+                )}
             </div>
 
 

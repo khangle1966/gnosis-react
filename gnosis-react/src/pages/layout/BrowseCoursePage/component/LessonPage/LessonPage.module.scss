@@ -262,7 +262,140 @@
     text-align: center;
     padding: 20px;
 }
-
+.courseContainer {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+  
+    .courseNav {
+      background-color: #f9f9f9; // Light grey background for differentiation
+      padding: 15px 20px;
+      border-bottom: 1px solid #e0e0e0; // Adds a subtle border line
+  
+      ul {
+        list-style: none;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        align-items: center;
+  
+        li {
+          margin-right: 25px; // Space between items
+          font-size: 16px;
+          color: #333;
+          padding: 8px 12px;
+          cursor: pointer;
+          border-radius: 5px; // Slightly rounded corners for a modern look
+          transition: background-color 0.3s, color 0.3s;
+  
+          &:hover, &.active {
+            
+            color: #1a1919; // White text on active/hover
+          }
+        }
+      }
+    }
+  
+    .courseOverview {
+      padding: 3rem 15rem 15rem 15rem;
+      h1 {
+        margin-top: 0;
+        margin-bottom: 10px; // Adjust space between the title and text
+        color: #333;
+        font-size: 24px;
+        font-weight: bold; // Bold for the title
+      }
+  
+      p {
+        margin-top: 0;
+        margin-bottom: 20px;
+        color: #666;
+        font-size: 16px;
+        line-height: 1.5; // Improving readability with line height
+      }
+  
+      hr {
+        border: 0;
+        height: 2px; // Thicker line for more prominence
+        background-color: #e0e0e0;
+        margin-bottom: 0;
+      }
+    }
+  }
+  .reviewSection {
+    display: flex;
+    flex-direction: column;
+    margin: 20px;
+    font-family: Arial, sans-serif; 
+    padding: 0 15rem 15rem 15rem;
+  
+    .overallRating, .reviewList {
+      background: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+  
+    .overallRating {
+      h2 {
+        margin-top: 0;
+      }
+  
+      .ratingValue {
+        font-size: 48px;
+        color: #FFA500; // Gold color for rating
+      }
+  
+      .ratingBreakdown {
+        div {
+          margin-bottom: 5px;
+        }
+      }
+    }
+  
+    .reviewList {
+      h3 {
+        margin-top: 0;
+      }
+  
+      .searchSort {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+  
+        input {
+          flex-grow: 1;
+          margin-right: 10px;
+          padding: 8px;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+        }
+  
+        select {
+          width: 200px;
+          padding: 8px;
+          border-radius: 4px;
+          border: 1px solid #ccc;
+        }
+      }
+  
+      ul {
+        list-style: none;
+        padding: 0;
+  
+        li {
+          border-bottom: 1px solid #eee;
+          padding: 10px 0;
+  
+          strong {
+            display: block;
+            color: #333;
+          }
+        }
+      }
+    }
+  }
+  
 .footer {
     background-color: #1a1a1a;
     color: #fff;
