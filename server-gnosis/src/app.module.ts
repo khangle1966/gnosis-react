@@ -18,6 +18,7 @@ import { CategoryModule } from './category/category.module';
 import { ChapterModule } from './chapter/chapter.module';
 import { UploadModule } from './upload/upload.module';
 import { CartModule } from './cart/cart.module';
+import { MomoModule } from './momo/momo.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { CartModule } from './cart/cart.module';
     ChapterModule,
     UploadModule,
     CartModule,
+    MomoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

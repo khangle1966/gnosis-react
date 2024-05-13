@@ -107,7 +107,7 @@ const CartPage = () => {
                         <div className={styles.totalPrice}>
                             <strong>Total:</strong> ${totalPrice.toFixed(2)}
                         </div>
-                        <button onClick={handleBuyAll} className={styles.buyAllButton}>Buy</button>
+                        <button onClick={handleBuyAll} className={styles.buyAllButton}>Payment</button>
                     </div>
                 </section>
             </main>

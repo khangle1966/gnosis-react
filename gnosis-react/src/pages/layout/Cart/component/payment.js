@@ -53,10 +53,6 @@ const PaymentPage = () => {
 
         <h2>Choose your payment method:</h2>
         <div>
-          <input type="radio" id="cod" name="paymentMethod" value="cod" />
-          <label htmlFor="cod">Cash on Delivery</label>
-        </div>
-        <div>
           <input type="radio" id="momo" name="paymentMethod" value="momo" />
           <label htmlFor="momo">Momo Wallet</label>
         </div>
