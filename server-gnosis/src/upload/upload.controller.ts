@@ -1,26 +1,29 @@
-import { Controller, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Controller, HttpException, HttpStatus, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import * as path from 'path';
+
 import { UploadService } from './upload.service';
+import { memoryStorage } from 'multer';
 
 @Controller('upload')
 export class UploadController {
   constructor(private readonly uploadService: UploadService) { }
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', {
-    storage: diskStorage({
-      destination: './uploads',  // Thư mục lưu trữ
-      filename: (_req, file, cb) => {
-        const filename: string = path.parse(file.originalname).name.replace(/\s/g, '') + new Date().getTime();
-        const extension: string = path.parse(file.originalname).ext;
-        cb(null, `${filename}${extension}`)
-      }
-    })
-  }))
+  @UseInterceptors(FileInterceptor('image', { storage: memoryStorage() }))
   async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    const response = await this.uploadService.createImageRecord(file);
-    return response;
+      if (!file) {
+          throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
+      }
+      const response = await this.uploadService.createImageRecord(file);
+      return response;
+  }
+  @Post('video')
+  @UseInterceptors(FileInterceptor('video', { storage: memoryStorage() }))
+  async uploadVideo(@UploadedFile() file: Express.Multer.File) {
+      if (!file) {
+          throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
+      }
+      const response = await this.uploadService.createVideoRecord(file);
+      return response;
   }
 }

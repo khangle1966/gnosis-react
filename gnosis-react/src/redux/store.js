@@ -6,7 +6,9 @@ import lessonReduver from './reducers/lessonReduver'; // Đã sửa tên biến 
 import { chapterReducer } from './reducers/chapterReducer';
 import profileReducer from './reducers/profileReducer';
 import cartReducer from './reducers/cartReducer';
-
+import { videoUploadReducer } from './reducers/uploadReducer';
+import lessonReducer from './reducers/lessonCompleteReducer';
+import { notesReducer, noteAddReducer } from './reducers/noteReducer';
 
 // Combine reducers để tạo rootReducer
 const rootReducer = combineReducers({
@@ -17,6 +19,10 @@ const rootReducer = combineReducers({
     lessonDetail: lessonReduver,
     chapterDetail: chapterReducer,
     cart: cartReducer,
+    uploadVideo: videoUploadReducer,
+    lessonComplete: lessonReducer,
+    notesData: notesReducer,
+    noteAdd: noteAddReducer,
 });
 
 // Tạo store với rootReducer và middleware

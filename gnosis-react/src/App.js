@@ -14,7 +14,9 @@ import ProfilePage from './pages/layout/ProfilePage/ProfilePage';
 import CartPage from './pages/layout/Cart/cart';
 import InstructorsPage from './pages/layout/InstructorsPage/InstructorsPage';
 import HomePage from './pages/layout/HomePage/Homepage';
+import LessonPage from './pages/layout/BrowseCoursePage/component/LessonPage/LessonPage';
 import PaymentPage from './pages/layout/Cart/component/payment';
+
 function App() {
   return (
     <Provider store={store} >
@@ -33,6 +35,8 @@ function App() {
 
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="course/:courseId/lesson/:lessonId" element={<LessonPage />} />
+
           <Route path="/welcome" element={<Welcome />} />
           <Route path="/register" element={<Register />} />
           <Route path="/createprofile" element={<CreateProfilePage />} />

@@ -1,5 +1,6 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
+import { Image } from '../../upload/entities/image.entity';  // Đảm bảo đường dẫn đến file Image entity đúng
 
 export type CourseDocument = HydratedDocument<Course>;
 

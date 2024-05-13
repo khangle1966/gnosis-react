@@ -19,6 +19,9 @@ import { ChapterModule } from './chapter/chapter.module';
 import { UploadModule } from './upload/upload.module';
 import { CartModule } from './cart/cart.module';
 import { MomoModule } from './momo/momo.module';
+import { LessonCompletionModule } from './lesson-completion/lesson-completion.module';
+import { NoteModule } from './note/note.module';
+
 
 @Module({
   imports: [
@@ -43,6 +46,9 @@ import { MomoModule } from './momo/momo.module';
     UploadModule,
     CartModule,
     MomoModule,
+    LessonCompletionModule,
+    NoteModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],

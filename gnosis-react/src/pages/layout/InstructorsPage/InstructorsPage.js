@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { updateCourse, submitCourse, resetCourse } from '../../../redux/action/courseActions';
+import { submitCourse, resetCourse } from '../../../redux/action/courseActions';
 import styles from "./InstructorsPage.module.scss";
-import axios from 'axios';
+import { uploadImage } from '../../../redux/action/uploadActions'
+
+
+
 const InstructorsPage = () => {
+
     const { user } = useSelector(state => state.auth);
-    
+
     const dispatch = useDispatch();
     const [courseSubmitted, setCourseSubmitted] = useState(false);
+    const [img, setImg] = useState(null);
+    const [isImageUploaded, setIsImageUploaded] = useState(false);
 
     const [course, setCourse] = useState({
 
@@ -26,41 +32,44 @@ const InstructorsPage = () => {
         isReleased: false,
     });
     // get user info from reducer 
-    const [isImageUploaded, setIsImageUploaded] = useState(false);
     console.log('Course Data:', course); // Kiểm tra toàn bộ object course
+
+
     const handleChange = (event) => {
         const { id, value } = event.target;
         setCourse(prevCourse => ({ ...prevCourse, [id]: value }));
     };
-    const handleUploadClick = () => {
-        // Kích hoạt input file ẩn khi người dùng nhấn vào nút "Upload"
-        document.getElementById('imageInput').click();
-    };
-
     const handleImageChange = async (event) => {
         const imageFile = event.target.files[0];
         if (imageFile) {
-            const formData = new FormData();
-            formData.append('image', imageFile);
             try {
-                const response = await axios.post('http://localhost:3000/upload', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                setCourse(prevCourse => ({ ...prevCourse, img: response.data.url }));
+                const imageUrl = await dispatch(uploadImage(imageFile)); // Upload image and get back the URL
                 setIsImageUploaded(true);
-                console.log('Image uploaded and URL received:', response.data.url);
+                setImg(imageUrl);  // Cập nhật state img để kiểm tra điều kiện render hình ảnh
+                setCourse(prevCourse => ({
+                    ...prevCourse,
+                    img: imageUrl // Store image URL in the course state
+                }));
+                console.log('Image URL:', imageUrl);  // Log URL mới để kiểm tra
+
             } catch (error) {
                 console.error('Error uploading image:', error);
+                alert("Lỗi tải ảnh lên. Vui lòng thử lại."); // Thông báo lỗi trực quan
             }
         }
     };
-    const handleSubmit = (event) => {
+
+
+
+
+
+    const handleSubmit = async (event) => {
         event.preventDefault();
+
         dispatch(submitCourse(course));
-        setCourseSubmitted(true); // Đặt trạng thái thành công khi gửi khóa học
+        setCourseSubmitted(true);
     };
+
 
     const handleReset = () => {
         setCourse({
@@ -74,7 +83,7 @@ const InstructorsPage = () => {
     };
 
     return (
-        
+
         <div className={styles.Container}>
             {courseSubmitted && (
                 <div className={styles.successMessage}>
@@ -127,22 +136,13 @@ const InstructorsPage = () => {
                     </div>
                 </div>
                 <div className={styles.rightSection}>
-                    <input type="file" id="imageInput" accept="image/*" style={{ display: 'none' }} onChange={handleImageChange} />
-                    <div className={styles.uploadSection}>
-                        <div className={styles.uploadArea}>
-                            {/* Hiển thị hình ảnh đã chọn (nếu có) */}
-
-                            {course.img && <img src={course.img} alt="Course Cover" style={{ width: 'auto', height: '100%' }} />}
-                            <button type="button" className={styles.uploadBtn} onClick={handleUploadClick} style={{ opacity: isImageUploaded ? 0 : 1 }}>📷 Upload</button>
-
-                            {/* Nút "Upload" để kích hoạt input file */}
-
-                        </div>
-                    </div>
-
-
-                    {/* Các phần bổ sung về upload ảnh và quản lý bài giảng có thể được thêm vào đây */}
+                    <input type="file" id="imageInput" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
+                    <button type="button" className={styles.uploadBtn} onClick={() => document.getElementById('imageInput').click()}>
+                        Choose File
+                    </button>
+                    {course.img && <img src={course.img} alt="Course Cover" className={styles.uploadedImage} />}
                 </div>
+
 
             </form>
         </div>

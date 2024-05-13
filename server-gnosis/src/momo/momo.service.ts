@@ -1,32 +1,38 @@
-import { Injectable, HttpService } from '@nestjs/common';
-import { map } from 'rxjs/operators';
-import * as crypto from 'crypto';
+// momo.service.ts
+import { Injectable} from '@nestjs/common';
+import {  HttpService } from '@nestjs/axios';
+import { AxiosResponse } from 'axios';
 
 @Injectable()
 export class MomoService {
+  private endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
+
   constructor(private httpService: HttpService) {}
 
-  async createPayment(data: any) {
-    const endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
-    const partnerCode = 'MOMOBKUN20180529';
-    const accessKey = 'klm05TvNBzhg7h7j';
-    const secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
-    const {
-      orderId,
-      orderInfo,
-      amount,
-      ipnUrl,
-      redirectUrl,
-      extraData = "",
-    } = data;
+  async execPostRequest(url: string, data: any): Promise<any> {
+    try {
+      const response = await this.httpService.post(url, data, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(JSON.stringify(data)).toString()
+        },
+        timeout: 5000
+      }).toPromise();
+      return response.data;
+    } catch (error) {
+      console.error('Failed to send POST request:', error);
+      throw new Error('Failed to send POST request');
+    }
+  }
 
+  async createPayment(paymentData: any): Promise<string> {
+    const { partnerCode, accessKey, secretKey, orderId, orderInfo, amount, ipnUrl, redirectUrl, extraData } = paymentData;
     const requestId = Date.now().toString();
     const requestType = "payWithATM";
-
     const rawHash = `accessKey=${accessKey}&amount=${amount}&extraData=${extraData}&ipnUrl=${ipnUrl}&orderId=${orderId}&orderInfo=${orderInfo}&partnerCode=${partnerCode}&redirectUrl=${redirectUrl}&requestId=${requestId}&requestType=${requestType}`;
-    const signature = crypto.createHmac('sha256', secretKey).update(rawHash).digest('hex');
+    const signature = this.hashHmac(rawHash, secretKey);
 
-    const payload = {
+    const data = {
       partnerCode,
       partnerName: "Test",
       storeId: "MomoTestStore",
@@ -34,20 +40,20 @@ export class MomoService {
       amount,
       orderId,
       orderInfo,
-      redirectUrl,
-      ipnUrl,
+      redirectUrl: 'http://localhost:4000/cart',
+      ipnUrl: 'http://localhost:4000/cart',
       lang: 'vi',
       extraData,
       requestType,
-      signature,
+      signature
     };
 
-    return this.httpService.post(endpoint, payload, {
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    }).pipe(
-      map(response => response.data)
-    ).toPromise();
+    const result = await this.execPostRequest(this.endpoint, data);
+    return result.payUrl;
+  }
+
+  private hashHmac(data: string, key: string): string {
+    const crypto = require('crypto');
+    return crypto.createHmac('sha256', key).update(data).digest('hex');
   }
 }

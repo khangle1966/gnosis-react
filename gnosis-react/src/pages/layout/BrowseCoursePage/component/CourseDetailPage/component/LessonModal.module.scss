@@ -3,6 +3,8 @@ $primary-color: #5D93E1; // Màu chủ đạo cho nút và liên kết
 $background-color: #fff; // Màu nền cho modal
 $text-color: #333; // Màu chữ chính
 $placeholder-color: #888; // Màu placeholder
+$video-accent-color: #ebeaea; // Màu sắc nổi bật cho các phần liên quan đến video
+$disabled-color: #a5a0a0;
 
 .modal {
     position: fixed;
@@ -13,9 +15,9 @@ $placeholder-color: #888; // Màu placeholder
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.1); // Thêm một nền mờ cho modal để làm nổi bật nó hơn
-    z-index: 1001; // Đảm bảo modal nằm trên các thành phần khác
-    transition: opacity 0.3s ease-in-out;
+    background-color: rgba(0, 0, 0, 0.4); // Điều chỉnh độ mờ của nền modal
+    z-index: 1001;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
     opacity: 0;
     visibility: hidden;
 
@@ -26,7 +28,7 @@ $placeholder-color: #888; // Màu placeholder
 
     form {
         width: 100%;
-        max-width: 500px; // Giới hạn chiều rộng tối đa của form
+        max-width: 500px;
         background: $background-color;
         padding: 20px;
         border-radius: 8px;
@@ -35,11 +37,10 @@ $placeholder-color: #888; // Màu placeholder
         transform: translateY(-50px);
         position: relative;
 
-
-
         input[type="text"],
         input[type="number"],
-        textarea {
+        textarea,
+        input[type="file"] {
             width: 100%;
             padding: 12px 15px;
             margin-bottom: 20px;
@@ -57,21 +58,39 @@ $placeholder-color: #888; // Màu placeholder
             }
         }
 
+        input[type="file"] {
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+
+            &:hover {
+                background-color: $video-accent-color;
+                color: $background-color;
+            }
+        }
+
         textarea {
             height: 120px;
             resize: none;
         }
 
-        button {
+        .button {
             width: 100%;
             padding: 15px 0;
             font-size: 16px;
             font-weight: bold;
             color: #fff;
+
             background: linear-gradient(135deg, $primary-color, darken($primary-color, 10%));
             border: none;
             border-radius: 4px;
             cursor: pointer;
+
+
+            &:disabled {
+                background: linear-gradient(135deg, darken($disabled-color, 10%), $disabled-color) !important;
+                cursor: not-allowed !important;
+
+            }
 
             &:hover {
                 background: linear-gradient(135deg, darken($primary-color, 10%), $primary-color);
@@ -79,6 +98,31 @@ $placeholder-color: #888; // Màu placeholder
 
             &:first-of-type {
                 margin-bottom: 15px;
+            }
+
+
+        }
+
+        .spinner {
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            /* Light grey border */
+            border-top-color: #fff;
+            /* White border color for the top border */
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            display: inline-block;
+            align-items: center;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
             }
         }
     }

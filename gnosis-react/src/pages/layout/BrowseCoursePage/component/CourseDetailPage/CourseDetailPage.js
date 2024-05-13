@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './CourseDetailPage.module.scss';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLessonsByCourseId, fetchLessonsBychapterId, addLesson, deleteLesson } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId, addChapter, removeChapter, updateChapterTitle } from '../../../../../redux/action/chapterActions';
 import renderStars from './renderStars';
 import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { addToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { updateChapterOrder } from '../../../../../redux/action/chapterActions';
@@ -15,6 +16,7 @@ import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn 
 
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
     const { courseDetail, loading: loadingCourse, error: errorCourse } = useSelector(state => state.courseDetail);
@@ -25,8 +27,7 @@ export const CourseDetailPage = () => {
     const { rating } = courseDetail;
 
     const { user } = useSelector(state => state.auth);
-    const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0 });
-    const [showAddLessonForm, setShowAddLessonForm] = useState(null); // Quản lý việc hiển thị form của từng chapter
+    const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0, courseId: courseId });
     const [showModal, setShowModal] = useState(false);
 
     const [groupedChapters, setGroupedChapters] = useState([]);
@@ -47,7 +48,7 @@ export const CourseDetailPage = () => {
     const [selectedChapter, setSelectedChapter] = useState(null);
 
     const [editMode, setEditMode] = useState(false);
-    const { totalChapters, totalLessons, totalHours, totalMinutes } = useMemo(() => {
+    const { totalChapters, totalLessons, formattedDuration } = useMemo(() => {
         const totalChapters = groupedChapters.length;
         const totalLessons = groupedChapters.reduce((total, chapter) => {
             return total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0);
@@ -55,15 +56,20 @@ export const CourseDetailPage = () => {
 
         const totalDurationSeconds = groupedChapters.reduce((total, chapter) => {
             return total + (Array.isArray(chapter.lessons) ? chapter.lessons.reduce((chapterTotal, lesson) => {
-                return chapterTotal + ((typeof lesson.duration === 'number') ? lesson.duration * 3600 : 0);
+                return chapterTotal + ((typeof lesson.duration === 'number') ? lesson.duration : 0);
             }, 0) : 0);
         }, 0);
 
-        const totalHours = Math.floor(totalDurationSeconds / 3600);
-        const totalMinutes = Math.floor((totalDurationSeconds % 3600) / 60);
+        // Format duration from seconds to a readable format
+        const hours = Math.floor(totalDurationSeconds / 3600);
+        const minutes = Math.floor((totalDurationSeconds % 3600) / 60);
+        const seconds = Math.floor(totalDurationSeconds % 60);
+        const formattedDuration = `${hours} giờ ${minutes} phút ${seconds} giây`;
 
-        return { totalChapters, totalLessons, totalHours, totalMinutes };
+        return { totalChapters, totalLessons, formattedDuration };
     }, [groupedChapters]);
+
+
 
 
     useEffect(() => {
@@ -132,6 +138,22 @@ export const CourseDetailPage = () => {
 
 
 
+    const formatDurationFromSeconds = (seconds) => {
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const remainingSeconds = Math.round(seconds % 60);
+
+        let formattedDuration = '';
+
+
+        if (hours > 0) {
+            formattedDuration += `${hours} giờ `;
+        }
+
+        formattedDuration += `${minutes} phút ${remainingSeconds} giây`;
+
+        return formattedDuration;
+    };
 
     const handleAddToCart = () => {
         console.log(courseDetail);
@@ -154,6 +176,9 @@ export const CourseDetailPage = () => {
         dispatch(updateChapterTitle(chapterId, title));
         setSelectedChapter(null);
 
+    };
+    const handleLessonClick = (lessonId) => {
+        navigate(`lesson/${lessonId}`);
     };
     const handleAddChapter = (currentChapterId) => {
         const index = groupedChapters.findIndex(chapter => chapter._id === currentChapterId);
@@ -181,15 +206,14 @@ export const CourseDetailPage = () => {
 
     };
 
-
-    const handleAddLesson = (event) => {
-        event.preventDefault();
-        const lessonData = { ...newLesson, chapterId: selectedChapterId };
-        dispatch(addLesson(lessonData));  // Gửi action đến Redux store
+    const handleAddLesson = (lesson) => {
+        const lessonData = { ...lesson, chapterId: selectedChapterId };
+        dispatch(addLesson(lessonData)); // Gửi action đến Redux store
 
         setShowModal(false); // Đóng modal sau khi submit
-        setNewLesson({ title: '', description: '', duration: 0 }); // Reset form
+        setNewLesson({ title: '', description: '', duration: 0, courseId: courseId }); // Reset form
     };
+
 
     const handleDeleteLesson = (lessonId) => {
         dispatch(deleteLesson(lessonId));
@@ -216,9 +240,7 @@ export const CourseDetailPage = () => {
     };
 
 
-    if (!groupedChapters || groupedChapters.length === 0) {
-        return <div>Loading chapters...</div>;
-    }
+
     if (loadingCourse || loadingLessons || loadingChapters) {
         return <div>Đang tải...</div>;
     }
@@ -369,11 +391,19 @@ export const CourseDetailPage = () => {
                 </div>
                 <div className={styles.courseContentOverview}>
                     <h2>Nội dung khóa học</h2>
-                    <span>{totalChapters} phần · {totalLessons} bài giảng · {totalHours} giờ {totalMinutes} phút tổng thời lượng</span>
+                    <span>{totalChapters} phần · {totalLessons} bài giảng · {formattedDuration} tổng thời lượng</span>
                     <button onClick={handleToggleAllChapters}>Mở rộng/tắt tất cả các chương</button>
 
-                </div>
 
+                </div>
+                {editMode && groupedChapters.length === 0 && (
+                    <button
+                        onClick={() => handleAddChapter(null)} // Sử dụng handleAddChapter với giá trị null để tạo chương mới mà không cần ID chương cụ thể
+                        className={styles.addChapterButton}
+                    >
+                        Add Chapter
+                    </button>
+                )}
                 <div className={styles.courseContent}>
 
                     <DragDropContext onDragEnd={onDragEnd} >
@@ -436,11 +466,11 @@ export const CourseDetailPage = () => {
                                                             {openChapters.includes(chapter._id) && (
                                                                 <ul className={styles.sublist}>
                                                                     {chapter.lessons.map(lesson => (
-                                                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
+                                                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description} >
 
-                                                                            <span className={styles.lessonTitle}>{lesson.title}</span>
+                                                                            <span onClick={() => handleLessonClick(lesson._id)} className={styles.lessonTitle}>{lesson.title}</span>
                                                                             <div className={styles.left}>
-                                                                                <span className={styles.lessonDuration}>{lesson.duration}</span>
+                                                                                <span className={styles.lessonDuration}>{formatDurationFromSeconds(lesson.duration)}</span>
                                                                                 <button className={styles.deleteLesson} onClick={() => handleDeleteLesson(lesson._id)}>-</button>
                                                                             </div>
                                                                         </li>
@@ -473,9 +503,9 @@ export const CourseDetailPage = () => {
                                                     {openChapters.includes(chapter._id) && (
                                                         <ul className={styles.sublist}>
                                                             {chapter.lessons.map(lesson => (
-                                                                <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
+                                                                <li key={lesson._id} className={styles.lesson} data-tip={lesson.description} onClick={() => handleLessonClick(lesson._id)}>
                                                                     <span className={styles.lessonTitle}>{lesson.title}</span>
-                                                                    <span className={styles.lessonDuration}>{lesson.duration}</span>
+                                                                    <span className={styles.lessonDuration}>{formatDurationFromSeconds(lesson.duration)}</span>
                                                                 </li>
                                                             ))}
                                                         </ul>

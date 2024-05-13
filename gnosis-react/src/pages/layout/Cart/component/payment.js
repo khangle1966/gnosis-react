@@ -23,6 +23,34 @@ const PaymentPage = () => {
     }, 1000);  // Điều hướng sau 1 giây
   };
 
+  const handlePayment = async () => {
+    const paymentData = {
+      partnerCode: 'MOMOBKUN20180529',
+      accessKey: 'klm05TvNBzhg7h7j',
+      secretKey: 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa',
+      orderId: new Date().getTime().toString(),
+      orderInfo: 'Thanh toán qua MoMo',
+      amount: '10000',
+      ipnUrl: 'https://localhost:4000/cart',
+      redirectUrl: 'https://localhost:4000/cart',
+      extraData: ''
+    };
+  
+    try {
+      const response = await fetch('/momo/pay', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(paymentData)
+      });
+      const result = await response.json();
+      window.location.href = result.url; // Redirect the user to MoMo payment gateway
+    } catch (error) {
+      console.error('Failed to initiate payment:', error);
+    }
+  };
+  
 
   return (
     <div className={styles.payment}>
@@ -46,17 +74,7 @@ const PaymentPage = () => {
           <label htmlFor="phone">Phone Number:</label>
           <input type="tel" id="phone" name="phone" required />
         </div>
-        <div>
-          <label htmlFor="address">Address:</label>
-          <input type="text" id="address" name="address" required />
-        </div>
-
-        <h2>Choose your payment method:</h2>
-        <div>
-          <input type="radio" id="momo" name="paymentMethod" value="momo" />
-          <label htmlFor="momo">Momo Wallet</label>
-        </div>
-        <button type="submit">Buy All</button>
+          <button name="submitPayment" onClick={handlePayment}>Thanh toán qua MoMo</button>
       </form>
 
       <Link to="/cart" className={styles.link}>Return to Cart</Link>
