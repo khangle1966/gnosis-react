@@ -8,7 +8,7 @@ import 'react-quill/dist/quill.snow.css'; // Import the styles for ReactQuill
 import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import styles from "./NoteViewer.module.scss"
 import { deleteNote, editNote } from '../../../../../../redux/action/noteActions';
-const NoteViewer = ({ show, handleClose, notes, onTimeClick, setNotes }) => {
+const NoteViewer = ({ show, handleClose, notes, onTimeClick, navigate, playerRef, courseId, setTimeToSeek }) => {
     const dispatch = useDispatch();
 
     const [editMode, setEditMode] = useState(false);
@@ -32,10 +32,24 @@ const NoteViewer = ({ show, handleClose, notes, onTimeClick, setNotes }) => {
         setEditMode(false);
         setEditingNote(null);
     };
+    const handleTimeClick = (note) => {
+        const currentUrl = `/course/${note.courseId}/lesson/${note.lessonId}`;
+        if (window.location.pathname === currentUrl) {
+            // If already on the correct lesson page, seek directly
+            playerRef.current.seekTo(note.duration);
+        } else {
+            // Otherwise, navigate and set time to seek
+            navigate(currentUrl);
+            setTimeToSeek(note.duration); // This will trigger the seek once the player is ready
+        }
+    };
+
+
 
     const handleNoteChange = (value) => {
         setEditingNote(prev => ({ ...prev, notes: value }));
     };
+    
     const formatTime = (time) => {
         const floorTime = Math.floor(time);
         const hours = Math.floor(floorTime / 3600);
@@ -59,14 +73,17 @@ const NoteViewer = ({ show, handleClose, notes, onTimeClick, setNotes }) => {
 
                                         <strong className={styles.time}>Thời gian: {formatTime(note.duration)}</strong>
                                         <ReactQuill theme="snow" value={editingNote.notes} onChange={handleNoteChange} />
-                                    
+
                                         <Button className={`${styles.button} btn-primary`} onClick={handleSave}>Save</Button>
                                         <Button className={`${styles.button} btn-secondary`} onClick={handleCancel}>Cancel</Button>
                                     </div>
                                 ) : (
                                     <p>
                                         <div className={styles.detail}>
-                                            <strong onClick={() => onTimeClick(note.duration)}>Thời gian: {formatTime(note.duration)}</strong> -
+                                            <div className={styles.detaillesson}>
+                                                <strong onClick={() => handleTimeClick(note)}>{formatTime(note.duration)} - {note.lessonTitle}</strong>
+
+                                            </div>
                                             <div className={styles.icon}>
                                                 <FontAwesomeIcon icon={faPencilAlt} onClick={() => handleEdit(note)} />
                                                 <FontAwesomeIcon icon={faTrashAlt} onClick={() => handleDelete(note._id)} />

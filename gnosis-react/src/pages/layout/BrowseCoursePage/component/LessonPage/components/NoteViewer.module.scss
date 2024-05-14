@@ -4,6 +4,31 @@
     justify-content: space-between; // Đảm bảo các phần tử được phân bổ đều trên cùng một hàng
     align-items: center; // Căn giữa các items theo chiều dọc
 
+    .detaillesson {
+        display: flex; // Use flexbox to layout the items
+        align-items: center; // Center-align items vertically
+        gap: 8px; // Provide a gap between the elements
+        cursor: pointer; // Change cursor to pointer to indicate clickable area
+
+        strong {
+            color: #2c3e50; // A deep shade of blue-grey for text
+            font-weight: 600; // Bold text for better visibility
+            transition: color 0.2s ease; // Smooth transition for color change
+
+            &:hover {
+                color: #3498db; // Light blue color on hover for a visual feedback
+            }
+        }
+
+        // Adds a bit of animation and visual interest
+        &:hover {
+            strong {
+                text-decoration: underline; // Underline text on hover
+                text-decoration-color: #3498db; // Match underline color with hover color
+            }
+        }
+    }
+
     p {
         flex-grow: 1; // Cho phép phần văn bản mở rộng chiếm không gian còn lại
         margin-right: 10px; // Tạo khoảng cách giữa văn bản và biểu tượng

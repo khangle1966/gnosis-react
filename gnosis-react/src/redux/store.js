@@ -24,11 +24,16 @@ const rootReducer = combineReducers({
     notesData: notesReducer,
     noteAdd: noteAddReducer,
 });
+const persistedState = localStorage.getItem('reduxState') ? JSON.parse(localStorage.getItem('reduxState')) : {};
 
 // Tạo store với rootReducer và middleware
 const store = createStore(
     rootReducer,
+    persistedState,
     applyMiddleware(thunk)  // Thunk middleware cho phép viết action creators trả về function
 );
+store.subscribe(() => {
+    localStorage.setItem('reduxState', JSON.stringify(store.getState()));
+});
 
 export default store;

@@ -121,7 +121,6 @@
         }
 
         ul {
-            list-style: none;
             padding: 0;
 
             li {
@@ -143,10 +142,7 @@
 }
 
 
-.editable {
-    border: 2px solid #010202; // Define border style
-    border-radius: 4px; // Customize border radius if needed
-}
+
 
 
 .courseDetailContainer {
@@ -577,15 +573,21 @@
 
                 .deleteLesson {
 
-                    padding: 5px 10px;
+                    padding: 9px 8px;
                     background-color: #d60a0a;
                     color: white;
                     border-radius: 5px;
                     border: none;
                     cursor: pointer;
-                    width: 35px;
+                    width: 15px;
 
-                    height: 35px;
+                    height: 15px;
+
+                    .icon {
+                        display: flex;
+                        gap: 10px; // Khoảng cách giữa các biểu tượng
+
+                    }
 
                     &:hover {
                         background-color: darken(#8e0808, 10%);
@@ -610,66 +612,7 @@
         }
     }
 
-    .courseContent2 {
-        width: 50rem;
-        max-width: 800px;
-        margin: 20px auto;
-        background: #fff;
-        padding: 20px;
-        border: 1px solid #ddd;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
-        h2 {
-            display: flex;
-            justify-content: center;
-            color: #333;
-            font-size: 1.55rem;
-            padding-bottom: 15px;
-            margin-bottom: 0;
-            border-bottom: none;
-        }
-
-        .list {
-            margin: 0;
-            padding: 0;
-            list-style: none;
-
-            .item {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                padding: 10px 20px;
-
-                .title {
-                    font-size: 13px;
-                    color: #333;
-                    font-weight: bold;
-                }
-
-                .duration {
-                    font-size: 0.9rem;
-                    color: #999;
-                }
-            }
-
-            .sublist {
-                padding-left: 20px;
-
-                .lesson {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 5px 10px;
-                    font-size: 0.9rem;
-                    color: #666;
-
-                    &:not(:last-child) {
-                        border-bottom: 1px solid #d96161;
-                    }
-                }
-            }
-        }
-    }
 
     .requirements {
         width: 50rem;
@@ -695,10 +638,12 @@
     }
 
     .description {
-        width: 50rem;
+        width: 100%;
         max-width: 800px;
         margin: 20px auto;
         padding: 20px;
+
+
 
         h3 {
             font-size: 1.5rem;
@@ -715,17 +660,18 @@
 
 
 // Continue from previous SCSS
-
 .courseContent2 {
-    width: 50rem;
-    max-width: 800px;
-    margin: 20px auto;
-    background: #fff;
-    padding: 20px;
-    border: 1px solid #ddd;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%; // Chỉnh sửa để chiếm toàn bộ chiều rộng khả dụng nếu cần
+    max-width: 800px; // Giới hạn chiều rộng tối đa là 800px
+    margin: 20px auto; // Giữ khoảng cách và canh giữa
+    background: #fff; // Nền màu trắng
+    padding: 20px; // Padding xung quanh nội dung
+    border: 1px solid #ddd; // Đường viền màu xám nhạt
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); // Bóng mờ nhẹ
 
-    h2 {
+    h2,
+    h1,
+    h3 {
         display: flex;
         justify-content: center;
         color: #333;
@@ -742,9 +688,17 @@
 
         .item {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
+            flex-direction: column; // Chuyển thành cột để các mục không bị xếp ngang
+            align-items: stretch; // Các mục co giãn đầy đủ theo chiều ngang
+            padding: 10px 20px; // Padding cho mỗi mục
+
+            .description {
+                padding: 10px; // Giảm padding xuống còn 10px cho hợp lý
+                overflow-wrap: break-word; // Tự động ngắt từ nếu cần
+                word-wrap: break-word; // Tương tự như trên, cho IE
+                word-break: break-all; // Ngắt các từ trên tất cả các ngôn ngữ
+                overflow: hidden; // Ẩn nội dung tràn ra ngoài
+            }
 
             .title {
                 font-size: 13px;
@@ -777,6 +731,7 @@
     }
 }
 
+
 .requirements {
     width: 50rem;
     max-width: 800px;
@@ -797,23 +752,5 @@
             font-size: 1rem;
             color: #666;
         }
-    }
-}
-
-.description {
-    width: 50rem;
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-
-    h3 {
-        font-size: 1.5rem;
-        color: #333;
-    }
-
-    p {
-        font-size: 1rem;
-        color: #666;
-        line-height: 1.6;
     }
 }

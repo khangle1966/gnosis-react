@@ -32,7 +32,7 @@ export class ProfileController {
   }
   // Thêm vào UserGoogleController
 
-  
+
   @Post('googleprofile')
   async createProfileForUserGoogle(@Body() createProfileDto: CreateProfileDto): Promise<Profile> {
     const requiredFields = ['id', 'email', 'userName'];
@@ -76,36 +76,20 @@ export class ProfileController {
   @Post()
   async create(@Body() createProfileDto: CreateProfileDto): Promise<Profile> {
     const requiredFields = ['id', 'email', 'userName'];
-    const missingFields = requiredFields.filter(
-      (field) => !createProfileDto[field],
-    );
+    const missingFields = requiredFields.filter(field => !createProfileDto[field]);
     if (missingFields.length > 0) {
-      throw new HttpException(
-        `Missing required fields: ${missingFields.join(', ')}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(`Missing required fields: ${missingFields.join(', ')}`, HttpStatus.BAD_REQUEST);
     }
     try {
       const isExist = await this.profileService.findOne(createProfileDto.id);
       if (isExist) {
-        throw new HttpException(
-          'Profile already exists',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('Profile already exists', HttpStatus.BAD_REQUEST);
       }
       const newProfile = await this.profileService.create(createProfileDto);
       if (!newProfile) {
-        try {
-          console.log('No profile');
-          await this.userService.remove(createProfileDto.id);
-        } catch (error) {
-          throw new Error(error);
-        }
+        await this.userService.remove(createProfileDto.id);
       } else {
-        console.log('Have profile');
-        this.userService.update(newProfile.id, {
-          profile: newProfile.id,
-        });
+        this.userService.update(newProfile.id, { profile: newProfile.id });
       }
       return newProfile;
     } catch (error) {
@@ -118,12 +102,10 @@ export class ProfileController {
     try {
       const profile = await this.profileService.findOne(id);
       if (!profile) {
-        // Chỉ cần truyền thông điệp lỗi vào NotFoundException
         throw new NotFoundException(`Profile not found with ID: ${id}`);
       }
       return profile;
     } catch (error) {
-      // Trong trường hợp bắt được lỗi khác, ném ra NotFoundException với thông điệp chung
       throw new NotFoundException('Profile not found');
     }
   }
@@ -138,15 +120,9 @@ export class ProfileController {
     }
   }
   @Put(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateProfileDto: UpdateProfileDto,
-  ) {
+  async update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto): Promise<Profile> {
     try {
-      const updatedProfile = await this.profileService.update(
-        id,
-        updateProfileDto,
-      );
+      const updatedProfile = await this.profileService.update(id, updateProfileDto);
       if (!updatedProfile) {
         throw new HttpException('Profile not found', HttpStatus.BAD_REQUEST);
       }

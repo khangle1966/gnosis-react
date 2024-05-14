@@ -9,13 +9,17 @@ import {
     ADD_LESSON_FAILURE,
     DELETE_LESSON_REQUEST,
     DELETE_LESSON_SUCCESS,
-    DELETE_LESSON_FAILURE
+    DELETE_LESSON_FAILURE,
+    FETCH_LESSONID_REQUEST,
+    FETCH_LESSONID_SUCCESS,
+    FETCH_LESSONID_FAILURE,
 
 } from '../types/lessonTypes';
 
 const initialState = {
     loading: false,
     lessons: [],
+    lesson: null, // This will hold the single lesson data
     error: ''
 };
 
@@ -44,6 +48,15 @@ const lessonReducer = (state = initialState, action) => {
         case DELETE_LESSON_FAILURE:
             return { ...state, loading: false, error: action.payload };
 
+        case FETCH_LESSONID_REQUEST:
+            return { ...state, loading: true, lesson: null };
+        case FETCH_LESSONID_SUCCESS:
+            if (!action.payload || Object.keys(action.payload).length === 0) {
+                return { ...state, loading: false, error: "No data returned" };
+            }
+            return { ...state, loading: false, lesson: action.payload };
+        case FETCH_LESSONID_FAILURE:
+            return { ...state, loading: false, error: action.payload };
         default:
             return state;
     }

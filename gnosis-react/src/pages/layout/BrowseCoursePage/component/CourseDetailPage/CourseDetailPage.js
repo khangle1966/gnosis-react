@@ -11,8 +11,12 @@ import { addToCart } from '../../../../../redux/action/cartActions';  // Import 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { updateChapterOrder } from '../../../../../redux/action/chapterActions';
 import { ObjectId } from 'bson';
-import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn đã import LessonModal đúng
+import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn đã import LessonModal đúng
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css'; // Import the styles for ReactQuill
 
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
@@ -33,6 +37,7 @@ export const CourseDetailPage = () => {
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
 
+    const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
 
     useEffect(() => {
         const totalChapters = groupedChapters.length;
@@ -44,7 +49,6 @@ export const CourseDetailPage = () => {
     const [selectedChapterId, setSelectedChapterId] = useState(null);
 
 
-    const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
     const [selectedChapter, setSelectedChapter] = useState(null);
 
     const [editMode, setEditMode] = useState(false);
@@ -218,14 +222,7 @@ export const CourseDetailPage = () => {
     const handleDeleteLesson = (lessonId) => {
         dispatch(deleteLesson(lessonId));
     };
-    const handleSaveChanges = () => {
-        dispatch(updateCourseDetails(editableCourse));
-        setEditMode(false);
-    };
-    const handleCancelEdit = () => {
-        setEditableCourse({ courseDetail });  // Khôi phục thông tin khóa học ban đầu
-        setEditMode(false);
-    };
+
     const handlePriceInput = (e) => {
         const regex = /^[0-9]*$/; // Chỉ cho phép số
         if (!regex.test(e.target.textContent)) {
@@ -245,9 +242,7 @@ export const CourseDetailPage = () => {
         return <div>Đang tải...</div>;
     }
 
-    if (errorCourse || errorLessons || errorChapters) {
-        return <div>Lỗi: {errorCourse || errorLessons || errorChapters}</div>;
-    }
+
     const handleToggleChapter = (chapterId) => {
         setOpenChapters(prev => {
             const isOpen = prev.includes(chapterId);
@@ -262,6 +257,19 @@ export const CourseDetailPage = () => {
 
     // Static data structure for demonstration
 
+    const handleSaveChanges = () => {
+        dispatch(updateCourseDetails(editableCourse));
+        setEditMode(false);
+    };
+
+    const handleCancelEdit = () => {
+        setEditableCourse(courseDetail);
+        setEditMode(false);
+    };
+
+    const handleChange = (value, field) => {
+        setEditableCourse(prev => ({ ...prev, [field]: value }));
+    };
 
 
 
@@ -374,13 +382,13 @@ export const CourseDetailPage = () => {
 
 
                     <div className={styles.item}>
-                        <div
-                            className={`${styles.title} ${editMode ? styles.editable : ''}`}
-                            contentEditable={editMode}
-                            onBlur={(e) => setEditableCourse({ ...editableCourse, description: e.target.textContent })}
-                            dangerouslySetInnerHTML={{ __html: courseDetail.description }}
-                        />
 
+
+                        {editMode ? (
+                            <ReactQuill theme="snow" value={editableCourse.description || ''} onChange={(value) => handleChange(value, 'description')} />
+                        ) : (
+                            <div className={styles.description} dangerouslySetInnerHTML={{ __html: editableCourse.description }} />
+                        )}
 
 
                     </div>
@@ -471,7 +479,9 @@ export const CourseDetailPage = () => {
                                                                             <span onClick={() => handleLessonClick(lesson._id)} className={styles.lessonTitle}>{lesson.title}</span>
                                                                             <div className={styles.left}>
                                                                                 <span className={styles.lessonDuration}>{formatDurationFromSeconds(lesson.duration)}</span>
-                                                                                <button className={styles.deleteLesson} onClick={() => handleDeleteLesson(lesson._id)}>-</button>
+                                                                                <div className={styles.icon}>
+                                                                                    <FontAwesomeIcon className={styles.deleteLesson} icon={faTrashAlt} onClick={() => handleDeleteLesson(lesson._id)} />
+                                                                                </div>
                                                                             </div>
                                                                         </li>
 
@@ -522,30 +532,22 @@ export const CourseDetailPage = () => {
                 </div>
                 <div className={styles.requirements}>
                     <h3>Yêu cầu</h3>
-                    <div
-                        className={`${styles.title} ${editMode ? styles.editable : ''}`}
-                        contentEditable={editMode}
-                        onBlur={(e) => setEditableCourse({ ...editableCourse, request: e.target.textContent })}
-                        dangerouslySetInnerHTML={{ __html: courseDetail.request }}
-                    />
+                    {editMode ? (
+                        <ReactQuill theme="snow" value={editableCourse.request || ''} onChange={(value) => handleChange(value, 'request')} />
+                    ) : (
+                        <div dangerouslySetInnerHTML={{ __html: editableCourse.request }} />
+                    )}
 
 
                 </div>
 
                 <div className={styles.description}>
                     <h3>Mô tả</h3>
-                    <div
-                        className={`${styles.title} ${editMode ? styles.editable : ''}`}
-
-                        contentEditable={editMode}
-                        onBlur={(e) => setEditableCourse({ ...editableCourse, describe: e.target.textContent })}
-                        dangerouslySetInnerHTML={{ __html: courseDetail.describe }}
-                    />
-
-
-
-
-
+                    {editMode ? (
+                        <ReactQuill theme="snow" value={editableCourse.describe || ''} onChange={(value) => handleChange(value, 'describe')} />
+                    ) : (
+                        <div dangerouslySetInnerHTML={{ __html: editableCourse.describe }} />
+                    )}
                 </div>
 
             </div>

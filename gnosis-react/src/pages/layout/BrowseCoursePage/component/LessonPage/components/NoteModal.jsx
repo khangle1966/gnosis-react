@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchNotes, addNote } from '../../../../../../redux/action/noteActions';
 
 
-const NoteModal = ({ show, handleClose, handleSave, initialNote, userId, lessonId, chapterId, durationlesson }) => {
+const NoteModal = ({ show, handleClose, handleSave, initialNote, userId, lessonId, chapterId, courseId,durationlesson,Titlelesson }) => {
     const [note, setNote] = useState(initialNote || '');  // Ensure initialNote is not undefined
     const dispatch = useDispatch();
 
@@ -22,8 +22,10 @@ const NoteModal = ({ show, handleClose, handleSave, initialNote, userId, lessonI
             userUid: userId,
             lessonId: lessonId,
             chapterId: chapterId,
+            courseId:courseId,
             notes: note,
-            duration: durationlesson // You will need to replace this with actual duration if applicable
+            duration: durationlesson ,// You will need to replace this with actual duration if applicable
+            lessonTitle : Titlelesson
         };
 
         dispatch(addNote(noteData));

@@ -9,6 +9,7 @@ import StatisticsComponent from './component/StatisticsComponent/StatisticsCompo
 import CalendarComponent from './component/CalendarComponent/CalendarComponent';
 import { fetchProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
 import { fetchUserCourses } from '../../../redux/action/courseActions';
+import { updateProfile } from '../../../redux/action/profileActions';
 
 const HomePage = () => {
     const navigate = useNavigate();
@@ -16,6 +17,8 @@ const HomePage = () => {
     const { userCourses, loading, error } = useSelector(state => state.course);
     const { user } = useSelector(state => state.auth)
     const { profile } = useSelector(state => state.profile);
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+
     console.log(profile.course)
 
     useEffect(() => {
@@ -27,7 +30,6 @@ const HomePage = () => {
     }, [dispatch, user]);
 
 
-    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     useEffect(() => {
         if (!isLoggedIn) {
             navigate('/login');
@@ -37,11 +39,20 @@ const HomePage = () => {
             }
         }
     }, [isLoggedIn, profile, dispatch, navigate]);
-    
 
 
-    const handleDescriptionClick = (courseId) => {
-        navigate(`/course/${courseId}`);
+    const handleStartCourse = (courseId) => {
+        if (user && user.uid) {
+            const updatedOngoingCourse = profile.ongoingCourse ? [...new Set([...profile.ongoingCourse.map(id => id.toString()), courseId])] : [courseId];
+
+            const updatedProfile = { ...profile, ongoingCourse: updatedOngoingCourse };
+
+            // Dispatch action to update profile
+            dispatch(updateProfile(updatedProfile, user.uid));
+
+            // Navigate to course page
+            navigate(`/course/${courseId}`);
+        }
     };
 
     const truncateDescription = (description) => {
@@ -111,9 +122,9 @@ const HomePage = () => {
                             </div>
                             <div className={styles.courseDetails}>
                                 <h3>{truncateNameCourse(course.name)}</h3>
-                                <p>{truncateDescription(course.description)}</p>
+                                <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p>
                                 <div className={styles.courseActions}>
-                                    <button onClick={() => handleDescriptionClick(course._id)}>Start</button>
+                                    <button onClick={() => handleStartCourse(course._id)}>Start</button>
                                     {/* Thêm nút "Cancel" nếu cần */}
                                 </div>
                             </div>

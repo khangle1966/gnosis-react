@@ -15,7 +15,9 @@ const BrowseCoursePage = () => {
 
     useEffect(() => {
         if (!isLoggedIn) {
+
             navigate('/login');
+
         } else {
             dispatch(fetchCourses());
         }
@@ -76,7 +78,8 @@ const BrowseCoursePage = () => {
                         </div>
                         <div className={styles.courseDetails}>
                             <h3>{truncateNameCourse(course.name)}</h3>
-                            <p>{truncateDescription(course.description || '')}</p>
+                            <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p>
+
 
 
                             <div className={styles.courseActions}>
