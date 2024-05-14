@@ -12,7 +12,7 @@ import * as mongoose from 'mongoose'; // Import mongoose
 import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Course } from 'src/course/entities/course.entity';
 import { UsergoogleService } from '../usergoogle/usergoogle.service'
 
@@ -22,17 +22,7 @@ export class ProfileService {
     @InjectModel(Profile.name) private profileModel: Model<Profile>,
 
   ) { }
-  private toUniqueObjectIds(ids: any[]): Types.ObjectId[] {
-    return Array.from(new Set(ids.map(id => {
-      if (typeof id === 'object' && id.hasOwnProperty('_id')) {
-        id = id._id.toString();
-      }
-      if (!Types.ObjectId.isValid(id)) {
-        throw new HttpException(`Invalid ObjectId: ${id}`, HttpStatus.BAD_REQUEST);
-      }
-      return new Types.ObjectId(id);
-    })));
-  }
+
 
   async createProfileForUserGoogle(createProfileDto: CreateProfileDto): Promise<Profile> {
     try {
@@ -77,51 +67,52 @@ export class ProfileService {
 
   async update(id: string, updateProfileDto: UpdateProfileDto): Promise<Profile> {
     try {
-      const currentProfile = await this.profileModel.findOne({ id });
+      const currentProfile = await this.profileModel.findOne({ id: id });
       if (!currentProfile) {
         throw new NotFoundException(`Profile with id ${id} not found.`);
       }
 
-      // Convert to unique ObjectIds and ensure no duplicates
-      const uniqueCourses = this.toUniqueObjectIds([
+      // Ensure unique IDs in courses, completedCourse, and ongoingCourse
+      let uniqueCourses = Array.from(new Set([
         ...(currentProfile.courses || []).map(course => course.toString()),
         ...(updateProfileDto.courses || [])
-      ]);
+      ]));
 
-      const uniqueCompletedCourses = this.toUniqueObjectIds([
+      let uniqueCompletedCourses = Array.from(new Set([
         ...(currentProfile.completedCourse || []).map(course => course.toString()),
         ...(updateProfileDto.completedCourse || [])
-      ]);
+      ]));
 
-      const uniqueOngoingCourses = this.toUniqueObjectIds([
+      let uniqueOngoingCourses = Array.from(new Set([
         ...(currentProfile.ongoingCourse || []).map(course => course.toString()),
         ...(updateProfileDto.ongoingCourse || [])
-      ]);
+      ]));
 
-      // Ensure unique ObjectIds for each course type
-      const updatedProfileData = {
-        ...updateProfileDto,
-        courses: Array.from(new Set(uniqueCourses.map(id => id.toString()))),
-        completedCourse: Array.from(new Set(uniqueCompletedCourses.map(id => id.toString()))),
-        ongoingCourse: Array.from(new Set(uniqueOngoingCourses.map(id => id.toString()))),
-      };
+      // Convert ObjectId arrays to string arrays
+      uniqueCourses = uniqueCourses.map(id => id.toString());
+      uniqueCompletedCourses = uniqueCompletedCourses.map(id => id.toString());
+      uniqueOngoingCourses = uniqueOngoingCourses.map(id => id.toString());
 
       const updatedProfile = await this.profileModel.findOneAndUpdate(
-        { id },
-        { $set: updatedProfileData },
+        { id: id },
+        {
+          $set: {
+            ...updateProfileDto,
+            courses: uniqueCourses,
+            completedCourse: uniqueCompletedCourses,
+            ongoingCourse: uniqueOngoingCourses,
+          }
+        },
         { new: true }
       );
-
       if (!updatedProfile) {
         throw new NotFoundException(`Profile with id ${id} not found.`);
       }
-
       return updatedProfile;
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, error.status);
     }
   }
-
 
 
   async remove(id: string) {

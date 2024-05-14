@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { fetchProfile, updateProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
+import { fetchProfile, updateProfile2 } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
 import { logout } from '../../../redux/action/authActions';
 import { fetchUserCourses } from '../../../redux/action/courseActions';
 
@@ -65,7 +65,7 @@ const ProfilePage = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
-            await dispatch(updateProfile(formData, user.uid));
+            await dispatch(updateProfile2(formData, user.uid));
             setNotification({ show: true, message: `Profile "${user.uid}" updated successfully!` });
         } catch (err) {
             setNotification({ show: false, message: 'Failed to update profile. Please try again.' });

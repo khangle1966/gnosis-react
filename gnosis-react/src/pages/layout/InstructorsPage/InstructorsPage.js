@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { submitCourse, resetCourse } from '../../../redux/action/courseActions';
 import styles from "./InstructorsPage.module.scss";
 import { uploadImage } from '../../../redux/action/uploadActions'
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -14,6 +15,7 @@ const InstructorsPage = () => {
     const [courseSubmitted, setCourseSubmitted] = useState(false);
     const [img, setImg] = useState(null);
     const [isImageUploaded, setIsImageUploaded] = useState(false);
+    const navigate = useNavigate();
 
     const [course, setCourse] = useState({
 
@@ -35,6 +37,11 @@ const InstructorsPage = () => {
     console.log('Course Data:', course); // Kiểm tra toàn bộ object course
 
 
+    useEffect(() => {
+        if (user.role !== 'instructor') {
+            navigate('/login'); // Chuyển hướng nếu không phải là instructor
+        }
+    }, [user, navigate]);
     const handleChange = (event) => {
         const { id, value } = event.target;
         setCourse(prevCourse => ({ ...prevCourse, [id]: value }));

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,8 +18,9 @@ const HomePage = () => {
     const { user } = useSelector(state => state.auth)
     const { profile } = useSelector(state => state.profile);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-
-    console.log(profile.course)
+    const [activeTab, setActiveTab] = useState('all');
+    const [filteredCourses, setFilteredCourses] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         if (user && user.uid) {
@@ -28,7 +29,6 @@ const HomePage = () => {
             console.log('User is not defined or user.uid is not available');
         }
     }, [dispatch, user]);
-
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -40,11 +40,33 @@ const HomePage = () => {
         }
     }, [isLoggedIn, profile, dispatch, navigate]);
 
+    useEffect(() => {
+        let filtered = userCourses;
+
+        if (activeTab === 'ongoing' && profile.ongoingCourse) {
+            const ongoingCoursesIds = profile.ongoingCourse.map(id => id._id.toString());
+            filtered = userCourses.filter(course => ongoingCoursesIds.includes(course._id));
+        } else if (activeTab === 'completed' && profile.completedCourse) {
+            const completedCoursesIds = profile.completedCourse.map(id => id._id.toString());
+            filtered = userCourses.filter(course => completedCoursesIds.includes(course._id));
+        }
+
+        // Filter courses based on search term
+        if (searchTerm) {
+            filtered = filtered.filter(course =>
+                (course.name && course.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (course.description && course.description.toLowerCase().includes(searchTerm.toLowerCase()))
+            );
+        }
+
+        setFilteredCourses(filtered);
+    }, [activeTab, userCourses, profile, searchTerm]);
 
     const handleStartCourse = (courseId) => {
         if (user && user.uid) {
-            const updatedOngoingCourse = profile.ongoingCourse ? [...new Set([...profile.ongoingCourse.map(id => id.toString()), courseId])] : [courseId];
-
+            const updatedOngoingCourse = profile.ongoingCourse
+                ? Array.from(new Set([...profile.ongoingCourse.map(id => id._id.toString()), courseId.toString()]))
+                : [courseId.toString()];
             const updatedProfile = { ...profile, ongoingCourse: updatedOngoingCourse };
 
             // Dispatch action to update profile
@@ -89,7 +111,12 @@ const HomePage = () => {
 
                         <div className={styles.searchBar}>
                             <FontAwesomeIcon icon={faSearch} />
-                            <input type="text" placeholder="Search..." />
+                            <input
+                                type="text"
+                                placeholder="Search..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
                         </div>
                     </div>
 
@@ -100,9 +127,9 @@ const HomePage = () => {
                 <nav className={styles.navigation}>
 
                     <div className={styles.btncheck}>
-                        <button>Chưa học</button>
-                        <button>Đang học</button>
-                        <button>Đã học xong</button>
+                        <button onClick={() => setActiveTab('all')}>Tất cả bài học</button>
+                        <button onClick={() => setActiveTab('ongoing')}>Đang học</button>
+                        <button onClick={() => setActiveTab('completed')}>Đã học xong</button>
 
                     </div>
                     <div className={styles.addIcon}>
@@ -111,12 +138,10 @@ const HomePage = () => {
 
                 </nav>
                 <div className={styles.courseGrid}>
-
                     {loading && <div>Loading courses...</div>}
                     {error && <div>Error fetching courses: {error.message}</div>}
-                    {userCourses && userCourses.map(course => (
+                    {filteredCourses.map(course => (
                         <div key={course._id} className={styles.courseCard}>
-
                             <div className={styles.courseImageWrapper}>
                                 <img src={course.img} alt={course.name} />
                             </div>
@@ -125,12 +150,12 @@ const HomePage = () => {
                                 <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p>
                                 <div className={styles.courseActions}>
                                     <button onClick={() => handleStartCourse(course._id)}>Start</button>
-                                    {/* Thêm nút "Cancel" nếu cần */}
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
+
 
 
 

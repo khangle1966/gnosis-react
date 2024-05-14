@@ -43,7 +43,31 @@ export const fetchProfile = (userId) => async (dispatch) => {
         });
     }
 };
+
 export const updateProfile = (profileData, userId) => async (dispatch) => {
+    dispatch({ type: PROFILE_UPDATE_REQUEST });
+
+    try {
+        // Ensure that all ObjectIds are converted to strings
+        const sanitizedProfileData = {
+            ...profileData,
+            ongoingCourse: profileData.ongoingCourse.map(id => (typeof id === 'object' && id._id ? id._id.toString() : id.toString())),
+            courses: profileData.courses.map(id => (typeof id === 'object' && id._id ? id._id.toString() : id.toString())),
+            completedCourse: profileData.completedCourse.map(id => (typeof id === 'object' && id._id ? id._id.toString() : id.toString())),
+        };
+
+        const response = await axios.put(`http://localhost:3000/v1/profile/${userId}`, sanitizedProfileData);
+        console.log(response);
+        dispatch({ type: PROFILE_UPDATE_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({
+            type: PROFILE_UPDATE_FAILURE,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+    }
+};
+
+export const updateProfile2 = (profileData, userId) => async (dispatch) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });
     try {
         const response = await axios.put(`http://localhost:3000/v1/profile/${userId}`, profileData);

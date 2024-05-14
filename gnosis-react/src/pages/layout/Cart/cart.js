@@ -5,23 +5,23 @@ import { fetchProfile } from '../../../redux/action/profileActions';
 import styles from './cart.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom'; // Thay đổi ở đây
+import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate(); // Thay đổi ở đây
+    const navigate = useNavigate();
     const cartItems = useSelector(state => state.cart.cartItems);
     const { profile } = useSelector(state => state.profile);
     const { user } = useSelector(state => state.auth);
     const [notification, setNotification] = useState({ show: false, message: '' });
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredItems, setFilteredItems] = useState(cartItems);
 
     useEffect(() => {
-        dispatch(fetchProfile(profile.uid));
+        if (profile && profile.uid) {
+            dispatch(fetchProfile(profile.uid));
+        }
     }, [dispatch, profile.uid]);
-
-    const handleRemoveFromCart = (id) => {
-        dispatch(removeFromCart(id));
-    };
 
     useEffect(() => {
         if (user && user.uid) {
@@ -30,7 +30,18 @@ const CartPage = () => {
             console.log("User data is not available.");
         }
     }, [dispatch, user]);
-    
+
+    useEffect(() => {
+        setFilteredItems(
+            cartItems.filter(item =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+        );
+    }, [searchTerm, cartItems]);
+
+    const handleRemoveFromCart = (id) => {
+        dispatch(removeFromCart(id));
+    };
 
     const handleBuyAll = () => {
         if (user && user.uid) {
@@ -41,20 +52,17 @@ const CartPage = () => {
             }, 3000);
             navigate('/payment');
         } else {
-            // Handle when user data is not available
             console.log('User data is not available. Redirecting to login page.');
-            navigate('/login');  // Assuming '/login' is your login route
+            navigate('/login');
         }
     };
-    
-    
 
     const truncateNameCourse = (name) => {
         if (!name) return '';
         return name.length > 35 ? name.substring(0, 35) + '...' : name;
     };
 
-    const totalPrice = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
+    const totalPrice = filteredItems.reduce((total, item) => total + item.price * item.qty, 0);
 
     return (
         <div className={styles.cartPage}>
@@ -67,14 +75,19 @@ const CartPage = () => {
                 <div className={styles.breadcrumbs}>Home &gt;&gt; Cart</div>
                 <div className={styles.searchBar}>
                     <FontAwesomeIcon icon={faSearch} />
-                    <input type="text" placeholder="Search..." />
+                    <input
+                        type="text"
+                        placeholder="Search..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                    />
                 </div>
             </header>
 
             <main className={styles.cartContent}>
                 <section className={styles.leftColumn}>
-                    <h2>Bạn có {cartItems.length} khóa học trong giỏ hàng</h2>
-                    {cartItems.map((item, index) => (
+                    <h2>Bạn có {filteredItems.length} khóa học trong giỏ hàng</h2>
+                    {filteredItems.map((item, index) => (
                         <div key={index} className={styles.item}>
                             <div className={styles.course}>
                                 <img src={item.img} alt={item.name} />

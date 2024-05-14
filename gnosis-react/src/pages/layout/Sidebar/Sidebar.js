@@ -19,12 +19,17 @@ const Sidebar = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+
     const toggleSidebar = () => {
         setIsOpen(!isOpen);
     };
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
+    };
+    const handleSearchChange = (event) => {
+        setSearchTerm(event.target.value);
     };
     useEffect(() => {
         const sidebar = sidebarRef.current;
@@ -39,6 +44,27 @@ const Sidebar = () => {
             window.removeEventListener('scroll', handleScroll);
         };
     }, []);
+    const menuItems = [
+        { to: "/home", icon: faHome, label: "HOME" },
+        { to: "/browsecourse", icon: faBook, label: "BROWSE COURSES" },
+        { to: "/profile", icon: faUser, label: "PROFILE" },
+        { to: "/cart", icon: faShoppingCart, label: "CART" },
+    ];
+
+    if (role === 'admin') {
+        menuItems.push({ to: "/admin", icon: faUser, label: "ADMIN" });
+    }
+
+    if (role === 'instructor') {
+        menuItems.push({ to: "/instructor", icon: faUser, label: "INSTRUCTOR" });
+    }
+
+    // Lọc các liên kết dựa trên giá trị tìm kiếm
+    const filteredMenuItems = menuItems.filter(item =>
+        item.label.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+
     return (
         <div className={isOpen ? styles.sidebar : `${styles.sidebar} ${styles.collapsed}`}>
             <button className={styles.toggleButton} onClick={toggleSidebar}>
@@ -54,21 +80,20 @@ const Sidebar = () => {
                 <p>Hello, {name}</p>
             </div>
             <div className={styles.search}>
-                <input type="text" placeholder="Search" />
+                <input
+                    type="text"
+                    placeholder="Search"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
             </div>
 
             <div className={styles.menu}>
-                <Link to="/home  " className={styles.menuItem}><FontAwesomeIcon icon={faHome} /> HOME</Link>
-                <Link to="/browsecourse" className={styles.menuItem}><FontAwesomeIcon icon={faBook} /> BROWSE COURSES</Link>
-                <Link to="/profile" className={styles.menuItem}><FontAwesomeIcon icon={faUser} /> PROFILE</Link>
-                <Link to="/cart" className={styles.menuItem}><FontAwesomeIcon icon={faShoppingCart} /> CART</Link>
-                {/* Asumming you have admin routes */}
-                {role === 'admin' && (
-                    <Link to="/admin" className={styles.menuItem}><FontAwesomeIcon icon={faUser} /> ADMIN</Link>
-                )}
-                {role === 'instructor' && (
-                    <Link to="/instructor" className={styles.menuItem}><FontAwesomeIcon icon={faUser} /> INSTRUCTOR</Link>
-                )}
+                {filteredMenuItems.map((item, index) => (
+                    <Link to={item.to} className={styles.menuItem} key={index}>
+                        <FontAwesomeIcon icon={item.icon} /> {item.label}
+                    </Link>
+                ))}
                 <Link to="/login" className={styles.menuItem} onClick={handleLogout}>
                     <FontAwesomeIcon icon={faSignOut} /> LOGOUT
                 </Link>
