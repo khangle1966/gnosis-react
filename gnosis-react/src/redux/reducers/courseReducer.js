@@ -7,7 +7,11 @@ import {
     SUBMIT_COURSE_FAILURE,
     FETCH_USER_COURSES_REQUEST,
     FETCH_USER_COURSES_SUCCESS,
-    FETCH_USER_COURSES_FAILURE
+    FETCH_USER_COURSES_FAILURE,
+    FETCH_COURSE_DETAIL,
+    FETCH_COURSE_DETAIL_SUCCESS,
+    FETCH_COURSE_DETAIL_FAILURE,
+    UPDATE_COURSE_FAILURE
 } from '../types/courseType';
 
 const initialState = {
@@ -35,14 +39,16 @@ const courseDetailInitialState = {
 };
 export const courseDetailReducer = (state = courseDetailInitialState, action) => {
     switch (action.type) {
-        case 'FETCH_COURSE_DETAIL_REQUEST':
+        case FETCH_COURSE_DETAIL:
             return { ...state, loading: true };
-        case 'FETCH_COURSE_DETAIL_SUCCESS':
+        case FETCH_COURSE_DETAIL_SUCCESS:
             return { ...state, loading: false, courseDetail: action.payload };
-        case 'FETCH_COURSE_DETAIL_FAILURE':
+        case FETCH_COURSE_DETAIL_FAILURE:
             return { ...state, loading: false, error: action.payload };
         case UPDATE_COURSE:
             return { ...state, courseDetail: { ...state.courseDetail, ...action.payload }, loading: false };
+        case UPDATE_COURSE_FAILURE:
+            return { ...state, loading: false, error: action.payload };
         default:
             return state;
     }

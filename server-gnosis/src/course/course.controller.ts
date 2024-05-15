@@ -10,6 +10,7 @@ import {
   Query,
   HttpException,
   HttpStatus,
+  Patch,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -52,14 +53,21 @@ export class CourseController {
   }
   @Post('userCourses')
   async getUserCourses(@Body('courseIds') courseIds: string[]) {
-      const courses = await this.courseService.findCoursesByIds(courseIds);
-      return courses;
+    const courses = await this.courseService.findCoursesByIds(courseIds);
+    return courses;
   }
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<Course> {
+  async getCourse(@Param('id') id: string): Promise<Course> {
+    return this.courseService.getCourse(id);
+  }
+
+  @Patch(':id/rating')
+  async updateRating(
+    @Param('id') id: string,
+    @Body('rating') rating: number,
+  ): Promise<Course> {
     try {
-      const course = await this.courseService.findOne(id);
-      return course;
+      return await this.courseService.updateRating(id, rating);
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }

@@ -20,7 +20,7 @@ const rootReducer = combineReducers({
     chapterDetail: chapterReducer,
     cart: cartReducer,
     uploadVideo: videoUploadReducer,
-    lessonComplete: lessonReducer,
+    lessonComplete: lessonReducer,  
     notesData: notesReducer,
     noteAdd: noteAddReducer,
 });

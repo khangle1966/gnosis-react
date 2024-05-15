@@ -119,11 +119,7 @@ const InstructorsPage = () => {
                         <select id="category" value={course.category} onChange={handleChange}>
                             <option value="">Select a category</option>
                             <option value="Web Development">Web Development</option>
-                            <option value="Popular">Popular</option>
-                            <option value="Computer Science">Computer Science</option>
-                            <option value="English">English</option>
-                            <option value="Music">Music</option>
-                            <option value="Cook">Cook</option>
+                            <option value="Mobile Development">Mobile Development</option>
                             {/* Thêm các lựa chọn khác dựa trên enum Category */}
                         </select>
                     </div>

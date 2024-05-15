@@ -28,14 +28,14 @@ const BrowseCoursePage = () => {
         }
     }, [isLoggedIn, navigate, dispatch]);
 
-  useEffect(() => {
-    const filtered = courses.filter(course =>
-        (activeCategory === 'All' || course.category === activeCategory) &&
-        ((course.name && course.name.toLowerCase().includes(searchTerm.toLowerCase())) || 
-         (course.description && course.description.toLowerCase().includes(searchTerm.toLowerCase())))
-    );
-    setFilteredCourses(filtered);
-}, [courses, activeCategory, searchTerm]);
+    useEffect(() => {
+        const filtered = courses.filter(course =>
+            (activeCategory === 'All' || course.category === activeCategory) &&
+            ((course.name && course.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+                (course.description && course.description.toLowerCase().includes(searchTerm.toLowerCase())))
+        );
+        setFilteredCourses(filtered);
+    }, [courses, activeCategory, searchTerm]);
 
     const handleAddToCart = (course) => {
         dispatch(addToCart(course));
@@ -149,32 +149,14 @@ const BrowseCoursePage = () => {
                 </div>
             </div>
             <div className={styles.promotions}>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-    <span>70% off all courses today</span>
-   
-</div>
+                <span>70% off all courses today</span>
+                <span>70% off all courses today</span>
+                <span>70% off all courses today</span>
+                <span>70% off all courses today</span>
+                <span>70% off all courses today</span>
+
+
+            </div>
 
 
             <div className={styles.filterBar}>

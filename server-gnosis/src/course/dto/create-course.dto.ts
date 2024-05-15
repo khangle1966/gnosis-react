@@ -18,6 +18,8 @@ export class CreateCourseDto {
         public publishedDate: Date,
         public request: string,
         public describe: string,
+        public numberOfStudents: number, // Số học viên đang theo học
+        public numberOfReviews: number, // Số người đã đánh giá khóa học
 
 
 

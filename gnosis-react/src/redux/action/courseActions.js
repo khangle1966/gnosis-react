@@ -7,11 +7,15 @@ import {
     SUBMIT_COURSE,
     SUBMIT_COURSE_SUCCESS,
     SUBMIT_COURSE_FAILURE,
-    // src/redux/types.js
 
-FETCH_USER_COURSES_REQUEST ,
-FETCH_USER_COURSES_SUCCESS ,
-FETCH_USER_COURSES_FAILURE
+
+    FETCH_USER_COURSES_REQUEST,
+    FETCH_USER_COURSES_SUCCESS,
+    FETCH_USER_COURSES_FAILURE,
+    FETCH_COURSE_DETAIL,
+    FETCH_COURSE_DETAIL_SUCCESS,
+    FETCH_COURSE_DETAIL_FAILURE,
+    UPDATE_COURSE_FAILURE
 
 } from '../types/courseType';
 
@@ -38,27 +42,41 @@ export const fetchUserCourses = (courseIds) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: FETCH_USER_COURSES_FAILURE,
-            payload: error.response && error.response.data.message 
-                     ? error.response.data.message 
-                     : error.message
+            payload: error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
         });
     }
 };
 
+
 export const fetchCourseDetail = (courseId) => async (dispatch) => {
     try {
-        dispatch({ type: 'FETCH_COURSE_DETAIL_REQUEST' });
+        dispatch({ type: FETCH_COURSE_DETAIL });
         const response = await axios.get(`http://localhost:3000/v1/course/${courseId}`);
-        console.log('API Response:', response.data);  // Log response data
-
         dispatch({
-            type: 'FETCH_COURSE_DETAIL_SUCCESS',
+            type: FETCH_COURSE_DETAIL_SUCCESS,
             payload: response.data
         });
     } catch (error) {
         dispatch({
-            type: 'FETCH_COURSE_DETAIL_FAILURE',
+            type: FETCH_COURSE_DETAIL_FAILURE,
             payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+    }
+};
+
+export const updateRating = (courseId, rating) => async (dispatch) => {
+    try {
+        const response = await axios.patch(`http://localhost:3000/v1/course/${courseId}/rating`, { rating });
+        dispatch({
+            type: UPDATE_COURSE,
+            payload: response.data
+        });
+    } catch (error) {
+        dispatch({
+            type: UPDATE_COURSE_FAILURE,
+            payload: error.response ? error.response.data.message : error.message,
         });
     }
 };

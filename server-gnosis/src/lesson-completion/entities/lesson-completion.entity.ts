@@ -12,6 +12,8 @@ export class LessonCompletion {
 
     @Prop({ required: true, ref: 'Lesson' })
     lessonId: string;
+    @Prop({ required: true, ref: 'Course' })
+    courseId: string;
 
     @Prop({ required: true })
     completed: boolean;
