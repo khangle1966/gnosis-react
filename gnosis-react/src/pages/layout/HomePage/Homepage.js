@@ -7,7 +7,7 @@ import styles from './HomePage.module.scss';
 
 import StatisticsComponent from './component/StatisticsComponent/StatisticsComponent';
 import CalendarComponent from './component/CalendarComponent/CalendarComponent';
-import { fetchProfile } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
+import { fetchProfile } from '../../../redux/action/profileActions';
 import { fetchUserCourses } from '../../../redux/action/courseActions';
 import { updateProfile } from '../../../redux/action/profileActions';
 
@@ -15,7 +15,7 @@ const HomePage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { userCourses, loading, error } = useSelector(state => state.course);
-    const { user } = useSelector(state => state.auth)
+    const { user } = useSelector(state => state.auth);
     const { profile } = useSelector(state => state.profile);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [activeTab, setActiveTab] = useState('all');
@@ -44,14 +44,13 @@ const HomePage = () => {
         let filtered = userCourses;
 
         if (activeTab === 'ongoing' && profile.ongoingCourse) {
-            const ongoingCoursesIds = profile.ongoingCourse.map(id => id._id.toString());
+            const ongoingCoursesIds = profile.ongoingCourse.map(id => id?._id?.toString() || '');
             filtered = userCourses.filter(course => ongoingCoursesIds.includes(course._id));
         } else if (activeTab === 'completed' && profile.completedCourse) {
-            const completedCoursesIds = profile.completedCourse.map(id => id._id.toString());
+            const completedCoursesIds = profile.completedCourse.map(id => id?._id?.toString() || '');
             filtered = userCourses.filter(course => completedCoursesIds.includes(course._id));
         }
 
-        // Filter courses based on search term
         if (searchTerm) {
             filtered = filtered.filter(course =>
                 (course.name && course.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
@@ -65,50 +64,47 @@ const HomePage = () => {
     const handleStartCourse = (courseId) => {
         if (user && user.uid) {
             const updatedOngoingCourse = profile.ongoingCourse
-                ? Array.from(new Set([...profile.ongoingCourse.map(id => id._id.toString()), courseId.toString()]))
+                ? Array.from(new Set([...profile.ongoingCourse.map(id => id?._id?.toString() || ''), courseId.toString()]))
                 : [courseId.toString()];
             const updatedProfile = { ...profile, ongoingCourse: updatedOngoingCourse };
 
-            // Dispatch action to update profile
             dispatch(updateProfile(updatedProfile, user.uid));
 
-            // Navigate to course page
             navigate(`/course/${courseId}`);
         }
     };
 
     const truncateDescription = (description) => {
-        if (!description) return ''; // Kiểm tra nếu không tồn tại mô tả
+        if (!description) return '';
         return description.length > 50 ? description.substring(0, 50) + '...' : description;
     };
+
     const truncateNameCourse = (name) => {
-        if (!name) return ''; // Kiểm tra nếu không tồn tại mô tả
+        if (!name) return '';
         return name.length > 50 ? name.substring(0, 50) + '...' : name;
     };
+
     const handleEditClick = () => {
         navigate(`/profile`);
     };
+
     const getCurrentDate = () => {
         const currentDate = new Date();
         const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
         return currentDate.toLocaleDateString('en-US', options);
     };
+
     const currentDate = getCurrentDate();
 
     return (
         <main className={styles.HomeContent}>
-
             <div className={styles.leftcolumn}>
-
-
                 <header className={styles.header}>
-
                     <div className={styles.welcomendate}>
                         <div className={styles.Welcomeanddate}>
                             <h1 className={styles.welcometext}>WELCOME {profile.userName} TO GNOSIS</h1>
                             <div className={styles.date}>{currentDate}</div>
                         </div>
-
                         <div className={styles.searchBar}>
                             <FontAwesomeIcon icon={faSearch} />
                             <input
@@ -119,23 +115,16 @@ const HomePage = () => {
                             />
                         </div>
                     </div>
-
-
-
-
                 </header>
                 <nav className={styles.navigation}>
-
                     <div className={styles.btncheck}>
-                        <button onClick={() => setActiveTab('all')}>Tất cả bài học</button>
-                        <button onClick={() => setActiveTab('ongoing')}>Đang học</button>
-                        <button onClick={() => setActiveTab('completed')}>Đã học xong</button>
-
+                        <button className={activeTab === 'all' ? styles.active : ''} onClick={() => setActiveTab('all')}>Tất cả bài học</button>
+                        <button className={activeTab === 'ongoing' ? styles.active : ''} onClick={() => setActiveTab('ongoing')}>Đang học</button>
+                        <button className={activeTab === 'completed' ? styles.active : ''} onClick={() => setActiveTab('completed')}>Đã học xong</button>
                     </div>
                     <div className={styles.addIcon}>
                         <FontAwesomeIcon icon={faPlus} />
                     </div>
-
                 </nav>
                 <div className={styles.courseGrid}>
                     {loading && <div>Loading courses...</div>}
@@ -155,14 +144,8 @@ const HomePage = () => {
                         </div>
                     ))}
                 </div>
-
-
-
-
             </div>
-
             <div className={`${styles.rightcolumn} show`}>
-
                 <header className={styles.header}>
                     <h1>PROFILE USER</h1>
                     <button className={styles.editButton} onClick={handleEditClick}>
@@ -172,7 +155,6 @@ const HomePage = () => {
                 </header>
                 <div className={styles.avatarWrapper}>
                     <img src={user?.picture} alt={`Avatar of ${user?.name}`} className={styles.avatar} />
-
                 </div>
                 <h2 className={styles.userName}>{profile.userName}</h2>
                 <p className={styles.userEmail}>{profile.email}</p>
@@ -182,15 +164,11 @@ const HomePage = () => {
                     timeSpent="2h"
                     coursesCompleted={12}
                 />
-
                 <CalendarComponent />
-
                 <footer className={styles.footer}>
                     <p>Learn with passion, excel with dedication, and keep studying to infinity</p>
                 </footer>
             </div>
-
-
         </main>
     );
 };

@@ -6,7 +6,12 @@ export type CourseDocument = HydratedDocument<Course>;
 
 export enum Category {
   WEB = 'Web Development',
-  MOBILE = 'Mobile Development',  // Sửa chính tả
+  MOBILE = 'Mobile Development', 
+  POPULAR = 'Popular',
+  COMPUTERSCIENCE = 'Computer Science',
+  ENGLISH = 'English',
+  MUSIC = 'Music',
+  COOK = 'Cook',
 }
 @Schema({ timestamps: true }) // Use Mongoose's automatic timestamps
 export class Course {

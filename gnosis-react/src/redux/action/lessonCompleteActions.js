@@ -13,6 +13,7 @@ export const completeLesson = (lessonId, userId) => async (dispatch) => {
     try {
         const response = await axios.post(`http://localhost:3000/lesson-completion/complete`, { lessonId, userId });
         dispatch({ type: COMPLETE_LESSON_SUCCESS, payload: lessonId });
+        console.log (response)
     } catch (error) {
         dispatch({ type: COMPLETE_LESSON_FAILURE, payload: error.message });
     }

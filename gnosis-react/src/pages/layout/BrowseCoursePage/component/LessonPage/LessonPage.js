@@ -33,7 +33,6 @@ export const LessonPage = () => {
     const { lessons } = useSelector(state => state.lessonDetail);
     const { lessonscomplete } = useSelector(state => state.lessonComplete);
     const [activeSection, setActiveSection] = useState('overview'); // Default to 'overview'
-    const [lessonDescription, setLessonDescription] = useState('');
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showNoteViewer, setShowNoteViewer] = useState(false);
     const [currentNote, setCurrentNote] = useState('');

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Modal, Button } from 'react-bootstrap';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import style của quill
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchNotes, addNote } from '../../../../../../redux/action/noteActions';
+import { useDispatch } from 'react-redux';
+import { addNote } from '../../../../../../redux/action/noteActions';
 
 
 const NoteModal = ({ show, handleClose, handleSave, initialNote, userId, lessonId, chapterId, courseId,durationlesson,Titlelesson }) => {

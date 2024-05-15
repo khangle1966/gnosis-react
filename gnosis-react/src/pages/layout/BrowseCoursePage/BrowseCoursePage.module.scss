@@ -28,22 +28,72 @@
         // Hiệu ứng xuất hiện và biến mất
         animation: fadeInOut 3s forwards;
     }
-      
+      .searchbarandnreadcrumbs{
+        display: flex;
+        flex-grow: 1; // Cho phép .welcomendate phát triển và chiếm đủ không gian
+        align-items: center;
+       padding-bottom: 2rem;
     .breadcrumbs {
         margin-bottom: 20px;
         font-size: 0.85rem;
         color: rgb(4, 136, 4);
         font-weight: bold;
     }
+    .searchBar {
+        display: flex;
+        align-items: center;
+        background-color: white;
+        border: 1px solid #ddd;
+        padding: 0.5rem;
+        border-radius: 20px;
+        margin-left: auto; // Tự động đẩy .searchBar về bên phải
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Thêm bóng đổ
+        transition: box-shadow 0.3s ease-in-out; // Hiệu ứng chuyển đổi khi hover
+    
+        &:hover {
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); // Bóng đổ lớn hơn khi hover
+        }
+    
+        input {
+            border: none;
+            margin-left: 0.5rem;
+            outline: none;
+            height: 2rem;
+            width: 20rem; // Hoặc sử dụng chiều rộng theo tỉ lệ % nếu bạn muốn input có chiều rộng đáp ứng
+            font-size: 1rem; // Kích thước chữ
+            color: #333; // Màu chữ
+    
+            &::placeholder {
+                color: #aaa; // Màu chữ của placeholder
+            }
+        }
+    
+        svg {
+            color: #333;
+            transition: color 0.3s ease-in-out; // Hiệu ứng chuyển đổi màu khi hover
+    
+            &:hover {
+                color: #007bff; // Màu thay đổi khi hover
+            }
+        }
+    }
+    
+}
 
     .promotions {
         display: flex;
         justify-content: space-between;
         margin-bottom: 20px;
-
+        animation: scroll 20s linear infinite; // Adjust the duration as needed
+        height: 40px; // Adjust the height as needed
+    
         span {
-            flex: 1;
+            flex: none;
+        white-space: nowrap; // Prevent th
             margin-right: 10px;
+            display: inline-block;
+            margin-right: 10px;
+
             background-color: white;
             padding: 10px;
             border-radius: 8px;
@@ -56,6 +106,14 @@
                 margin-right: 0;
             }
         }
+        @keyframes scroll {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
     }
 
     .filterBar {
@@ -65,27 +123,27 @@
         justify-content: center;
 
         button {
+    background-color: #ffffff;
+    border: none;
+    color: #333;
+    border: #0c8633 solid;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    margin-left: 2rem;
+    text-transform: none;
 
-            border: none;
-            padding: 8px 16px;
-            margin-right: 8px;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            color: rgb(2, 59, 2);
-            border-style: solid;
+    &:hover,
+    &.active {
+        background-color: #003d0c;
+        color: white;
+    }
 
+    &:last-child {
+        margin-right: 0;
+    }
+}
 
-            &:hover,
-            &.active {
-                background-color: #003d0c;
-                color: white;
-            }
-
-            &:last-child {
-                margin-right: 0;
-            }
-        }
     }
 
     .courseGrid {
@@ -132,6 +190,7 @@
                 padding-top: 1rem;
                 h3 {
                     font-size: 0.9rem;
+                    font-weight: bold;
                     margin: 0 0 5px 0;
                 }
                 p {
@@ -235,4 +294,48 @@
         0%, 100% { opacity: 0; visibility: hidden; }
         10%, 90% { opacity: 1; visibility: visible; }
       }
+
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px 0;
+    
+        button {
+            background-color: transparent;
+            border: none;
+            padding: 10px 15px;
+            margin: 0 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s, color 0.3s;
+    color: black;
+    font-weight: bold;
+            &:hover {
+                background-color: #e0e0e0;
+                border-radius: 50%;
+            }
+    
+            &.active {
+                background-color: #006400;
+                color: #fff;
+                border-radius: 50%;
+            }
+    
+            &:disabled {
+                background-color: transparent;
+                color: #ccc;
+                cursor: not-allowed;
+            }
+        }
+    
+        .ellipsis {
+            padding: 10px 15px;
+            margin: 0 5px;
+            font-size: 16px;
+        }
+    }
+    
+    
 }
