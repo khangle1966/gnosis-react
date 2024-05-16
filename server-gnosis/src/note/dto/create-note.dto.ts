@@ -7,6 +7,7 @@ export class CreateNoteDto {
         public courseId :string,
         public duration: number,
         public lessonTitle: string,
+        public courseTitle: string,
 
     ) { }
 }

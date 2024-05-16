@@ -3,5 +3,7 @@
 export class CreateLessonCompletionDto {
     readonly userId: string;
     readonly lessonId: string;
+    readonly courseId: string;
+
     readonly completed: boolean;
 }

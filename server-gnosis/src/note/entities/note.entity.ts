@@ -25,6 +25,8 @@ export class Note extends Document {
     duration: number; // Duration in seconds where the note was taken
     @Prop()
     lessonTitle: string;
+    @Prop()
+    courseTitle: string;
 }
 
 export const NoteSchema = SchemaFactory.createForClass(Note);

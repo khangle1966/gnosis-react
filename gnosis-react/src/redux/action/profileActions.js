@@ -8,12 +8,6 @@ import {
     PROFILE_UPDATE_REQUEST,
     PROFILE_UPDATE_SUCCESS,
     PROFILE_UPDATE_FAILURE,
-    // PROFILE_DELETE_REQUEST,
-    // PROFILE_DELETE_SUCCESS,
-    // PROFILE_DELETE_FAILURE,
-    // PROFILE_CHECK_DUPLICATE_REQUEST,
-    // PROFILE_CHECK_DUPLICATE_SUCCESS,
-    // PROFILE_CHECK_DUPLICATE_FAILURE,
     PROFILE_FETCH_REQUEST,
     PROFILE_FETCH_SUCCESS,
     PROFILE_FETCH_FAILURE
@@ -34,12 +28,39 @@ export const fetchProfile = (userId) => async (dispatch) => {
     dispatch({ type: PROFILE_FETCH_REQUEST });
     try {
         const response = await axios.get(`http://localhost:3000/v1/profile/by-id/${userId}`);
-        console.log(response)
         dispatch({ type: PROFILE_FETCH_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({
             type: PROFILE_FETCH_FAILURE,
             payload: error.response ? error.response.data.message : error.message
+        });
+    }
+};
+export const completeCourse = (userId, courseId) => async (dispatch, getState) => {
+    dispatch({ type: PROFILE_UPDATE_REQUEST });
+    try {
+        console.log("Starting completeCourse action");
+        const { profile } = getState().profile;
+
+        // Kiểm tra và khởi tạo giá trị mặc định cho completedCourse
+        const completedCourse = profile.completedCourse ? profile.completedCourse : [];
+        const updatedCompletedCourses = [...completedCourse, courseId];
+
+        const updatedProfileData = {
+            ...profile,
+            completedCourse: updatedCompletedCourses.map(id => id.toString())
+        };
+
+        console.log("Updated profile data: ", updatedProfileData);
+
+        const response = await axios.put(`http://localhost:3000/v1/profile/${userId}`, updatedProfileData);
+        dispatch({ type: PROFILE_UPDATE_SUCCESS, payload: response.data });
+        console.log("Profile update success: ", response.data);
+    } catch (error) {
+        console.error("Profile update error: ", error);
+        dispatch({
+            type: PROFILE_UPDATE_FAILURE,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
         });
     }
 };
@@ -57,7 +78,6 @@ export const updateProfile = (profileData, userId) => async (dispatch) => {
         };
 
         const response = await axios.put(`http://localhost:3000/v1/profile/${userId}`, sanitizedProfileData);
-        console.log(response);
         dispatch({ type: PROFILE_UPDATE_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({

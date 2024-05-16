@@ -1,12 +1,13 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
 import { Image } from '../../upload/entities/image.entity';  // Đảm bảo đường dẫn đến file Image entity đúng
+import internal from 'stream';
 
 export type CourseDocument = HydratedDocument<Course>;
 
 export enum Category {
   WEB = 'Web Development',
-  MOBILE = 'Mobile Development', 
+  MOBILE = 'Mobile Development',
   POPULAR = 'Popular',
   COMPUTERSCIENCE = 'Computer Science',
   ENGLISH = 'English',
@@ -53,9 +54,9 @@ export class Course {
   @Prop({ default: false })
   isReleased: boolean;
 
-  @Prop({ required: true, type: String }) // author could reference an Author schema
+  @Prop({ required: true, type: String })
   author: string;
-  @Prop({ required: true, type: String }) // author could reference an Author schema
+  @Prop({ required: true, type: String })
   authorId: string;
 
   @Prop({ required: true })
@@ -63,6 +64,13 @@ export class Course {
 
   @Prop({ type: Date, default: () => Date.now() })
   publishedDate: Date;
+
+
+  @Prop({ default: 0 })
+  numberOfStudents: number;
+
+  @Prop({ default: 0 })
+  numberOfReviews: number;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

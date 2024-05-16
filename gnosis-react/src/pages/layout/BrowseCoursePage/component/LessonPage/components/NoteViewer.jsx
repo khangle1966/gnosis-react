@@ -48,7 +48,7 @@ const NoteViewer = ({ show, handleClose, notes, onTimeClick, navigate, playerRef
     const handleNoteChange = (value) => {
         setEditingNote(prev => ({ ...prev, notes: value }));
     };
-    
+
     const formatTime = (time) => {
         const floorTime = Math.floor(time);
         const hours = Math.floor(floorTime / 3600);
@@ -80,7 +80,7 @@ const NoteViewer = ({ show, handleClose, notes, onTimeClick, navigate, playerRef
                                     <p>
                                         <div className={styles.detail}>
                                             <div className={styles.detaillesson}>
-                                                <strong onClick={() => handleTimeClick(note)}>{formatTime(note.duration)} - {note.lessonTitle}</strong>
+                                                <strong onClick={() => handleTimeClick(note)}>{formatTime(note.duration)} - {note.lessonTitle} - {note.courseTitle} </strong>
 
                                             </div>
                                             <div className={styles.icon}>

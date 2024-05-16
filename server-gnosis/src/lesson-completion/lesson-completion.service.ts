@@ -17,8 +17,8 @@ export class LessonCompletionService {
     return newRecord.save();
   }
 
-  async markAsComplete(lessonId: string, userId: string): Promise<LessonCompletion> {
-    const existingRecord = await this.lessonCompletionModel.findOne({ lessonId, userId });
+  async markAsComplete(lessonId: string, userId: string, courseId: string): Promise<LessonCompletion> {
+    const existingRecord = await this.lessonCompletionModel.findOne({ lessonId, userId, courseId });
 
     if (existingRecord) {
       existingRecord.completed = true;
@@ -27,6 +27,7 @@ export class LessonCompletionService {
       const newRecord = new this.lessonCompletionModel({
         userId,
         lessonId,
+        courseId,
         completed: true
       });
       return await newRecord.save();
@@ -35,5 +36,9 @@ export class LessonCompletionService {
 
   async findByUserId(userId: string): Promise<LessonCompletion[]> {
     return this.lessonCompletionModel.find({ userId }).exec();
+  }
+
+  async getLessonCompletion(courseId: string, userId: string): Promise<LessonCompletion[]> {
+    return this.lessonCompletionModel.find({ courseId, userId }).exec();
   }
 }

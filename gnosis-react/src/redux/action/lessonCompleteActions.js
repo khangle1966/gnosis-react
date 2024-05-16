@@ -8,21 +8,21 @@ import {
     FETCH_LESSON_COMPLETE_FAILURE
 } from '../types/lessonCompleteTypes';
 
-export const completeLesson = (lessonId, userId) => async (dispatch) => {
+export const completeLesson = (lessonId, userId, courseId) => async (dispatch) => {
     dispatch({ type: COMPLETE_LESSON_REQUEST });
     try {
-        const response = await axios.post(`http://localhost:3000/lesson-completion/complete`, { lessonId, userId });
-        dispatch({ type: COMPLETE_LESSON_SUCCESS, payload: lessonId });
-        console.log (response)
+        const response = await axios.post(`http://localhost:3000/lesson-completion/complete`, { lessonId, userId, courseId });
+        dispatch({ type: COMPLETE_LESSON_SUCCESS, payload: { lessonId } });
+        console.log(response);
     } catch (error) {
         dispatch({ type: COMPLETE_LESSON_FAILURE, payload: error.message });
     }
 };
 
-export const fetchLessonComplete = (userId) => async (dispatch) => {
+export const fetchLessonComplete = (courseId, userId) => async (dispatch) => {
     dispatch({ type: FETCH_LESSON_COMPLETE_REQUEST });
     try {
-        const response = await axios.get(`http://localhost:3000/lesson-completion/user/${userId}`);
+        const response = await axios.get(`http://localhost:3000/lesson-completion/course/${courseId}/user/${userId}`);
         dispatch({ type: FETCH_LESSON_COMPLETE_SUCCESS, payload: response.data });
     } catch (error) {
         dispatch({ type: FETCH_LESSON_COMPLETE_FAILURE, payload: error.message });

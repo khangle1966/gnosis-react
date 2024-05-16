@@ -17,7 +17,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn đã import LessonModal đúng
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles for ReactQuill
-
+const formatDate = (dateString) => {
+    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    return new Date(dateString).toLocaleDateString('vi-VN', options);
+};
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
     const navigate = useNavigate();
@@ -258,7 +261,11 @@ export const CourseDetailPage = () => {
     // Static data structure for demonstration
 
     const handleSaveChanges = () => {
-        dispatch(updateCourseDetails(editableCourse));
+        const updatedCourse = {
+            ...editableCourse,
+            updatedAt: new Date().toISOString() // Cập nhật ngày hiện tại
+        };
+        dispatch(updateCourseDetails(updatedCourse));
         setEditMode(false);
     };
 
@@ -347,7 +354,7 @@ export const CourseDetailPage = () => {
                     </div>
                     <div className={styles.instructorInfo}>
                         Được tạo bởi <a href='/default' > {courseDetail.author} </a>
-                        <span className={styles.updateDate}>Lần cập nhật gần đây nhất 11/2023</span>
+                        <span className={styles.updateDate}>Lần cập nhật gần đây nhất {formatDate(courseDetail.updatedAt)}</span>
                         <span
 
                             className={`${styles.language} ${editMode ? styles.editable : ''}`}

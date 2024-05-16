@@ -25,7 +25,7 @@ export class CourseService {
   }
   async findCoursesByIds(courseIds: string[]): Promise<Course[]> {
     return await this.courseModel.find({ '_id': { $in: courseIds } });
-}
+  }
   async findAll(): Promise<Course[]> {
     try {
       return await this.courseModel.find({}).exec();
@@ -91,5 +91,19 @@ export class CourseService {
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
+  }
+  async updateRating(courseId: string, rating: number): Promise<Course> {
+    const course = await this.courseModel.findById(courseId);
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+    const totalRating = course.rating * course.numberOfReviews;
+    course.numberOfReviews += 1;
+    course.rating = (totalRating + rating) / course.numberOfReviews;
+    return course.save();
+  }
+
+  async getCourse(courseId: string): Promise<Course> {
+    return this.courseModel.findById(courseId).exec();
   }
 }

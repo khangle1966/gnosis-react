@@ -9,74 +9,76 @@ import { faChevronDown, faChevronUp, faCircle, faPlus } from '@fortawesome/free-
 import { fetchLessonsByCourseId, fetchLessonById } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
 import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
-import { completeLesson } from '../../../../../redux/action/lessonCompleteActions';
-import { fetchLessonComplete } from '../../../../../redux/action/lessonCompleteActions';
+import { completeLesson, fetchLessonComplete } from '../../../../../redux/action/lessonCompleteActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NoteModal from './components/NoteModal';
-import NoteViewer from './components/NoteViewer'; // Đảm bảo đường dẫn đúng
+import NoteViewer from './components/NoteViewer';
 import { fetchNotes } from '../../../../../redux/action/noteActions';
+import RatingComponent from './components/RatingComponent';
+import { completeCourse } from '../../../../../redux/action/profileActions';
 
 export const LessonPage = () => {
-    const { lessonId } = useParams(); // Lấy lessonId từ UuseRef RL
-    const { courseId } = useParams(); // Giả sử bạn lấy courseId từ URL
+    const { lessonId, courseId } = useParams();
     const navigate = useNavigate();
-
     const dispatch = useDispatch();
     const [expanded, setExpanded] = useState({});
     const { videoURL, loading, error } = useSelector(state => state.uploadVideo);
-    const { courseDetail } = useSelector(state => state.courseDetail);
+    const { courseDetail, loading: courseLoading, error: courseError } = useSelector(state => state.courseDetail);
     const { user } = useSelector(state => state.auth);
-    const userId = user.uid; // Nên được thay thế bằng cách lấy ID người dùng hiện tại từ trạng thái auth hoặc session
+    const userId = user.uid;
     const [currentTime, setCurrentTime] = useState(0);
-    const playerRef = useRef(null);  // Reference to the ReactPlayer
+    const playerRef = useRef(null);
     const { chapters } = useSelector(state => state.chapterDetail);
     const { lessons } = useSelector(state => state.lessonDetail);
     const { lessonscomplete } = useSelector(state => state.lessonComplete);
-    const [activeSection, setActiveSection] = useState('overview'); // Default to 'overview'
+    const [activeSection, setActiveSection] = useState('overview');
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showNoteViewer, setShowNoteViewer] = useState(false);
     const [currentNote, setCurrentNote] = useState('');
     const [playing, setPlaying] = useState(true);
     const [timeToSeek, setTimeToSeek] = useState(null);
     const [playerReady, setPlayerReady] = useState(false);
-    const [key, setKey] = useState(0);  // Add a key state
-
+    const [key, setKey] = useState(0);
     const { lesson, loading: lessonLoading, error: lessonError } = useSelector(state => state.lessonDetail);
-
     const { notes, loading: loadingnotes, error: errornotes } = useSelector(state => state.notesData);
 
-    console.log(lesson);
-
-
-    const handleSeek = (time) => {
-        playerRef.current.seekTo(time);
+    const getTotalAndCompletedLessons = () => {
+        const total = lessons.length;
+        const completed = lessonscomplete.length;
+        return { total, completed };
     };
+    const { total, completed } = getTotalAndCompletedLessons();
 
 
     useEffect(() => {
+        console.log("useEffect triggered");
+        console.log("completed: ", completed, "total: ", total);
+        if (completed === total && total !== 0) {
+            console.log("Dispatching completeCourse");
+            dispatch(completeCourse(userId, courseId));
+        } else {
+            console.log("Condition not met for dispatching completeCourse");
+        }
         dispatch(fetchVideoUrl(lessonId));
         dispatch(fetchChaptersByCourseId(courseId));
         dispatch(fetchLessonsByCourseId(courseId));
         dispatch(fetchCourseDetail(courseId));
-        dispatch(fetchLessonComplete(userId));
+        dispatch(fetchLessonComplete(courseId, userId));
         dispatch(fetchNotes(userId));
+    }, [dispatch, courseId, userId, lessonId, completed, total]);
 
-    }, [dispatch, courseId, userId, lessonId]);
 
     useEffect(() => {
         if (lessonId) {
-            dispatch(fetchLessonById(lessonId)); // Dispatch action để fetch lesson mới
-            setKey(prevKey => prevKey + 1); // Update the key to force re-rendering of the ReactPlayer
-
+            dispatch(fetchLessonById(lessonId));
+            setKey(prevKey => prevKey + 1);
         }
-    }, [dispatch, lessonId]); // dependency array chỉ chứa lessonId và dispatch
+    }, [dispatch, lessonId]);
 
-
-    // Render UI dựa trên dữ liệu lesson nhận được
     if (!lesson) {
-        return <div>Loading lesson...</div>; // Hiển thị thông báo nếu không có dữ liệu
+        return <div>Loading lesson...</div>;
     }
-    if (lessonLoading) return <div>Loading...</div>;
+    if (lessonLoading || courseLoading) return <div>Loading...</div>;
     if (lessonError) return <div>Error: {lessonError}</div>;
     const currentLessonDescription = lessons.find(lesson => lesson._id === lessonId)?.description || "Loading lesson description...";
 
@@ -84,25 +86,13 @@ export const LessonPage = () => {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const remainingSeconds = Math.round(seconds % 60);
-
         let formattedDuration = '';
-
-
         if (hours > 0) {
             formattedDuration += `${hours}:`;
         }
-
         formattedDuration += `${minutes}:${remainingSeconds}`;
-
         return formattedDuration;
     };
-
-    const getTotalAndCompletedLessons = () => {
-        const total = lessons.length;
-        const completed = lessonscomplete.length; // assuming this contains IDs of completed lessons
-        return { total, completed };
-    };
-    const { total, completed } = getTotalAndCompletedLessons();
 
     const getChapterDetails = (chapter) => {
         const chapterLessons = lessons.filter(lesson => lesson.chapterId === chapter._id);
@@ -113,11 +103,12 @@ export const LessonPage = () => {
             duration: formatDurationFromSeconds(totalDuration)
         };
     };
+
     const handlePlayerReady = () => {
         setPlayerReady(true);
         if (timeToSeek !== null) {
             playerRef.current.seekTo(timeToSeek);
-            setTimeToSeek(null);  // Clear the seek time after seeking
+            setTimeToSeek(null);
         }
     };
 
@@ -125,74 +116,67 @@ export const LessonPage = () => {
         setCurrentTime(state.playedSeconds);
         if (timeToSeek !== null && playerReady) {
             playerRef.current.seekTo(timeToSeek);
-            setTimeToSeek(null);  // Clear the seek time after seeking
+            setTimeToSeek(null);
         }
     };
+
     const handleNoteClick = () => {
         setShowNoteModal(true);
-        setPlaying(false);  // Dừng video khi mở modal
-
+        setPlaying(false);
     };
 
     const handleCloseModal = () => {
         setShowNoteModal(false);
-        setPlaying(true);  // Tiếp tục phát video khi đóng modal
-
+        setPlaying(true);
     };
+
     const handleViewNotes = () => {
         setShowNoteViewer(true);
-        setPlaying(false);  // Dừng video khi mở modal
-
+        setPlaying(false);
     };
 
     const handleCloseViewer = () => {
         setShowNoteViewer(false);
-        setPlaying(true);  // Dừng video khi mở modal
-
+        setPlaying(true);
     };
 
     const handleSaveNote = (note) => {
-        console.log('Saving note:', note); // Thực hiện lưu ghi chú
         setShowNoteModal(false);
-        dispatch(fetchNotes(userId)); // Tải lại danh sách ghi chú
-
+        dispatch(fetchNotes(userId));
     };
+
     const handleLessonClick = (lessonId) => {
         dispatch(fetchVideoUrl(lessonId));
         navigate(`/course/${courseId}/lesson/${lessonId}`);
     };
-    const handleBackclick = (courseId) => {
 
+    const handleBackclick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
+
     function formatDuration(seconds) {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secondsRemaining = Math.floor(seconds % 60);
-
         const paddedHours = hours.toString().padStart(2, '0');
         const paddedMinutes = minutes.toString().padStart(2, '0');
         const paddedSeconds = secondsRemaining.toString().padStart(2, '0');
-
         return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
     }
 
     const toggleExpand = chapterId => {
         setExpanded(prev => ({ ...prev, [chapterId]: !prev[chapterId] }));
     };
+
     const handleVideoEnded = () => {
-        const userId = user.uid;
-        // Đảm bảo rằng lessonId được lấy đúng kiểu và định dạng, và là duy nhất trong lessonscomplete
-        if (!lessonscomplete.map(lesson => lesson.lessonId).includes(lessonId)) {
-            dispatch(completeLesson(lessonId, userId));
+        if (!lessonscomplete.includes(lessonId)) {
+            dispatch(completeLesson(lessonId, userId, courseId));
         }
     };
-
 
     return (
         <div className={styles.container}>
             <header className={styles.header}>
-
                 <div className={styles.leftNav}>
                     <FontAwesomeIcon icon={faArrowLeft} className={styles.backIcon} onClick={() => handleBackclick(courseId)} />
                     <span>{courseDetail.name}</span>
@@ -204,7 +188,6 @@ export const LessonPage = () => {
                         </div>
                         <span className={styles.lessonCount}>{completed}/{total} bài học</span>
                     </div>
-
                     <div className={styles.rightNav} onClick={handleViewNotes}>
                         <FontAwesomeIcon icon={faStickyNote} className={styles.noteIcon} />
                         Xem ghi chú
@@ -213,15 +196,13 @@ export const LessonPage = () => {
                         show={showNoteViewer}
                         handleClose={handleCloseViewer}
                         notes={notes}
-                        lessonTitle={lesson?.title || 'No lesson title'} // Safely access title
+                        lessonTitle={lesson?.title || 'No lesson title'}
+                        courseTitle={courseDetail?.name || 'No Course title'}
                         navigate={navigate}
                         courseId={courseId}
-                        setTimeToSeek={setTimeToSeek}  // Pass setTimeToSeek as a prop
+                        setTimeToSeek={setTimeToSeek}
                         playerRef={playerRef}
-
                     />
-
-
                 </div>
             </header>
             <div className={styles.main}>
@@ -229,44 +210,35 @@ export const LessonPage = () => {
                     <div className={styles.videoContainer}>
                         {loading && <div className={styles.loading}>Loading...</div>}
                         {error && <div className={styles.error}>Error: {error}</div>}
-                        {videoURL && <ReactPlayer
-                            key={key} // This ensures the player re-renders when key changes
-
-                            ref={playerRef}
-                            url={videoURL}
-                            controls={true}
-                            width="100%"
-                            height="100%"
-                            className={styles.reactPlayer}
-                            onEnded={handleVideoEnded}
-                            onProgress={handleProgress}
-                            onReady={handlePlayerReady}
-                            playing={playing}
-
-                        />}
-
+                        {videoURL && (
+                            <ReactPlayer
+                                key={key}
+                                ref={playerRef}
+                                url={videoURL}
+                                controls={true}
+                                width="100%"
+                                height="100%"
+                                className={styles.reactPlayer}
+                                onEnded={handleVideoEnded}
+                                onProgress={handleProgress}
+                                onReady={handlePlayerReady}
+                                playing={playing}
+                            />
+                        )}
                     </div>
-
                     <div className={styles.courseContainer}>
-
-                        <div className={styles.contentContainer}> {/* Container mới cho nội dung khóa học và ghi chú */}
+                        <div className={styles.contentContainer}>
                             <div className={styles.courseContent}>
-
                                 <nav className={styles.courseNav}>
                                     <ul className={styles.navList}>
                                         <div className={styles.ratingandescription}>
                                             <li className={styles.navItem} onClick={() => setActiveSection('overview')}>Tổng quan</li>
-
                                             <li className={styles.navItem} onClick={() => setActiveSection('review')}>Đánh giá</li>
                                         </div>
-
                                         <div className={styles.notesHeader}>
                                             <FontAwesomeIcon icon={faStickyNote} className={styles.notesIcon} />
-
-
                                             <button className={styles.saveNoteButton} onClick={handleNoteClick}>
                                                 <FontAwesomeIcon icon={faPlus} /> Thêm ghi chú tại {formatDuration(currentTime)}
-
                                             </button>
                                             <NoteModal
                                                 show={showNoteModal}
@@ -276,23 +248,16 @@ export const LessonPage = () => {
                                                 userId={user.uid}
                                                 lessonId={lessonId}
                                                 courseId={courseId}
-                                                chapterId="123456" // Assume you have chapterId
+                                                chapterId="123456"
                                                 durationlesson={currentTime.toFixed(2)}
                                                 Titlelesson={lesson.title}
+                                                TitleCourse={courseDetail.name}
                                             />
-
                                         </div>
                                     </ul>
-
                                 </nav>
-
-
-
-
                             </div>
-
                         </div>
-
                         {activeSection === 'overview' && (
                             <div className={styles.courseOverview}>
                                 <h1>Giới thiệu về bài học</h1>
@@ -304,8 +269,8 @@ export const LessonPage = () => {
                             <div className={styles.reviewSection}>
                                 <div className={styles.overallRating}>
                                     <h2>Phản hồi của học viên</h2>
-                                    <div className={styles.ratingValue}>4.7</div>
-                                    <div>{/* Stars Rendering Component Here */}</div>
+                                    <div className={styles.ratingValue}>{courseDetail.rating}</div>
+                                    <RatingComponent courseId={courseId} currentRating={courseDetail.rating} />
                                     <div className={styles.ratingBreakdown}>
                                         <div>★★★★★ 66%</div>
                                         <div>★★★★ 30%</div>
@@ -320,54 +285,41 @@ export const LessonPage = () => {
                                         <input type="text" placeholder="Tìm kiếm đánh giá" />
                                         <select>
                                             <option value="all">Tất cả xếp hạng</option>
-                                            {/* Add more sorting options here */}
                                         </select>
                                     </div>
                                     <ul>
-                                        {/* Map through reviews here */}
                                         <li>
                                             <strong>Muhammad Alim P.</strong>
                                             <div>{/* Star Rating Here */}★★★★☆</div>
                                             <p>my personal experience is so well what i expected but it match of my mind.</p>
                                         </li>
-                                        {/* Repeat for other reviews */}
                                     </ul>
                                 </div>
                             </div>
-
                         )}
                     </div>
-
                 </div>
-
                 <aside className={styles.videoList}>
-                    <div className={styles.courseContentHeader}>Nội dung khóa học</div>  {/* Tiêu đề mới */}
-
+                    <div className={styles.courseContentHeader}>Nội dung khóa học</div>
                     <ul>
                         {chapters.sort((a, b) => a.chapterNumber - b.chapterNumber).map(chapter => (
                             <li key={chapter._id}>
                                 <div className={styles.chapterHeader} onClick={() => toggleExpand(chapter._id)}>
                                     <div className={styles.iconntittle}>
-
                                         <span>{chapter.title}</span>
                                         <FontAwesomeIcon icon={expanded[chapter._id] ? faChevronUp : faChevronDown} />
                                     </div>
-
                                     <div className={styles.chapterDetails}>
                                         <span className={styles.goingcourse}>{getChapterDetails(chapter).completed}</span>
-                                        <span className={styles.divider}>|</span>  {/* Dấu gạch đứng ngăn cách */}
-
+                                        <span className={styles.divider}>|</span>
                                         <span className={styles.durationchapter}>{getChapterDetails(chapter).duration}</span>
                                     </div>
-
-
                                 </div>
                                 {expanded[chapter._id] && (
                                     <ul className={styles.lessonList}>
                                         {lessons.filter(lesson => lesson.chapterId === chapter._id).map(lesson => (
-                                            <li key={lesson._id} className={styles.lessonItem} onClick={() => handleLessonClick(lesson._id)}
-                                            >
-                                                <FontAwesomeIcon icon={faCircle} className={styles.lessonIcon} />
+                                            <li key={lesson._id} className={`${styles.lessonItem} ${lesson._id === lessonId ? styles.active : ''}`} onClick={() => handleLessonClick(lesson._id)}>
+                                                <FontAwesomeIcon icon={faCircle} className={`${styles.lessonIcon} ${lessonscomplete.includes(lesson._id) ? styles.completed : ''}`} />
                                                 <span className={styles.lessonName}>{lesson.title}</span>
                                                 <span className={styles.lessonDuration}>{formatDurationFromSeconds(lesson.duration)}</span>
                                             </li>
@@ -379,9 +331,6 @@ export const LessonPage = () => {
                     </ul>
                 </aside>
             </div>
-
-
-
             <footer className={styles.footer}>
                 © 2024 GNOSIS. All Rights Reserved.
             </footer>

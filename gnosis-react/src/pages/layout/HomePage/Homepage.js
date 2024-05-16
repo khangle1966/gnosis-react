@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
 import styles from './HomePage.module.scss';
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StatisticsComponent from './component/StatisticsComponent/StatisticsComponent';
 import CalendarComponent from './component/CalendarComponent/CalendarComponent';
 import { fetchProfile } from '../../../redux/action/profileActions';

@@ -36,7 +36,7 @@
         flex-grow: 1; // Cho phép .welcomendate phát triển và chiếm đủ không gian
         align-items: center;
         padding-bottom: 2rem;
-        border-bottom: #aaa solid 1px;
+        border-bottom: #aaa 1px solid ;
         width: 100%;
 
         .breadcrumbs {
@@ -87,6 +87,7 @@
 
     }
 
+
     .promotions {
         display: flex;
         justify-content: space-between;
@@ -101,7 +102,7 @@
             margin-right: 10px;
             display: inline-block;
             margin-right: 10px;
-
+            width: 500px;
             background-color: white;
             padding: 10px;
             border-radius: 8px;
