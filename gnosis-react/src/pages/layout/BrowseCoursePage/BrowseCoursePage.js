@@ -173,7 +173,99 @@ const BrowseCoursePage = () => {
     <span>70% off all courses today</span>
     <span>70% off all courses today</span>
     <span>70% off all courses today</span>
-   
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span> <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span> <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span> <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
+    <span>70% off all courses today</span>
 </div>
 
 

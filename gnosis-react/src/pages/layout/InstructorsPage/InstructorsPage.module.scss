@@ -39,25 +39,37 @@
         }
 
         .Container_Button {
-            margin-right: 2rem;
+            margin-right: 6.5rem;
+            margin-bottom: 3.5rem;
+            
 
         }
+
 
         .Cancel_Button {
             margin: 1rem;
             color: black;
             font-weight: 600;
             border-radius: 12px;
-
+            border: #434546 solid;
+            &:hover{
+                color: rgb(255, 3, 3);
+            }
         }
 
         .Publish_Button {
             margin: 1rem;
-            background-color: pink;
+            background-color:  #37823e;
             font-weight: 600;
             border-radius: 12px;
+            border: #434546 solid;
+             &:hover{
+                 color: rgb(2, 230, 127);
+             }
         }
     }
+
+   
 
     .form {
         display: flex;
@@ -66,7 +78,7 @@
         max-width: 100vw; // Giới hạn độ rộng tối đa của form
         background-color: #fff; // Màu nền của form
         padding: 2rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-left: 2rem;
         border-radius: 8px;
     }
 
