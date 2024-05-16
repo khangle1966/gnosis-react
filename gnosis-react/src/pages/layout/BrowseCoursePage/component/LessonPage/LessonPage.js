@@ -14,12 +14,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NoteModal from './components/NoteModal';
 import NoteViewer from './components/NoteViewer';
 import { fetchNotes } from '../../../../../redux/action/noteActions';
-import RatingComponent from './components/RatingComponent'; // Import the RatingComponent
+import RatingComponent from './components/RatingComponent';
+import { completeCourse } from '../../../../../redux/action/profileActions';
 
 export const LessonPage = () => {
     const { lessonId, courseId } = useParams();
     const navigate = useNavigate();
-
     const dispatch = useDispatch();
     const [expanded, setExpanded] = useState({});
     const { videoURL, loading, error } = useSelector(state => state.uploadVideo);
@@ -39,18 +39,34 @@ export const LessonPage = () => {
     const [timeToSeek, setTimeToSeek] = useState(null);
     const [playerReady, setPlayerReady] = useState(false);
     const [key, setKey] = useState(0);
-
     const { lesson, loading: lessonLoading, error: lessonError } = useSelector(state => state.lessonDetail);
     const { notes, loading: loadingnotes, error: errornotes } = useSelector(state => state.notesData);
 
+    const getTotalAndCompletedLessons = () => {
+        const total = lessons.length;
+        const completed = lessonscomplete.length;
+        return { total, completed };
+    };
+    const { total, completed } = getTotalAndCompletedLessons();
+
+
     useEffect(() => {
+        console.log("useEffect triggered");
+        console.log("completed: ", completed, "total: ", total);
+        if (completed === total && total !== 0) {
+            console.log("Dispatching completeCourse");
+            dispatch(completeCourse(userId, courseId));
+        } else {
+            console.log("Condition not met for dispatching completeCourse");
+        }
         dispatch(fetchVideoUrl(lessonId));
         dispatch(fetchChaptersByCourseId(courseId));
         dispatch(fetchLessonsByCourseId(courseId));
         dispatch(fetchCourseDetail(courseId));
         dispatch(fetchLessonComplete(courseId, userId));
         dispatch(fetchNotes(userId));
-    }, [dispatch, courseId, userId, lessonId]);
+    }, [dispatch, courseId, userId, lessonId, completed, total]);
+
 
     useEffect(() => {
         if (lessonId) {
@@ -70,24 +86,13 @@ export const LessonPage = () => {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const remainingSeconds = Math.round(seconds % 60);
-
         let formattedDuration = '';
-
         if (hours > 0) {
             formattedDuration += `${hours}:`;
         }
-
         formattedDuration += `${minutes}:${remainingSeconds}`;
-
         return formattedDuration;
     };
-
-    const getTotalAndCompletedLessons = () => {
-        const total = lessons.length;
-        const completed = lessonscomplete.length;
-        return { total, completed };
-    };
-    const { total, completed } = getTotalAndCompletedLessons();
 
     const getChapterDetails = (chapter) => {
         const chapterLessons = lessons.filter(lesson => lesson.chapterId === chapter._id);
@@ -136,7 +141,6 @@ export const LessonPage = () => {
     };
 
     const handleSaveNote = (note) => {
-        console.log('Saving note:', note);
         setShowNoteModal(false);
         dispatch(fetchNotes(userId));
     };
@@ -154,11 +158,9 @@ export const LessonPage = () => {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secondsRemaining = Math.floor(seconds % 60);
-
         const paddedHours = hours.toString().padStart(2, '0');
         const paddedMinutes = minutes.toString().padStart(2, '0');
         const paddedSeconds = secondsRemaining.toString().padStart(2, '0');
-
         return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
     }
 
