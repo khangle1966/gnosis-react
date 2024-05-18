@@ -36,6 +36,8 @@
         flex-grow: 1; // Cho phép .welcomendate phát triển và chiếm đủ không gian
         align-items: center;
         padding-bottom: 2rem;
+        border-bottom: #aaa 1px solid ;
+        width: 100%;
 
         .breadcrumbs {
             margin-bottom: 20px;
@@ -91,7 +93,8 @@
         justify-content: space-between;
         margin-bottom: 20px;
         animation: scroll 20s linear infinite; // Adjust the duration as needed
-
+        height: 40px; // Adjust the height as needed
+        padding-top: 10px;
 
         span {
             flex: none;

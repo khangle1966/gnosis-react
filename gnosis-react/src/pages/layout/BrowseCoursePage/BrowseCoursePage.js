@@ -149,6 +149,9 @@ const BrowseCoursePage = () => {
                 </div>
             </div>
             <div className={styles.promotions}>
+
+
+
                 <span>70% off all courses today</span>
                 <span>70% off all courses today</span>
                 <span>70% off all courses today</span>
