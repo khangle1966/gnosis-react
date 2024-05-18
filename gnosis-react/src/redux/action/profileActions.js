@@ -36,6 +36,7 @@ export const fetchProfile = (userId) => async (dispatch) => {
         });
     }
 };
+
 export const completeCourse = (userId, courseId) => async (dispatch, getState) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });
     try {
@@ -48,7 +49,7 @@ export const completeCourse = (userId, courseId) => async (dispatch, getState) =
 
         const updatedProfileData = {
             ...profile,
-            completedCourse: updatedCompletedCourses.map(id => id.toString())
+            completedCourse: updatedCompletedCourses.map(id => String(id))
         };
 
         console.log("Updated profile data: ", updatedProfileData);
@@ -64,6 +65,7 @@ export const completeCourse = (userId, courseId) => async (dispatch, getState) =
         });
     }
 };
+
 
 export const updateProfile = (profileData, userId) => async (dispatch) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });

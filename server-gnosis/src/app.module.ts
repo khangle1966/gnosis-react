@@ -10,7 +10,6 @@ import { QuestionModule } from './question/question.module';
 import { UserModule } from './user/user.module';
 import { QuizModule } from './quiz/quiz.module';
 import { QuizBankModule } from './quiz-bank/quiz-bank.module';
-import { ReviewModule } from './review/review.module';
 import { AuthModule } from './auth/auth.module';
 import { UsergoogleModule } from './usergoogle/usergoogle.module';
 import { AuthorModule } from './author/author.module';
@@ -21,6 +20,7 @@ import { CartModule } from './cart/cart.module';
 import { MomoModule } from './momo/momo.module';
 import { LessonCompletionModule } from './lesson-completion/lesson-completion.module';
 import { NoteModule } from './note/note.module';
+import { RatingModule } from './rating/rating.module';
 
 
 @Module({
@@ -37,7 +37,6 @@ import { NoteModule } from './note/note.module';
     UserModule,
     QuizModule,
     QuizBankModule,
-    ReviewModule,
     AuthModule,
     UsergoogleModule,
     AuthorModule,
@@ -48,6 +47,7 @@ import { NoteModule } from './note/note.module';
     MomoModule,
     LessonCompletionModule,
     NoteModule,
+    RatingModule,
 
   ],
   controllers: [AppController],

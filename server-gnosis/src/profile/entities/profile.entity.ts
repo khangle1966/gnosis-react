@@ -37,24 +37,31 @@ export class Profile {
     @Prop()
     notifications: string[];
 
-
     @Prop({
         type: [{ type: mongoose.Schema.Types.ObjectId }],
         ref: 'Course',
     })
     completedCourse: Course[];
 
+
+
     @Prop({
         type: [{ type: mongoose.Schema.Types.ObjectId }],
         ref: 'Course',
+    
+    
     })
+    
     ongoingCourse: Course[];
 
     @Prop({
         type: [{ type: mongoose.Schema.Types.ObjectId }],
         ref: 'Course',
     })
+
+    
     courses: Course[];
+
 }
 
 export const ProfileSchema = SchemaFactory.createForClass(Profile);

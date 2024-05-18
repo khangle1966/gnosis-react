@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchVideoUrl } from '../../../../../redux/action/uploadActions';
 import styles from './LessonPage.module.scss';
-import { faArrowLeft, faStickyNote } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faStickyNote, faStar } from '@fortawesome/free-solid-svg-icons';
 import { faChevronDown, faChevronUp, faCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { fetchLessonsByCourseId, fetchLessonById } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
@@ -14,8 +14,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NoteModal from './components/NoteModal';
 import NoteViewer from './components/NoteViewer';
 import { fetchNotes } from '../../../../../redux/action/noteActions';
-import RatingComponent from './components/RatingComponent';
 import { completeCourse } from '../../../../../redux/action/profileActions';
+import RatingModal from './components/RatingModal';
+import { fetchRatingsByCourseId, submitRating } from '../../../../../redux/action/ratingActions';
 
 export const LessonPage = () => {
     const { lessonId, courseId } = useParams();
@@ -41,6 +42,8 @@ export const LessonPage = () => {
     const [key, setKey] = useState(0);
     const { lesson, loading: lessonLoading, error: lessonError } = useSelector(state => state.lessonDetail);
     const { notes, loading: loadingnotes, error: errornotes } = useSelector(state => state.notesData);
+    const [showRatingModal, setShowRatingModal] = useState(false);
+    const { ratings } = useSelector(state => state.ratings);
 
     const getTotalAndCompletedLessons = () => {
         const total = lessons.length;
@@ -48,7 +51,6 @@ export const LessonPage = () => {
         return { total, completed };
     };
     const { total, completed } = getTotalAndCompletedLessons();
-
 
     useEffect(() => {
         console.log("useEffect triggered");
@@ -63,10 +65,10 @@ export const LessonPage = () => {
         dispatch(fetchChaptersByCourseId(courseId));
         dispatch(fetchLessonsByCourseId(courseId));
         dispatch(fetchCourseDetail(courseId));
+        dispatch(fetchRatingsByCourseId(courseId));
         dispatch(fetchLessonComplete(courseId, userId));
         dispatch(fetchNotes(userId));
     }, [dispatch, courseId, userId, lessonId, completed, total]);
-
 
     useEffect(() => {
         if (lessonId) {
@@ -74,6 +76,24 @@ export const LessonPage = () => {
             setKey(prevKey => prevKey + 1);
         }
     }, [dispatch, lessonId]);
+
+    const handleRatingSubmit = (ratingData) => {
+        dispatch(submitRating(ratingData));
+        setShowRatingModal(false);
+    };
+
+    const calculateRatingBreakdown = (ratings) => {
+        const totalRatings = ratings.length;
+        const breakdown = [0, 0, 0, 0, 0];
+
+        ratings.forEach((rating) => {
+            breakdown[rating.rating - 1] += 1;
+        });
+
+        return breakdown.map((count) => Math.round((count / totalRatings) * 100));
+    };
+
+    const ratingBreakdown = calculateRatingBreakdown(ratings);
 
     if (!lesson) {
         return <div>Loading lesson...</div>;
@@ -174,6 +194,14 @@ export const LessonPage = () => {
         }
     };
 
+    const handleRatingClick = () => {
+        setShowRatingModal(true);
+    };
+
+    const handleRatingModalClose = () => {
+        setShowRatingModal(false);
+    };
+
     return (
         <div className={styles.container}>
             <header className={styles.header}>
@@ -182,6 +210,10 @@ export const LessonPage = () => {
                     <span>{courseDetail.name}</span>
                 </div>
                 <div className={styles.right}>
+                    <div className={styles.ratingContainer} onClick={handleRatingClick}>
+                        <FontAwesomeIcon icon={faStar} className={styles.ratingIcon} />
+                        Đưa ra xếp hạng
+                    </div>
                     <div className={styles.progressContainer}>
                         <div className={styles.progressCircle}>
                             <span className={styles.progressPercentage}>{Math.round((completed / total) * 100)}%</span>
@@ -232,9 +264,20 @@ export const LessonPage = () => {
                                 <nav className={styles.courseNav}>
                                     <ul className={styles.navList}>
                                         <div className={styles.ratingandescription}>
-                                            <li className={styles.navItem} onClick={() => setActiveSection('overview')}>Tổng quan</li>
-                                            <li className={styles.navItem} onClick={() => setActiveSection('review')}>Đánh giá</li>
+                                            <li
+                                                className={`${styles.navItem} ${activeSection === 'overview' ? styles.active : ''}`}
+                                                onClick={() => setActiveSection('overview')}
+                                            >
+                                                Tổng quan
+                                            </li>
+                                            <li
+                                                className={`${styles.navItem} ${activeSection === 'review' ? styles.active : ''}`}
+                                                onClick={() => setActiveSection('review')}
+                                            >
+                                                Đánh giá
+                                            </li>
                                         </div>
+
                                         <div className={styles.notesHeader}>
                                             <FontAwesomeIcon icon={faStickyNote} className={styles.notesIcon} />
                                             <button className={styles.saveNoteButton} onClick={handleNoteClick}>
@@ -269,14 +312,24 @@ export const LessonPage = () => {
                             <div className={styles.reviewSection}>
                                 <div className={styles.overallRating}>
                                     <h2>Phản hồi của học viên</h2>
-                                    <div className={styles.ratingValue}>{courseDetail.rating}</div>
-                                    <RatingComponent courseId={courseId} currentRating={courseDetail.rating} />
+                                    <div className={styles.ratingContainer}>
+                                        <div className={styles.ratingValue}>{courseDetail.rating}</div>
+                                        <div className={styles.stars}>
+                                            {Array.from({ length: 5 }, (_, index) => (
+                                                <FontAwesomeIcon
+                                                    key={index}
+                                                    icon={faStar}
+                                                    className={index < Math.round(courseDetail.rating) ? styles.filledStar : styles.emptyStar}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
                                     <div className={styles.ratingBreakdown}>
-                                        <div>★★★★★ 66%</div>
-                                        <div>★★★★ 30%</div>
-                                        <div>★★★ 4%</div>
-                                        <div>★★ 0%</div>
-                                        <div>★ 1%</div>
+                                        <div>★★★★★ {ratingBreakdown[4]}%</div>
+                                        <div>★★★★ {ratingBreakdown[3]}%</div>
+                                        <div>★★★ {ratingBreakdown[2]}%</div>
+                                        <div>★★ {ratingBreakdown[1]}%</div>
+                                        <div>★ {ratingBreakdown[0]}%</div>
                                     </div>
                                 </div>
                                 <div className={styles.reviewList}>
@@ -288,15 +341,26 @@ export const LessonPage = () => {
                                         </select>
                                     </div>
                                     <ul>
-                                        <li>
-                                            <strong>Muhammad Alim P.</strong>
-                                            <div>{/* Star Rating Here */}★★★★☆</div>
-                                            <p>my personal experience is so well what i expected but it match of my mind.</p>
-                                        </li>
+                                        {ratings.map((rating) => (
+                                            <li key={rating._id}>
+                                                <strong>{rating.userId}</strong>
+                                                <div>{'★'.repeat(rating.rating) + '☆'.repeat(5 - rating.rating)}</div>
+                                                <p>{rating.feedback}</p>
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>
                         )}
+
+
+                        <RatingModal
+                            show={showRatingModal}
+                            handleClose={handleRatingModalClose}
+                            handleSave={handleRatingSubmit}
+                            userId={userId} // Pass userId
+                            courseId={courseId} // Pass courseId
+                        />
                     </div>
                 </div>
                 <aside className={styles.videoList}>

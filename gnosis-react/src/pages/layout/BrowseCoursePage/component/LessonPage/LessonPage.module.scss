@@ -9,8 +9,28 @@
     flex-direction: row;
     justify-content: flex-end;
     margin: 0 2rem;
+    align-items: center;
+
+    .ratingContainer {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      color: #fff; // Adjust this color as needed
+      margin-right: 20px; // Adjust the spacing as needed
+
+
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .ratingIcon {
+    margin-right: 5px; // Spacing between the star icon and text
   }
 }
+
 
 .header {
   position: fixed;
@@ -33,10 +53,13 @@
 .rightNav {
   display: flex;
   align-items: center;
+
 }
 
 .rightNav {
   cursor: pointer;
+
+
 }
 
 .backIcon,
@@ -313,7 +336,40 @@
 
     .ratingandescription {
       display: flex;
+      align-items: center;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+
+      .navItem {
+        position: relative;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-size: 18px;
+        color: #555;
+        transition: color 0.3s ease-in-out;
+
+        &:not(:last-child)::after {
+          content: '|';
+          position: absolute;
+          right: 0;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #ccc;
+        }
+
+        &:hover {
+          color: #077949;
+        }
+      }
+
+      .active {
+        font-weight: bold;
+        color: #077949;
+        border-bottom: 2px solid #0a8164;
+      }
     }
+
 
     .navList {
       display: flex;
@@ -410,31 +466,80 @@
   display: flex;
   flex-direction: column;
   margin: 20px;
-  font-family: Arial, sans-serif;
+  font-family: 'Roboto', sans-serif;
   padding: 0 15rem 15rem 15rem;
+
 
   .overallRating,
   .reviewList {
     background: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(150, 141, 141, 0.1);
+    padding: 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     margin-bottom: 20px;
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+
+
+    &:hover {
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      transform: translateY(-5px);
+    }
   }
 
   .overallRating {
+    text-align: center;
+    color: #333;
+
     h2 {
       margin-top: 0;
+      font-size: 28px;
+      margin-bottom: 15px;
+      background: -webkit-linear-gradient(45deg, #ff6a00, #ee0979);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .ratingContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
     }
 
     .ratingValue {
-      font-size: 48px;
+      font-size: 72px;
       color: #FFA500; // Gold color for rating
     }
 
+    .stars {
+      display: flex;
+      gap: 5px;
+
+      .filledStar {
+        color: #FFA500;
+      }
+
+      .emptyStar {
+        color: #ccc;
+      }
+    }
+
     .ratingBreakdown {
+      display: flex;
+      justify-content: space-around;
+      font-size: 20px;
+      font-weight: bold;
+      color: #555;
+
       div {
         margin-bottom: 5px;
+        transition: color 0.3s ease-in-out;
+
+        &:hover {
+          color: #FFA500;
+        }
       }
     }
   }
@@ -442,6 +547,12 @@
   .reviewList {
     h3 {
       margin-top: 0;
+      font-size: 26px;
+      color: #333;
+      margin-bottom: 20px;
+      background: -webkit-linear-gradient(45deg, #ff6a00, #ee0979);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
     .searchSort {
@@ -452,16 +563,28 @@
       input {
         flex-grow: 1;
         margin-right: 10px;
-        padding: 8px;
+        padding: 10px;
         border: 1px solid #ccc;
-        border-radius: 4px;
+        border-radius: 25px;
+        transition: border-color 0.3s ease-in-out;
+
+        &:focus {
+          border-color: #FFA500;
+          outline: none;
+        }
       }
 
       select {
         width: 200px;
-        padding: 8px;
-        border-radius: 4px;
+        padding: 10px;
+        border-radius: 25px;
         border: 1px solid #ccc;
+        transition: border-color 0.3s ease-in-out;
+
+        &:focus {
+          border-color: #FFA500;
+          outline: none;
+        }
       }
     }
 
@@ -471,16 +594,38 @@
 
       li {
         border-bottom: 1px solid #eee;
-        padding: 10px 0;
+        padding: 15px 0;
+        transition: background-color 0.3s ease-in-out, transform 0.3s ease-in-out;
+
+        &:hover {
+          background-color: #f1f1f1;
+          transform: translateY(-2px);
+        }
 
         strong {
           display: block;
           color: #333;
+          font-size: 18px;
+          margin-bottom: 5px;
+        }
+
+        div {
+          font-size: 22px;
+          color: #FFA500;
+          margin-bottom: 5px;
+        }
+
+        p {
+          color: #666;
+          font-size: 16px;
+          margin: 0;
         }
       }
     }
   }
 }
+
+
 
 .footer {
   background-color: #1a1a1a;

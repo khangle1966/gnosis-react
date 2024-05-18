@@ -9,6 +9,7 @@ import cartReducer from './reducers/cartReducer';
 import { videoUploadReducer } from './reducers/uploadReducer';
 import lessonReducer from './reducers/lessonCompleteReducer';
 import { notesReducer, noteAddReducer } from './reducers/noteReducer';
+import { ratingReducer } from './reducers/ratingReducer';
 
 // Combine reducers để tạo rootReducer
 const rootReducer = combineReducers({
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
     lessonComplete: lessonReducer,  
     notesData: notesReducer,
     noteAdd: noteAddReducer,
+    ratings: ratingReducer,
 });
 const persistedState = localStorage.getItem('reduxState') ? JSON.parse(localStorage.getItem('reduxState')) : {};
 
