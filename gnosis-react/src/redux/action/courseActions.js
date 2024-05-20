@@ -1,14 +1,11 @@
-// Trong file actions/courseActions.js
+// courseActions.js
 import axios from 'axios';
-
 import {
     UPDATE_COURSE,
     RESET_COURSE,
     SUBMIT_COURSE,
     SUBMIT_COURSE_SUCCESS,
     SUBMIT_COURSE_FAILURE,
-
-
     FETCH_USER_COURSES_REQUEST,
     FETCH_USER_COURSES_SUCCESS,
     FETCH_USER_COURSES_FAILURE,
@@ -16,7 +13,6 @@ import {
     FETCH_COURSE_DETAIL_SUCCESS,
     FETCH_COURSE_DETAIL_FAILURE,
     UPDATE_COURSE_FAILURE
-
 } from '../types/courseType';
 
 export const fetchCourses = () => async (dispatch) => {
@@ -34,6 +30,7 @@ export const fetchCourses = () => async (dispatch) => {
         });
     }
 };
+
 export const fetchUserCourses = (courseIds) => async (dispatch) => {
     dispatch({ type: FETCH_USER_COURSES_REQUEST });
     try {
@@ -48,7 +45,6 @@ export const fetchUserCourses = (courseIds) => async (dispatch) => {
         });
     }
 };
-
 
 export const fetchCourseDetail = (courseId) => async (dispatch) => {
     try {
@@ -66,7 +62,7 @@ export const fetchCourseDetail = (courseId) => async (dispatch) => {
     }
 };
 
-export const updateRating = (courseId, rating) => async (dispatch) => {
+export const updateCourseRating = (courseId, rating) => async (dispatch) => {
     try {
         const response = await axios.patch(`http://localhost:3000/v1/course/${courseId}/rating`, { rating });
         dispatch({
@@ -80,9 +76,21 @@ export const updateRating = (courseId, rating) => async (dispatch) => {
         });
     }
 };
-export function updateCourse(courseData) {
-    return { type: UPDATE_COURSE, payload: courseData };
-}
+
+export const updateCourse = (courseId, updates) => async (dispatch) => {
+    try {
+        const response = await axios.patch(`http://localhost:3000/v1/course/${courseId}`, updates);
+        dispatch({
+            type: UPDATE_COURSE,
+            payload: response.data
+        });
+    } catch (error) {
+        dispatch({
+            type: FETCH_COURSE_DETAIL_FAILURE,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+    }
+};
 export const updateCourseDetails = (courseData) => async (dispatch) => {
     try {
         const response = await axios.put(`http://localhost:3000/v1/course/${courseData._id}`, courseData);
@@ -107,14 +115,12 @@ export function submitCourse(courseData) {
     return async (dispatch) => {
         dispatch({ type: SUBMIT_COURSE });
         try {
-            // Making API call to submit course data using Axios
             const response = await axios.post('http://localhost:3000/v1/course', courseData, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
-            // Handling the response data
             const data = response.data;
             dispatch({ type: SUBMIT_COURSE_SUCCESS, payload: data });
         } catch (error) {

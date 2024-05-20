@@ -1,4 +1,4 @@
-// Trong file reducers/courseReducer.js
+// courseReducer.js
 import {
     UPDATE_COURSE,
     RESET_COURSE,
@@ -18,7 +18,9 @@ const initialState = {
     courses: [],
     loading: true,
     error: null
-}; const initialCourseState = {
+};
+
+const initialCourseState = {
     courseData: {
         type: "",
         name: "",
@@ -32,11 +34,13 @@ const initialState = {
     loading: false,
     error: null
 };
+
 const courseDetailInitialState = {
     courseDetail: {},
     loading: false,
     error: null,
 };
+
 export const courseDetailReducer = (state = courseDetailInitialState, action) => {
     switch (action.type) {
         case FETCH_COURSE_DETAIL:
@@ -94,7 +98,6 @@ export const courseReducer = (state = initialState, action) => {
 
 export const coursePushReducer = (state = initialCourseState, action) => {
     switch (action.type) {
-
         case RESET_COURSE:
             return initialCourseState;
         case SUBMIT_COURSE:

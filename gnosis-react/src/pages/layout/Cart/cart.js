@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeFromCart, buyCourses } from '../../../redux/action/cartActions';
+import { removeFromCart, buyCourses, createVNPayPayment } from '../../../redux/action/cartActions';
 import { fetchProfile } from '../../../redux/action/profileActions';
 import styles from './cart.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -43,18 +43,12 @@ const CartPage = () => {
         dispatch(removeFromCart(id));
     };
 
-    const handleBuyAll = () => {
-        if (user && user.uid) {
-            dispatch(buyCourses(user.uid, cartItems));
-            setNotification({ show: true, message: `Mua thành công "${cartItems.length}" khóa học.` });
-            setTimeout(() => {
-                setNotification({ show: false, message: '' });
-            }, 3000);
-            navigate('/payment');
-        } else {
-            console.log('User data is not available. Redirecting to login page.');
-            navigate('/login');
-        }
+    const handleVNPayPayment = () => {
+        const amount = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
+        const orderId = Date.now().toString(); // Unique order ID
+        const orderInfo = 'Payment for courses'; // Information about the order
+        const returnUrl = 'http://localhost:3000/payment-success'; // URL to redirect to after payment
+        dispatch(createVNPayPayment(amount, orderId, orderInfo, returnUrl));
     };
 
     const truncateNameCourse = (name) => {
@@ -120,7 +114,7 @@ const CartPage = () => {
                         <div className={styles.totalPrice}>
                             <strong>Total:</strong> ${totalPrice.toFixed(2)}
                         </div>
-                        <button onClick={handleBuyAll} className={styles.buyAllButton}>Payment</button>
+                        <button onClick={handleVNPayPayment} className={styles.buyAllButton}>Thanh toán bằng VNPay</button>
                     </div>
                 </section>
             </main>

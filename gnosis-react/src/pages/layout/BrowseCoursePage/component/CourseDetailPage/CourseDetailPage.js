@@ -343,14 +343,11 @@ export const CourseDetailPage = () => {
                     <p className={styles.courseSubtitle}>{courseDetail.subTitle}</p>
 
                     <div className={styles.courseRating}>
-                        <span className={styles.rating}>({courseDetail.rating})</span>
+                        <span className={styles.rating}>({courseDetail.rating.toFixed(1)})</span>
+                        {renderStars(courseDetail.rating)}
+                        <span>({courseDetail.numberOfReviews} xếp hạng)</span>
 
-
-                        {renderStars(rating)}
-
-
-                        <span>(110 xếp hạng)</span>
-                        <span className={styles.enrollment}>528 học viên</span>
+                        <span className={styles.enrollment}>{courseDetail.numberOfStudents} học viên</span>
                     </div>
                     <div className={styles.instructorInfo}>
                         Được tạo bởi <a href='/default' > {courseDetail.author} </a>
@@ -557,7 +554,7 @@ export const CourseDetailPage = () => {
                     )}
                 </div>
 
-            </div>
+            </div >
 
         </>
     );

@@ -29,6 +29,7 @@ export const fetchProfile = (userId) => async (dispatch) => {
     try {
         const response = await axios.get(`http://localhost:3000/v1/profile/by-id/${userId}`);
         dispatch({ type: PROFILE_FETCH_SUCCESS, payload: response.data });
+        return response.data;
     } catch (error) {
         dispatch({
             type: PROFILE_FETCH_FAILURE,

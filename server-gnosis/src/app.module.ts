@@ -21,6 +21,8 @@ import { MomoModule } from './momo/momo.module';
 import { LessonCompletionModule } from './lesson-completion/lesson-completion.module';
 import { NoteModule } from './note/note.module';
 import { RatingModule } from './rating/rating.module';
+import { VnpayModule } from './vnpay/vnpay.module';
+
 
 
 @Module({
@@ -48,9 +50,9 @@ import { RatingModule } from './rating/rating.module';
     LessonCompletionModule,
     NoteModule,
     RatingModule,
-
+    VnpayModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController ],
   providers: [AppService],
 })
 export class AppModule { }

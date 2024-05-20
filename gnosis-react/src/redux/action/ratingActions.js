@@ -17,3 +17,19 @@ export const fetchRatingsByCourseId = (courseId) => async (dispatch) => {
         dispatch({ type: 'FETCH_RATINGS_FAIL', payload: error.message });
     }
 };
+
+
+export const updateCourseRating = (courseId, rating) => async (dispatch) => {
+    try {
+        const { data } = await axios.patch(`/v1/course/${courseId}/rating`, { rating });
+        dispatch({
+            type: 'UPDATE_COURSE_RATING_SUCCESS',
+            payload: data,
+        });
+    } catch (error) {
+        dispatch({
+            type: 'UPDATE_COURSE_RATING_FAIL',
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message,
+        });
+    }
+};

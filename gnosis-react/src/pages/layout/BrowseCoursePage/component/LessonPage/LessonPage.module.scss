@@ -628,9 +628,52 @@
 
 
 .footer {
-  background-color: #1a1a1a;
-  color: #fff;
+  background: #2c3e50;
+  color: #ecf0f1;
+  padding: 20px 0;
   text-align: center;
-  padding: 10px 20px;
-  width: 80%;
+
+  .footerContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .footerLogo img {
+    width: 150px;
+    margin-bottom: 15px;
+  }
+
+  .footerLinks {
+    margin-bottom: 15px;
+
+    a {
+      color: #ecf0f1;
+      margin: 0 10px;
+      text-decoration: none;
+      font-size: 14px;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .footerSocial {
+    margin-bottom: 15px;
+
+    a {
+      color: #ecf0f1;
+      margin: 0 10px;
+      font-size: 20px;
+
+      &:hover {
+        color: #3498db;
+      }
+    }
+  }
+
+  .footerCopy {
+    font-size: 14px;
+  }
 }

@@ -100,8 +100,10 @@ export class CourseService {
     const totalRating = course.rating * course.numberOfReviews;
     course.numberOfReviews += 1;
     course.rating = (totalRating + rating) / course.numberOfReviews;
-    return course.save();
+    await course.save();
+    return course;
   }
+
 
   async getCourse(courseId: string): Promise<Course> {
     return this.courseModel.findById(courseId).exec();

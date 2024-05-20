@@ -1,19 +1,12 @@
-import { ADD_TO_CART, REMOVE_FROM_CART,BUY_COURSES_SUCCESS,BUY_COURSES_FAIL  } from '../types/cartTypes';
+import { ADD_TO_CART, REMOVE_FROM_CART, BUY_COURSES_SUCCESS, BUY_COURSES_FAIL } from '../types/cartTypes';
 
-// reducers/cartReducer.js
+const initialState = {
+    cartItems: [],
+    userCourses: [],
+    error: null
+};
 
-// reducers/cartReducer.js
-
-// const initialState = {
-//     cartItems: [],
-//     error: null
-
-// };
-
-
-
-// Thêm vào file cartReducer.js
-const cartReducer = (state = { cartItems: [] }, action) => {
+const cartReducer = (state = initialState, action) => {
     switch (action.type) {
         case ADD_TO_CART:
             const item = action.payload;
@@ -36,27 +29,20 @@ const cartReducer = (state = { cartItems: [] }, action) => {
                 ...state,
                 cartItems: state.cartItems.filter(x => x._id !== action.payload)
             };
-       
-            case BUY_COURSES_SUCCESS:
-                return {
-                    ...state,
-                    userCourses: action.payload.courses,  // Lưu ý payload phải phù hợp với dữ liệu trả về
-                    cartItems: []  // Có thể làm trống giỏ hàng sau khi mua
-                };
-            case BUY_COURSES_FAIL:
-                return {
-                    ...state,
-                    error: action.payload
-                };
+        case BUY_COURSES_SUCCESS:
+            return {
+                ...state,
+                userCourses: action.payload.courses, // Lưu ý payload phải phù hợp với dữ liệu trả về
+                cartItems: [] // Làm trống giỏ hàng sau khi mua
+            };
+        case BUY_COURSES_FAIL:
+            return {
+                ...state,
+                error: action.payload
+            };
         default:
             return state;
     }
 };
 
-
-
-
 export default cartReducer;
-
-
-

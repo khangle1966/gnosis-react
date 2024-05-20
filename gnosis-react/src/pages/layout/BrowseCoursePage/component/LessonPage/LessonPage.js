@@ -4,17 +4,19 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchVideoUrl } from '../../../../../redux/action/uploadActions';
 import styles from './LessonPage.module.scss';
-import { faArrowLeft, faStickyNote, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faStickyNote, faStar, faStarHalfAlt } from '@fortawesome/free-solid-svg-icons';
 import { faChevronDown, faChevronUp, faCircle, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { fetchLessonsByCourseId, fetchLessonById } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
-import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
+import { fetchCourseDetail, updateCourseRating } from '../../../../../redux/action/courseActions'; // import action
+import { faFacebook, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons'; // Import social icons
+
 import { completeLesson, fetchLessonComplete } from '../../../../../redux/action/lessonCompleteActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NoteModal from './components/NoteModal';
 import NoteViewer from './components/NoteViewer';
 import { fetchNotes } from '../../../../../redux/action/noteActions';
-import { completeCourse } from '../../../../../redux/action/profileActions';
+import { completeCourse, fetchProfile } from '../../../../../redux/action/profileActions';
 import RatingModal from './components/RatingModal';
 import { fetchRatingsByCourseId, submitRating } from '../../../../../redux/action/ratingActions';
 
@@ -32,6 +34,7 @@ export const LessonPage = () => {
     const { chapters } = useSelector(state => state.chapterDetail);
     const { lessons } = useSelector(state => state.lessonDetail);
     const { lessonscomplete } = useSelector(state => state.lessonComplete);
+
     const [activeSection, setActiveSection] = useState('overview');
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showNoteViewer, setShowNoteViewer] = useState(false);
@@ -44,6 +47,7 @@ export const LessonPage = () => {
     const { notes, loading: loadingnotes, error: errornotes } = useSelector(state => state.notesData);
     const [showRatingModal, setShowRatingModal] = useState(false);
     const { ratings } = useSelector(state => state.ratings);
+    const [userNames, setUserNames] = useState({}); // State to store user names
 
     const getTotalAndCompletedLessons = () => {
         const total = lessons.length;
@@ -77,8 +81,25 @@ export const LessonPage = () => {
         }
     }, [dispatch, lessonId]);
 
+    useEffect(() => {
+        // Fetch profiles for all rating users
+        console.log("Ratings: ", ratings);
+        ratings.forEach(rating => {
+            if (!userNames[rating.userId]) {
+                dispatch(fetchProfile(rating.userId)).then(profileData => {
+                    console.log("Profile data fetched: ", profileData);
+                    setUserNames(prevUserNames => ({
+                        ...prevUserNames,
+                        [rating.userId]: profileData.userName
+                    }));
+                });
+            }
+        });
+    }, [ratings, dispatch]);
+
     const handleRatingSubmit = (ratingData) => {
         dispatch(submitRating(ratingData));
+        dispatch(updateCourseRating(courseId, ratingData.rating)); // cập nhật số lượng đánh giá
         setShowRatingModal(false);
     };
 
@@ -202,6 +223,24 @@ export const LessonPage = () => {
         setShowRatingModal(false);
     };
 
+    const renderStars = (rating) => {
+        const fullStars = Math.floor(rating);
+        const halfStar = rating % 1 !== 0;
+        const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+
+        return (
+            <>
+                {Array.from({ length: fullStars }).map((_, index) => (
+                    <FontAwesomeIcon key={`full-${index}`} icon={faStar} className={styles.filledStar} />
+                ))}
+                {halfStar && <FontAwesomeIcon icon={faStarHalfAlt} className={styles.filledStar} />}
+                {Array.from({ length: emptyStars }).map((_, index) => (
+                    <FontAwesomeIcon key={`empty-${index}`} icon={faStar} className={styles.emptyStar} />
+                ))}
+            </>
+        );
+    };
+
     return (
         <div className={styles.container}>
             <header className={styles.header}>
@@ -313,15 +352,9 @@ export const LessonPage = () => {
                                 <div className={styles.overallRating}>
                                     <h2>Phản hồi của học viên</h2>
                                     <div className={styles.ratingContainer}>
-                                        <div className={styles.ratingValue}>{courseDetail.rating}</div>
+                                        <div className={styles.ratingValue}>{courseDetail.rating.toFixed(1)}</div>
                                         <div className={styles.stars}>
-                                            {Array.from({ length: 5 }, (_, index) => (
-                                                <FontAwesomeIcon
-                                                    key={index}
-                                                    icon={faStar}
-                                                    className={index < Math.round(courseDetail.rating) ? styles.filledStar : styles.emptyStar}
-                                                />
-                                            ))}
+                                            {renderStars(courseDetail.rating)}
                                         </div>
                                     </div>
                                     <div className={styles.ratingBreakdown}>
@@ -343,7 +376,7 @@ export const LessonPage = () => {
                                     <ul>
                                         {ratings.map((rating) => (
                                             <li key={rating._id}>
-                                                <strong>{rating.userId}</strong>
+                                                <strong>{userNames[rating.userId] || rating.userId}</strong>
                                                 <div>{'★'.repeat(rating.rating) + '☆'.repeat(5 - rating.rating)}</div>
                                                 <p>{rating.feedback}</p>
                                             </li>
@@ -396,7 +429,31 @@ export const LessonPage = () => {
                 </aside>
             </div>
             <footer className={styles.footer}>
-                © 2024 GNOSIS. All Rights Reserved.
+                <div className={styles.footerContent}>
+                    <div className={styles.footerLogo}>
+                        <img src="/path/to/logo.png" alt="Gnosis Logo" />
+                    </div>
+                    <div className={styles.footerLinks}>
+                        <a href="/about">About Us</a>
+                        <a href="/contact">Contact</a>
+                        <a href="/privacy">Privacy Policy</a>
+                        <a href="/terms">Terms of Service</a>
+                    </div>
+                    <div className={styles.footerSocial}>
+                        <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon icon={faFacebook} />
+                        </a>
+                        <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon icon={faTwitter} />
+                        </a>
+                        <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                            <FontAwesomeIcon icon={faLinkedin} />
+                        </a>
+                    </div>
+                    <div className={styles.footerCopy}>
+                        © 2024 GNOSIS. All Rights Reserved.
+                    </div>
+                </div>
             </footer>
         </div>
     );
