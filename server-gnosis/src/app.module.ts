@@ -22,6 +22,7 @@ import { LessonCompletionModule } from './lesson-completion/lesson-completion.mo
 import { NoteModule } from './note/note.module';
 import { RatingModule } from './rating/rating.module';
 import { VnpayModule } from './vnpay/vnpay.module';
+import { LoggerModule } from './logger/logger.module';
 
 
 
@@ -51,8 +52,10 @@ import { VnpayModule } from './vnpay/vnpay.module';
     NoteModule,
     RatingModule,
     VnpayModule,
+    LoggerModule,
   ],
-  controllers: [AppController ],
+  controllers: [AppController],
   providers: [AppService],
+ 
 })
 export class AppModule { }

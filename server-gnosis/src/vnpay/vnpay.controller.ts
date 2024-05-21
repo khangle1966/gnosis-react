@@ -1,27 +1,59 @@
-import { Controller, Post, Body, Req, Res } from '@nestjs/common';
-import { Response, Request } from 'express';
-import { VnpayService } from './vnpay.service';
+import { Controller, Get, Query, Res } from '@nestjs/common';
+import { VNPayService } from './vnpay.service';
+import { ProfileService } from '../profile/profile.service';
+import { LoggerService } from '../logger/logger.service';
 
 @Controller('vnpay')
-export class VnpayController {
-    constructor(private readonly vnpayService: VnpayService) { }
+export class VNPayController {
+  constructor(
+    private readonly vnpayService: VNPayService,
+    private readonly profileService: ProfileService,
+    private readonly loggerService: LoggerService,
+  ) { }
 
-    @Post('create_payment_url')
-    createPaymentUrl(@Body() body, @Req() req: Request, @Res() res: Response) {
-        process.env.TZ = 'Asia/Ho_Chi_Minh';
-        let ipAddr: string | string[] = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  @Get('create-payment-url')
+  async createPaymentUrl(
+    @Query('amount') amount: number,
+    @Query('bankCode') bankCode: string,
+    @Query('courseIds') courseIds: string,
+    @Query('userId') userId: string,
+    @Res() res: any,
+  ) {
+    const courseIdsArray = courseIds.split(',');
+    const paymentUrl = await this.vnpayService.createPaymentUrl(amount, bankCode, courseIdsArray, userId);
+    res.json({ paymentUrl });
+  }
 
-        // Nếu ipAddr là một mảng, lấy phần tử đầu tiên
-        if (Array.isArray(ipAddr)) {
-            ipAddr = ipAddr[0];
-        }
+  @Get('callback')
+  async paymentCallback(
+    @Query() query: any,
+    @Res() res: any,
+  ) {
+    this.loggerService.log(`VNPay callback query: ${JSON.stringify(query)}`);
 
-        // Chuyển đổi địa chỉ IPv6 loopback (::1) thành IPv4 loopback (127.0.0.1)
-        ipAddr = ipAddr === '::1' ? '192.168.1.3' : ipAddr;
+    const isSuccess = this.vnpayService.verifyPayment(query);
+    this.loggerService.log(`Payment verification: ${isSuccess}`);
 
-        const paymentUrl = this.vnpayService.createPaymentUrl(body, ipAddr);
-        console.log('Generated payment URL:', paymentUrl); // Log URL thanh toán được tạo
+    if (isSuccess) {
+      const orderId = query.vnp_TxnRef;
+      const orderDetails = await this.vnpayService.getOrderDetails(orderId);
 
-        res.json({ paymentUrl });
+      this.loggerService.log(`Order details: ${JSON.stringify(orderDetails)}`);
+
+      if (orderDetails) {
+        const userId = orderDetails.userId;
+        const courseIds = orderDetails.courseIds;
+
+        await this.profileService.addCoursesToUserProfile(userId, courseIds);
+
+        res.redirect('http://localhost:4000/home');
+      } else {
+        this.loggerService.log('Order details not found.');
+        res.redirect('http://localhost:3000/payment-fail');
+      }
+    } else {
+      this.loggerService.log('Payment verification failed.');
+      res.redirect('http://localhost:3000/payment-fail');
     }
+  }
 }

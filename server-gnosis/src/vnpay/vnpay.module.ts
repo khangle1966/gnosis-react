@@ -1,9 +1,18 @@
 import { Module } from '@nestjs/common';
-import { VnpayController } from './vnpay.controller';
-import { VnpayService } from './vnpay.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { VNPayController } from './vnpay.controller';
+import { VNPayService } from './vnpay.service';
+import { ProfileModule } from '../profile/profile.module';
+import { Order, OrderSchema } from './order.entity';
+import { LoggerModule } from '../logger/logger.module'; // Import LoggerModule
 
 @Module({
-  controllers: [VnpayController],
-  providers: [VnpayService],
+  imports: [
+    ProfileModule,
+    MongooseModule.forFeature([{ name: Order.name, schema: OrderSchema }]),
+    LoggerModule, // Thêm LoggerModule vào imports
+  ],
+  controllers: [VNPayController],
+  providers: [VNPayService],
 })
-export class VnpayModule {}
+export class VnpayModule { }

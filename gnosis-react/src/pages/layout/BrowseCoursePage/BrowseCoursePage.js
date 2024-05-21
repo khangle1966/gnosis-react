@@ -19,6 +19,9 @@ const BrowseCoursePage = () => {
     const coursesPerPage = 9;
     const [searchTerm, setSearchTerm] = useState(''); // Thêm state cho từ khóa tìm kiếm
     const [filteredCourses, setFilteredCourses] = useState([]); // Thêm state cho các khóa học đã lọc
+    const { profile } = useSelector(state => state.profile);
+    const ownedCourses = profile.courses.map(course => course._id); // Mảng các ID khóa học
+    const isCourseOwned = (courseId) => ownedCourses.includes(courseId);
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -183,7 +186,13 @@ const BrowseCoursePage = () => {
                             <h3>{truncateNameCourse(course.name)}</h3>
                             <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p>
                             <div className={styles.courseActions}>
-                                <button onClick={() => handleAddToCart(course)}>Add to Cart</button>
+                                <button
+                                    onClick={() => handleAddToCart(course)}
+                                    disabled={isCourseOwned(course._id)}
+                                    style={{ backgroundColor: isCourseOwned(course._id) ? '#ccc' : '' }}
+                                >
+                                    Add to Cart
+                                </button>
                                 <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
                             </div>
                         </div>

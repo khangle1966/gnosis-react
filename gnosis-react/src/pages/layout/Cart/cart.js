@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeFromCart, buyCourses, createVNPayPayment } from '../../../redux/action/cartActions';
+import { removeFromCart, createVNPayPayment } from '../../../redux/action/cartActions';
 import { fetchProfile } from '../../../redux/action/profileActions';
 import styles from './cart.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
 
 const CartPage = () => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
     const cartItems = useSelector(state => state.cart.cartItems);
     const { profile } = useSelector(state => state.profile);
     const { user } = useSelector(state => state.auth);
@@ -39,6 +37,7 @@ const CartPage = () => {
         );
     }, [searchTerm, cartItems]);
 
+
     const handleRemoveFromCart = (id) => {
         dispatch(removeFromCart(id));
     };
@@ -48,8 +47,10 @@ const CartPage = () => {
         const orderId = Date.now().toString(); // Unique order ID
         const orderInfo = 'Payment for courses'; // Information about the order
         const returnUrl = 'http://localhost:3000/payment-success'; // URL to redirect to after payment
-        dispatch(createVNPayPayment(amount, orderId, orderInfo, returnUrl));
+        dispatch(createVNPayPayment(amount, orderId, orderInfo, returnUrl, user.uid, cartItems));
     };
+
+
 
     const truncateNameCourse = (name) => {
         if (!name) return '';
