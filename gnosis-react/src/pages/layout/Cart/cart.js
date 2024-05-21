@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { removeFromCart, buyCourses, createVNPayPayment } from '../../../redux/action/cartActions';
+import { removeFromCart, buyCourses, createVNPayPayment, createZaloPayPayment } from '../../../redux/action/cartActions';
 import { fetchProfile } from '../../../redux/action/profileActions';
 import styles from './cart.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { useNavigate } from 'react-router-dom';
+import * as moment from 'moment'; // Import moment
 
 const CartPage = () => {
     const dispatch = useDispatch();
@@ -45,10 +46,15 @@ const CartPage = () => {
 
     const handleVNPayPayment = () => {
         const amount = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
+        const orderId = moment().format('DDHHmmss'); // Generate orderId using moment with the format 'DDHHmmss'
+        dispatch(createVNPayPayment(amount, orderId));
+    };
+
+    const handleZaloPayPayment = () => {
+        const amount = cartItems.reduce((total, item) => total + item.price * item.qty, 0);
         const orderId = Date.now().toString(); // Unique order ID
-        const orderInfo = 'Payment for courses'; // Information about the order
-        const returnUrl = 'http://localhost:3000/payment-success'; // URL to redirect to after payment
-        dispatch(createVNPayPayment(amount, orderId, orderInfo, returnUrl));
+        const description = 'Payment for courses'; // Information about the order
+        dispatch(createZaloPayPayment(amount, orderId, description));
     };
 
     const truncateNameCourse = (name) => {
@@ -115,6 +121,7 @@ const CartPage = () => {
                             <strong>Total:</strong> ${totalPrice.toFixed(2)}
                         </div>
                         <button onClick={handleVNPayPayment} className={styles.buyAllButton}>Thanh toán bằng VNPay</button>
+                        <button onClick={handleZaloPayPayment} className={styles.buyAllButton}>Thanh toán bằng ZaloPay</button>
                     </div>
                 </section>
             </main>

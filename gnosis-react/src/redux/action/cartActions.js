@@ -34,17 +34,30 @@ export const buyCourses = (userId, courses) => async (dispatch) => {
         });
     }
 };
-export const createVNPayPayment = (amount, orderId, orderInfo, returnUrl) => async (dispatch) => {
+export const createVNPayPayment = (amount, orderId) => async (dispatch) => {
     try {
         const { data } = await axios.post('http://localhost:3000/vnpay/create_payment_url', {
             amount,
             orderId,
-            orderInfo,
-            returnUrl,
+            
         });
         console.log('Payment URL received from server:', data.paymentUrl); // Log URL nhận được từ server
         window.location.href = data.paymentUrl;
     } catch (error) {
         console.error('Error creating VNPay payment URL:', error);
+    }
+};
+
+export const createZaloPayPayment = (amount, orderId, description) => async (dispatch) => {
+    try {
+        const { data } = await axios.post('http://localhost:3000/zalopay/payment', {
+            amount,
+            orderId,
+            description,
+        });
+        console.log('Payment URL received from server:', data.orderurl);
+        window.location.href = data.orderurl;
+    } catch (error) {
+        console.error('Error creating ZaloPay payment URL:', error);
     }
 };

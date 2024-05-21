@@ -22,7 +22,7 @@ import { LessonCompletionModule } from './lesson-completion/lesson-completion.mo
 import { NoteModule } from './note/note.module';
 import { RatingModule } from './rating/rating.module';
 import { VnpayModule } from './vnpay/vnpay.module';
-
+import { ZaloPayModule } from './zalopay/zalopay.module';
 
 
 @Module({
@@ -51,6 +51,7 @@ import { VnpayModule } from './vnpay/vnpay.module';
     NoteModule,
     RatingModule,
     VnpayModule,
+    ZaloPayModule,
   ],
   controllers: [AppController ],
   providers: [AppService],

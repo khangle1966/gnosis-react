@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { VnpayController } from './vnpay.controller';
-import { VnpayService } from './vnpay.service';
+import { VNPayController } from './vnpay.controller';
+import { VNPayService } from './vnpay.service';
 
 @Module({
-  controllers: [VnpayController],
-  providers: [VnpayService],
+  controllers: [VNPayController],
+  providers: [VNPayService],
 })
 export class VnpayModule {}
