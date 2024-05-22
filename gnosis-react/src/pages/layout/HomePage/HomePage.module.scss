@@ -115,18 +115,20 @@
             cursor: pointer;
             margin-left: 2rem;
             text-transform: none;
-            font-weight:600;
+            font-weight: 600;
             font-size: 0.9rem;
-            &:hover{
+
+            &:hover {
 
                 background-color: #d5dad6;
 
             }
+
             &.active {
                 background-color: #017929;
                 color: white;
             }
-        
+
             &:last-child {
                 margin-right: 0;
             }
@@ -220,6 +222,16 @@
                 display: flex;
                 justify-content: center;
                 gap: 10px;
+
+                .favoriteIcon {
+                    color: red;
+                    cursor: pointer;
+                    margin-left: 10px;
+
+                    &:hover {
+                        color: darkred;
+                    }
+                }
 
                 button {
                     background-color: #124b21;

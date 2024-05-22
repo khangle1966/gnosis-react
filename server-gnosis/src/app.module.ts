@@ -23,6 +23,7 @@ import { NoteModule } from './note/note.module';
 import { RatingModule } from './rating/rating.module';
 import { VnpayModule } from './vnpay/vnpay.module';
 import { LoggerModule } from './logger/logger.module';
+import { FavoritesModule } from './favorites/favorites.module';
 
 
 
@@ -53,6 +54,7 @@ import { LoggerModule } from './logger/logger.module';
     RatingModule,
     VnpayModule,
     LoggerModule,
+    FavoritesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

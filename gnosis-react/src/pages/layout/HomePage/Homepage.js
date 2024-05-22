@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { faSearch, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faPlus, faEdit, faHeart } from '@fortawesome/free-solid-svg-icons';
 import styles from './HomePage.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StatisticsComponent from './component/StatisticsComponent/StatisticsComponent';
 import CalendarComponent from './component/CalendarComponent/CalendarComponent';
 import { fetchProfile } from '../../../redux/action/profileActions';
 import { fetchUserCourses } from '../../../redux/action/courseActions';
+import { addToFavorite, removeFromFavorite, fetchFavorites } from '../../../redux/action/favoriteActions';
 import { updateProfile } from '../../../redux/action/profileActions';
 
 const HomePage = () => {
@@ -16,6 +17,7 @@ const HomePage = () => {
     const { userCourses, loading, error } = useSelector(state => state.course);
     const { user } = useSelector(state => state.auth);
     const { profile } = useSelector(state => state.profile);
+    const { favorites } = useSelector(state => state.favorite);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [activeTab, setActiveTab] = useState('all');
     const [filteredCourses, setFilteredCourses] = useState([]);
@@ -24,6 +26,7 @@ const HomePage = () => {
     useEffect(() => {
         if (user && user.uid) {
             dispatch(fetchProfile(user.uid));
+            dispatch(fetchFavorites(user.uid));
         } else {
             console.log('User is not defined or user.uid is not available');
         }
@@ -48,6 +51,9 @@ const HomePage = () => {
         } else if (activeTab === 'completed' && profile.completedCourse) {
             const completedCoursesIds = profile.completedCourse.map(id => id?._id?.toString() || '');
             filtered = userCourses.filter(course => completedCoursesIds.includes(course._id));
+        } else if (activeTab === 'favorites') {
+            const favoriteCourseIds = favorites.map(fav => fav.courseId);
+            filtered = userCourses.filter(course => favoriteCourseIds.includes(course._id));
         }
 
         if (searchTerm) {
@@ -58,7 +64,7 @@ const HomePage = () => {
         }
 
         setFilteredCourses(filtered);
-    }, [activeTab, userCourses, profile, searchTerm]);
+    }, [activeTab, userCourses, profile, favorites, searchTerm]);
 
     const handleStartCourse = (courseId) => {
         if (user && user.uid) {
@@ -70,6 +76,12 @@ const HomePage = () => {
             dispatch(updateProfile(updatedProfile, user.uid));
 
             navigate(`/course/${courseId}`);
+        }
+    };
+
+    const handleFavoriteCourse = (courseId) => {
+        if (user && user.uid) {
+            dispatch(addToFavorite(user.uid, courseId));
         }
     };
 
@@ -120,6 +132,7 @@ const HomePage = () => {
                         <button className={activeTab === 'all' ? styles.active : ''} onClick={() => setActiveTab('all')}>Tất cả bài học</button>
                         <button className={activeTab === 'ongoing' ? styles.active : ''} onClick={() => setActiveTab('ongoing')}>Đang học</button>
                         <button className={activeTab === 'completed' ? styles.active : ''} onClick={() => setActiveTab('completed')}>Đã học xong</button>
+                        <button className={activeTab === 'favorites' ? styles.active : ''} onClick={() => setActiveTab('favorites')}>Khóa học yêu thích</button>
                     </div>
                     <div className={styles.addIcon}>
                         <FontAwesomeIcon icon={faPlus} />
@@ -138,6 +151,11 @@ const HomePage = () => {
                                 <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p>
                                 <div className={styles.courseActions}>
                                     <button onClick={() => handleStartCourse(course._id)}>Start</button>
+                                    <FontAwesomeIcon
+                                        icon={faHeart}
+                                        className={styles.favoriteIcon}
+                                        onClick={() => handleFavoriteCourse(course._id)}
+                                    />
                                 </div>
                             </div>
                         </div>
