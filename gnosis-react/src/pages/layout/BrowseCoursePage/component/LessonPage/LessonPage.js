@@ -10,7 +10,7 @@ import { fetchLessonsByCourseId, fetchLessonById } from '../../../../../redux/ac
 import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
 import { fetchCourseDetail, updateCourseRating } from '../../../../../redux/action/courseActions'; // import action
 import { faFacebook, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons'; // Import social icons
-
+import logo from '../../../../../assets/images/logo1.png';
 import { completeLesson, fetchLessonComplete } from '../../../../../redux/action/lessonCompleteActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NoteModal from './components/NoteModal';
@@ -431,7 +431,7 @@ export const LessonPage = () => {
             <footer className={styles.footer}>
                 <div className={styles.footerContent}>
                     <div className={styles.footerLogo}>
-                        <img src="/path/to/logo.png" alt="Gnosis Logo" />
+                        <img src={logo} alt="Gnosis Logo" />
                     </div>
                     <div className={styles.footerLinks}>
                         <a href="/about">About Us</a>

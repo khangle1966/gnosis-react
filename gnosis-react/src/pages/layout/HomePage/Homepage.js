@@ -52,7 +52,7 @@ const HomePage = () => {
             const completedCoursesIds = profile.completedCourse.map(id => id?._id?.toString() || '');
             filtered = userCourses.filter(course => completedCoursesIds.includes(course._id));
         } else if (activeTab === 'favorites') {
-            const favoriteCourseIds = favorites.map(fav => fav.courseId);
+            const favoriteCourseIds = favorites.map(fav => fav);
             filtered = userCourses.filter(course => favoriteCourseIds.includes(course._id));
         }
 
@@ -81,8 +81,16 @@ const HomePage = () => {
 
     const handleFavoriteCourse = (courseId) => {
         if (user && user.uid) {
-            dispatch(addToFavorite(user.uid, courseId));
+            if (isCourseFavorited(courseId)) {
+                dispatch(removeFromFavorite(user.uid, courseId));
+            } else {
+                dispatch(addToFavorite(user.uid, courseId));
+            }
         }
+    };
+
+    const isCourseFavorited = (courseId) => {
+        return favorites.some(fav => fav === courseId);
     };
 
     const truncateDescription = (description) => {
@@ -132,7 +140,7 @@ const HomePage = () => {
                         <button className={activeTab === 'all' ? styles.active : ''} onClick={() => setActiveTab('all')}>Tất cả bài học</button>
                         <button className={activeTab === 'ongoing' ? styles.active : ''} onClick={() => setActiveTab('ongoing')}>Đang học</button>
                         <button className={activeTab === 'completed' ? styles.active : ''} onClick={() => setActiveTab('completed')}>Đã học xong</button>
-                        <button className={activeTab === 'favorites' ? styles.active : ''} onClick={() => setActiveTab('favorites')}>Khóa học yêu thích</button>
+                        <button className={`${activeTab === 'favorites' ? styles.activeFavorite : ''} ${styles.favoriteButton}`} onClick={() => setActiveTab('favorites')}>Khóa học yêu thích</button>
                     </div>
                     <div className={styles.addIcon}>
                         <FontAwesomeIcon icon={faPlus} />
@@ -151,12 +159,14 @@ const HomePage = () => {
                                 <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p>
                                 <div className={styles.courseActions}>
                                     <button onClick={() => handleStartCourse(course._id)}>Start</button>
+
                                     <FontAwesomeIcon
                                         icon={faHeart}
-                                        className={styles.favoriteIcon}
+                                        className={`${styles.favoriteIcon} ${isCourseFavorited(course._id) ? styles.favorited : ''}`}
                                         onClick={() => handleFavoriteCourse(course._id)}
                                     />
                                 </div>
+
                             </div>
                         </div>
                     ))}

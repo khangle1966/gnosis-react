@@ -9,17 +9,11 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 const CartPage = () => {
     const dispatch = useDispatch();
     const cartItems = useSelector(state => state.cart.cartItems);
-    const { profile } = useSelector(state => state.profile);
+    const { profile, loading: profileLoading } = useSelector(state => state.profile);
     const { user } = useSelector(state => state.auth);
     const [notification, setNotification] = useState({ show: false, message: '' });
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredItems, setFilteredItems] = useState(cartItems);
-
-    useEffect(() => {
-        if (profile && profile.uid) {
-            dispatch(fetchProfile(profile.uid));
-        }
-    }, [dispatch, profile.uid]);
 
     useEffect(() => {
         if (user && user.uid) {
@@ -37,8 +31,14 @@ const CartPage = () => {
         );
     }, [searchTerm, cartItems]);
 
+    useEffect(() => {
+        if (!profileLoading && profile && profile.courses && cartItems.length > 0) {
+            checkAndRemoveDuplicateCourses();
+        }
+    }, [profile, profileLoading, cartItems]);
 
     const handleRemoveFromCart = (id) => {
+        console.log(`Removing item from cart: ${id}`);
         dispatch(removeFromCart(id));
     };
 
@@ -50,7 +50,17 @@ const CartPage = () => {
         dispatch(createVNPayPayment(amount, orderId, orderInfo, returnUrl, user.uid, cartItems));
     };
 
+    const checkAndRemoveDuplicateCourses = () => {
+        if (profile && profile.courses && cartItems) {
 
+            cartItems.forEach(item => {
+                console.log(`Checking item: ${item._id}`);
+                if (profile.courses.some(course => course._id.toString() === item._id.toString())) {
+                    handleRemoveFromCart(item._id);
+                }
+            });
+        }
+    };
 
     const truncateNameCourse = (name) => {
         if (!name) return '';

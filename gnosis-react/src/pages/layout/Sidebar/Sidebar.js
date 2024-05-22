@@ -77,7 +77,7 @@ const Sidebar = () => {
             </div>
             <div className={styles.userInfo}>
                 <img src={picture} alt={`Avatar of ${name}`} className={styles.avatar} />
-                <p>Hello, {name}</p>
+                <p className={styles.name}> {name}</p>
             </div>
             <div className={styles.search}>
                 <input

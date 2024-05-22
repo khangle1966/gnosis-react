@@ -34,6 +34,17 @@ export class CourseService {
     }
   }
 
+  async increaseNumberOfStudents(courseIds: string[]): Promise<void> {
+    try {
+      await this.courseModel.updateMany(
+        { _id: { $in: courseIds } },
+        { $inc: { numberOfStudents: 1 } }
+      ).exec();
+    } catch (error) {
+      throw new HttpException('Failed to increase number of students', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async findOne(id: string): Promise<Course> {
     try {
       return await this.courseModel.findById(id).exec();

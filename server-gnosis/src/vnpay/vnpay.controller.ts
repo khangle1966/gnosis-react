@@ -2,12 +2,14 @@ import { Controller, Get, Query, Res } from '@nestjs/common';
 import { VNPayService } from './vnpay.service';
 import { ProfileService } from '../profile/profile.service';
 import { LoggerService } from '../logger/logger.service';
+import { CourseService } from '../course/course.service';
 
 @Controller('vnpay')
 export class VNPayController {
   constructor(
     private readonly vnpayService: VNPayService,
     private readonly profileService: ProfileService,
+    private readonly courseService: CourseService,
     private readonly loggerService: LoggerService,
   ) { }
 
@@ -45,7 +47,7 @@ export class VNPayController {
         const courseIds = orderDetails.courseIds;
 
         await this.profileService.addCoursesToUserProfile(userId, courseIds);
-
+        await this.courseService.increaseNumberOfStudents(courseIds);
         res.redirect('http://localhost:4000/home');
       } else {
         this.loggerService.log('Order details not found.');

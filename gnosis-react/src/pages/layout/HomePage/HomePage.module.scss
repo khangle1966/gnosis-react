@@ -3,7 +3,6 @@
     grid-template-columns: 2fr 1fr;
     gap: 20px;
     width: 85vw;
-
 }
 
 .leftcolumn,
@@ -17,11 +16,8 @@
     display: flex;
     flex-direction: column;
     animation-name: zoomIn;
-    /* Sử dụng animation slideInRight */
     animation-duration: 1s;
-    /* Thời gian chuyển động */
     padding: 50px;
-
     transition: all 0.3s ease;
 
     .breadcrumbs {
@@ -34,13 +30,13 @@
     .header {
         display: flex;
         align-items: center;
-        justify-content: space-between; // Đảm bảo khoảng trống giữa các phần tử
+        justify-content: space-between;
         padding: 1rem;
         padding-bottom: 2.5rem;
 
         .welcomendate {
             display: flex;
-            flex-grow: 1; // Cho phép .welcomendate phát triển và chiếm đủ không gian
+            flex-grow: 1;
             align-items: center;
 
             h1 {
@@ -48,7 +44,6 @@
                 color: #333;
                 padding-bottom: 0.3rem;
                 text-transform: uppercase;
-
             }
 
             .date {
@@ -64,12 +59,12 @@
             border: 1px solid #ddd;
             padding: 0.5rem;
             border-radius: 20px;
-            margin-left: auto; // Tự động đẩy .searchBar về bên phải
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); // Thêm bóng đổ
-            transition: box-shadow 0.3s ease-in-out; // Hiệu ứng chuyển đổi khi hover
+            margin-left: auto;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: box-shadow 0.3s ease-in-out;
 
             &:hover {
-                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15); // Bóng đổ lớn hơn khi hover
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
             }
 
             input {
@@ -77,30 +72,28 @@
                 margin-left: 0.5rem;
                 outline: none;
                 height: 2rem;
-                width: 20rem; // Hoặc sử dụng chiều rộng theo tỉ lệ % nếu bạn muốn input có chiều rộng đáp ứng
-                font-size: 1rem; // Kích thước chữ
-                color: #333; // Màu chữ
+                width: 20rem;
+                font-size: 1rem;
+                color: #333;
 
                 &::placeholder {
-                    color: #aaa; // Màu chữ của placeholder
+                    color: #aaa;
                 }
             }
 
             svg {
                 color: #333;
-                transition: color 0.3s ease-in-out; // Hiệu ứng chuyển đổi màu khi hover
+                transition: color 0.3s ease-in-out;
 
                 &:hover {
-                    color: #007bff; // Màu thay đổi khi hover
+                    color: #007bff;
                 }
             }
         }
-
     }
 
     .navigation {
         display: flex;
-
         justify-content: space-between;
         margin-top: 1rem;
         padding-bottom: 0.7rem;
@@ -119,9 +112,7 @@
             font-size: 0.9rem;
 
             &:hover {
-
                 background-color: #d5dad6;
-
             }
 
             &.active {
@@ -134,42 +125,53 @@
             }
         }
 
+        .favoriteButton {
+            border: #e91e63 solid; // Màu hồng cho viền nút
+            color: #e91e63; // Màu hồng cho chữ
+
+            &:hover {
+                background-color: #f8bbd0; // Màu hồng nhạt khi hover
+            }
+
+            &.activeFavorite {
+                background-color: #e91e63; // Màu hồng cho nền nút khi active
+                color: white;
+            }
+        }
+
         .addIcon {
-            display: flex; // Sử dụng flexbox để căn giữa nội dung
-            justify-content: center; // Căn giữa nội dung theo trục ngang
-            align-items: center; // Căn giữa nội dung theo trục dọc
+            display: flex;
+            justify-content: center;
+            align-items: center;
             font-size: 1.5rem;
             background-color: #0c8633;
             color: #e9eeea;
             cursor: pointer;
-            width: 40px; // Hoặc kích thước cố định mà bạn muốn
-            height: 40px; // Đồng bộ với chiều rộng để tạo thành hình vuông
-            border-radius: 18%; // Làm tròn để tạo hình dạng hình tròn
-            border: none; // Loại bỏ viền nếu có
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); // Thêm bóng nếu bạn muốn
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
             &:hover {
-                background-color: darken(#0c8633, 10%); // Làm đậm màu nền khi hover
+                background-color: darken(#0c8633, 10%);
             }
         }
-
     }
-
-
 
     .courseGrid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
         gap: 20px;
         padding: 1rem;
-        margin: -10px; // Negative margin to counteract the padding on course cards
+        margin: -10px;
         justify-content: center;
 
         .courseCard {
             display: flex;
             flex-direction: column;
-            justify-content: space-between; // Adds space between the child elements
-            height: 100%; // Set a height for the card to make sure there is space to push the button down
+            justify-content: space-between;
+            height: 100%;
             background: #fff;
             border-radius: 10px;
             overflow: hidden;
@@ -185,7 +187,7 @@
             .courseImageWrapper {
                 position: relative;
                 width: 100%;
-                height: 200px; // Adjust height as needed
+                height: 200px;
 
                 img {
                     width: 100%;
@@ -195,7 +197,6 @@
                     top: 0;
                     left: 0;
                     padding-bottom: 0.75rem;
-
                 }
             }
 
@@ -218,18 +219,25 @@
 
             .courseActions {
                 margin-top: auto;
-                width: 100%; // Ensure the width fills the parent
+                width: 100%;
                 display: flex;
-                justify-content: center;
+                justify-content: space-between;
                 gap: 10px;
+                align-items: center;
 
                 .favoriteIcon {
-                    color: red;
+                    color: #ddd;
                     cursor: pointer;
-                    margin-left: 10px;
+                    transition: color 0.3s ease, transform 0.3s ease;
+                    font-size: 1.5rem;
+
+                    &.favorited {
+                        color: red;
+                    }
 
                     &:hover {
                         color: darkred;
+                        transform: scale(1.1);
                     }
                 }
 
@@ -265,12 +273,9 @@
             grid-template-columns: 1fr;
         }
     }
-
-
 }
 
 .rightcolumn {
-
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -284,7 +289,7 @@
     overflow-y: auto;
     animation-name: zoomIn;
     animation-duration: 1s;
-    border-left: 2px solid #ccc; // Thêm viền ngăn cách bên phải
+    border-left: 2px solid #ccc;
 
     .header {
         display: flex;
@@ -348,9 +353,6 @@
         margin-bottom: 1rem;
     }
 
-    // Assume you have other components for statistics and calendar
-    // Add additional SCSS for those components as needed
-
     .footer {
         font-size: 0.9rem;
         text-align: center;
@@ -359,10 +361,6 @@
         position: fixed;
         bottom: 2rem;
         width: 100%;
-
-
-
-
     }
 
     @keyframes fadeIn {
@@ -388,6 +386,4 @@
             transform: scale(1);
         }
     }
-
-
 }

@@ -84,6 +84,8 @@ $transition-duration: 0.3s; // Define your transition duration
             padding: 0; // Collapse padding
             // Include transition for padding if you want a smoother effect
             transition: opacity $transition-duration ease, max-height $transition-duration ease, padding $transition-duration ease;
+
+
         }
 
         // Keep icons and other necessary elements visible
@@ -108,7 +110,8 @@ $transition-duration: 0.3s; // Define your transition duration
         p {
             color: $text-color;
             margin: 0;
-            font-weight: 400;
+
+            font-weight: 600
         }
     }
 
