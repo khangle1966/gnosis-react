@@ -209,10 +209,14 @@ html {
 // Footer links for account creation
 .footer {
     font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
 
     a {
         color: $background-greendark;
         text-decoration: none;
+
 
         &:hover {
             text-decoration: underline;

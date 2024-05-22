@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import styles from './CourseDetailPage.module.scss';
-
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchLessonsByCourseId, fetchLessonsBychapterId, addLesson, deleteLesson } from '../../../../../redux/action/lessonActions';
 import { fetchChaptersByCourseId, addChapter, removeChapter, updateChapterTitle } from '../../../../../redux/action/chapterActions';
@@ -17,10 +16,12 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn đã import LessonModal đúng
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css'; // Import the styles for ReactQuill
+
 const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     return new Date(dateString).toLocaleDateString('vi-VN', options);
 };
+
 export const CourseDetailPage = () => {
     const { courseId, chapterId } = useParams();
     const navigate = useNavigate();
@@ -30,10 +31,10 @@ export const CourseDetailPage = () => {
     const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
     const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail || { chapters: [] });
 
-
     const { rating } = courseDetail;
 
     const { user } = useSelector(state => state.auth);
+    const { profile } = useSelector(state => state.profile);
     const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0, courseId: courseId });
     const [showModal, setShowModal] = useState(false);
 
@@ -42,19 +43,20 @@ export const CourseDetailPage = () => {
 
     const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
 
+    const isCoursePurchased = useMemo(() => {
+        return profile && profile.courses && profile.courses.some(course => course._id === courseId);
+    }, [profile, courseId]);
+
     useEffect(() => {
         const totalChapters = groupedChapters.length;
         const totalLessons = groupedChapters.reduce((total, chapter) => total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0), 0);
         console.log("Total chapters:", totalChapters, "Total lessons:", totalLessons);
     }, [groupedChapters]);
 
-
     const [selectedChapterId, setSelectedChapterId] = useState(null);
-
-
     const [selectedChapter, setSelectedChapter] = useState(null);
-
     const [editMode, setEditMode] = useState(false);
+
     const { totalChapters, totalLessons, formattedDuration } = useMemo(() => {
         const totalChapters = groupedChapters.length;
         const totalLessons = groupedChapters.reduce((total, chapter) => {
@@ -75,9 +77,6 @@ export const CourseDetailPage = () => {
 
         return { totalChapters, totalLessons, formattedDuration };
     }, [groupedChapters]);
-
-
-
 
     useEffect(() => {
         if (courseId) {
@@ -119,9 +118,7 @@ export const CourseDetailPage = () => {
         setGroupedChapters(Object.values(chaptersMap));
     }, [lessons, chapters]);
 
-
     console.log('Grouped Chapters:', groupedChapters);
-
 
     const onDragEnd = async (result) => {
         if (!editMode) {
@@ -143,15 +140,12 @@ export const CourseDetailPage = () => {
         }))));
     };
 
-
-
     const formatDurationFromSeconds = (seconds) => {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const remainingSeconds = Math.round(seconds % 60);
 
         let formattedDuration = '';
-
 
         if (hours > 0) {
             formattedDuration += `${hours} giờ `;
@@ -166,9 +160,11 @@ export const CourseDetailPage = () => {
         console.log(courseDetail);
         dispatch(addToCart(courseDetail));
     };
+
     const handleBuyCourse = (course) => {
         console.log("Purchasing course:", course.name);
-    }
+    };
+
     const handleSelectChapter = (chapter) => {
         if (editMode) {
             setSelectedChapter({ ...chapter });
@@ -182,11 +178,14 @@ export const CourseDetailPage = () => {
     const handleSaveTitle = (chapterId, title) => {
         dispatch(updateChapterTitle(chapterId, title));
         setSelectedChapter(null);
+    };
 
-    };
     const handleLessonClick = (lessonId) => {
-        navigate(`lesson/${lessonId}`);
+        if (user.uid === courseDetail.authorId) {
+            navigate(`lesson/${lessonId}`);
+        }
     };
+
     const handleAddChapter = (currentChapterId) => {
         const index = groupedChapters.findIndex(chapter => chapter._id === currentChapterId);
         const newChapterNumber = groupedChapters.length + 1; // Cập nhật số thứ tự của chapter mới
@@ -208,9 +207,9 @@ export const CourseDetailPage = () => {
         setGroupedChapters(newChapters); // Cập nhật state
         dispatch(addChapter(newChapter)); // Gửi đến Redux store
     };
+
     const handleRemoveChapter = (chapterId) => {
         dispatch(removeChapter(chapterId)); // Gửi đến Redux store để xóa
-
     };
 
     const handleAddLesson = (lesson) => {
@@ -220,7 +219,6 @@ export const CourseDetailPage = () => {
         setShowModal(false); // Đóng modal sau khi submit
         setNewLesson({ title: '', description: '', duration: 0, courseId: courseId }); // Reset form
     };
-
 
     const handleDeleteLesson = (lessonId) => {
         dispatch(deleteLesson(lessonId));
@@ -233,18 +231,14 @@ export const CourseDetailPage = () => {
         }
     };
 
-    // Hàm xử lý sự kiện khi giá bị thay đổi
     const handlePriceChange = (e) => {
         const price = e.target.textContent.replace(/\D/g, ''); // Lọc ra chỉ số từ nội dung nhập
         setEditableCourse({ ...editableCourse, price: price });
     };
 
-
-
     if (loadingCourse || loadingLessons || loadingChapters) {
         return <div>Đang tải...</div>;
     }
-
 
     const handleToggleChapter = (chapterId) => {
         setOpenChapters(prev => {
@@ -257,8 +251,6 @@ export const CourseDetailPage = () => {
         const anyChapterClosed = groupedChapters.some(chapter => !openChapters.includes(chapter._id));
         setOpenChapters(anyChapterClosed ? groupedChapters.map(chapter => chapter._id) : []);
     };
-
-    // Static data structure for demonstration
 
     const handleSaveChanges = () => {
         const updatedCourse = {
@@ -278,39 +270,27 @@ export const CourseDetailPage = () => {
         setEditableCourse(prev => ({ ...prev, [field]: value }));
     };
 
-
-
-    // Tổng thời lượng bằng giây
-
-
-
-
     return (
         <>
             <nav className={styles.navbar}>
                 {/* You can add your logo, navigation links or any other content here */}
-
                 <h1 className={styles.courseTitle}>{courseDetail.name}</h1>
                 {/* Add additional nav items here if needed */}
             </nav>
             <div className={styles.courseSidebar}>
                 <div className={styles.coursePreview}>
-                    {/* Assume you have a thumbnail image or video here */}
-
                     {courseDetail.img && <img src={courseDetail.img} alt="Hình ảnh khóa học" className={styles.courseImage} />}
                 </div>
                 <div className={styles.coursePurchase}>
-
-                    <div
-                        className={`${styles.coursePrice} ${editMode ? styles.editable : ''}`}
-                        contentEditable={editMode}
-                        onInput={(e) => handlePriceInput(e)}
-                        onBlur={(e) => handlePriceChange(e)}
-                        dangerouslySetInnerHTML={{ __html: `$${courseDetail.price}` }}
-                    />
-
-                    <button className={styles.addToCartButton} onClick={handleAddToCart}>Add to Cart</button>
-                    <button className={styles.buyNowButton} onClick={handleBuyCourse}>Buy Now</button>
+                    {!isCoursePurchased && (
+                        <>
+                            <button className={styles.addToCartButton} onClick={handleAddToCart}>Add to Cart</button>
+                            <button className={styles.buyNowButton} onClick={() => handleBuyCourse(courseDetail)}>Buy Now</button>
+                        </>
+                    )}
+                    {isCoursePurchased && (
+                        <div className={styles.purchasedMessage}>Bạn đã mua khóa học này.</div>
+                    )}
                     <div className={styles.moneyBackGuarantee}>Đảm bảo hoàn tiền trong 30 ngày</div>
                 </div>
                 <div className={styles.courseIncludes}>
@@ -323,47 +303,35 @@ export const CourseDetailPage = () => {
                         <li>Giấy chứng nhận hoàn thành</li>
                     </ul>
                 </div>
-                {/* Additional sections like "Share", "Gift this course", "Apply coupon" can be added here */}
             </div>
-
             <div className={styles.courseDetailContainer}>
-
                 <div className={styles.courseHeader}>
                     <div className={styles.breadcrumbs}>Home &gt; Browse Course &gt; {courseDetail.name} </div>
-
                     <h1
                         className={`${styles.courseTitle} ${editMode ? styles.editable : ''}`}
-
                         contentEditable={editMode}
                         onBlur={(e) => setEditableCourse({ ...editableCourse, name: e.target.textContent })}
                         dangerouslySetInnerHTML={{ __html: courseDetail.name }}
                     />
-
-
                     <p className={styles.courseSubtitle}>{courseDetail.subTitle}</p>
-
                     <div className={styles.courseRating}>
                         <span className={styles.rating}>({courseDetail.rating.toFixed(1)})</span>
                         {renderStars(courseDetail.rating)}
                         <span>({courseDetail.numberOfReviews} xếp hạng)</span>
-
                         <span className={styles.enrollment}>{courseDetail.numberOfStudents} học viên</span>
                     </div>
                     <div className={styles.instructorInfo}>
                         Được tạo bởi <a href='/default' > {courseDetail.author} </a>
                         <span className={styles.updateDate}>Lần cập nhật gần đây nhất {formatDate(courseDetail.updatedAt)}</span>
                         <span
-
                             className={`${styles.language} ${editMode ? styles.editable : ''}`}
-
                             contentEditable={editMode}
                             onBlur={(e) => setEditableCourse({ ...editableCourse, language: e.target.textContent })}
                             dangerouslySetInnerHTML={{ __html: courseDetail.language }}
                         />
-
                         {user.uid === courseDetail.authorId && (
                             <div className={styles.editPrompt}>
-                                Bạn là chủ khóa học , vào mode chỉnh sửa ?
+                                Bạn là chủ khóa học, vào mode chỉnh sửa?
                                 {editMode ? (
                                     <>
                                         <button onClick={handleSaveChanges} className={styles.saveButton}>Lưu Thay Đổi</button>
@@ -376,37 +344,20 @@ export const CourseDetailPage = () => {
                         )}
                     </div>
                 </div>
-
-
-
                 <div className={styles.courseContent2}>
                     <h2>Nội dung bài học</h2>
-
-
-
-
                     <div className={styles.item}>
-
-
                         {editMode ? (
                             <ReactQuill theme="snow" value={editableCourse.description || ''} onChange={(value) => handleChange(value, 'description')} />
                         ) : (
                             <div className={styles.description} dangerouslySetInnerHTML={{ __html: editableCourse.description }} />
                         )}
-
-
                     </div>
-
-
-
-
                 </div>
                 <div className={styles.courseContentOverview}>
                     <h2>Nội dung khóa học</h2>
                     <span>{totalChapters} phần · {totalLessons} bài giảng · {formattedDuration} tổng thời lượng</span>
                     <button onClick={handleToggleAllChapters}>Mở rộng/tắt tất cả các chương</button>
-
-
                 </div>
                 {editMode && groupedChapters.length === 0 && (
                     <button
@@ -417,8 +368,7 @@ export const CourseDetailPage = () => {
                     </button>
                 )}
                 <div className={styles.courseContent}>
-
-                    <DragDropContext onDragEnd={onDragEnd} >
+                    <DragDropContext onDragEnd={onDragEnd}>
                         <Droppable droppableId="chapters">
                             {(provided) => (
                                 <div {...provided.droppableProps} ref={provided.innerRef}>
@@ -432,7 +382,6 @@ export const CourseDetailPage = () => {
                                                             {...provided.draggableProps}
                                                             {...provided.dragHandleProps}
                                                             className={styles.chapterRow} // Use a flex container for the row
-
                                                         >
                                                             <div className={styles.item} onClick={() => handleToggleChapter(chapter._id)}>
                                                                 <div>
@@ -454,12 +403,9 @@ export const CourseDetailPage = () => {
                                                                         <button onClick={() => handleRemoveChapter(chapter._id)} className={styles.removeChapterButton}>-</button>
                                                                     </div>
                                                                 </div>
-
                                                             </div>
                                                             {editMode && (
                                                                 <>
-
-
                                                                     <button className={styles.addLessonButton} onClick={() => {
                                                                         setShowModal(true);
                                                                         setSelectedChapterId(chapter._id); // Lấy ID chương hiện tại từ state hoặc props
@@ -478,8 +424,7 @@ export const CourseDetailPage = () => {
                                                             {openChapters.includes(chapter._id) && (
                                                                 <ul className={styles.sublist}>
                                                                     {chapter.lessons.map(lesson => (
-                                                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description} >
-
+                                                                        <li key={lesson._id} className={styles.lesson} data-tip={lesson.description}>
                                                                             <span onClick={() => handleLessonClick(lesson._id)} className={styles.lessonTitle}>{lesson.title}</span>
                                                                             <div className={styles.left}>
                                                                                 <span className={styles.lessonDuration}>{formatDurationFromSeconds(lesson.duration)}</span>
@@ -488,9 +433,7 @@ export const CourseDetailPage = () => {
                                                                                 </div>
                                                                             </div>
                                                                         </li>
-
                                                                     ))}
-
                                                                 </ul>
                                                             )}
                                                         </div>
@@ -513,7 +456,6 @@ export const CourseDetailPage = () => {
                                                         </div>
                                                         <div className={styles.duration}>{chapter.lessons.length} Bài</div>
                                                     </div>
-
                                                     {openChapters.includes(chapter._id) && (
                                                         <ul className={styles.sublist}>
                                                             {chapter.lessons.map(lesson => (
@@ -541,10 +483,7 @@ export const CourseDetailPage = () => {
                     ) : (
                         <div dangerouslySetInnerHTML={{ __html: editableCourse.request }} />
                     )}
-
-
                 </div>
-
                 <div className={styles.description}>
                     <h3>Mô tả</h3>
                     {editMode ? (
@@ -553,11 +492,9 @@ export const CourseDetailPage = () => {
                         <div dangerouslySetInnerHTML={{ __html: editableCourse.describe }} />
                     )}
                 </div>
-
-            </div >
-
+            </div>
         </>
     );
 };
 
-export default CourseDetailPage
+export default CourseDetailPage;

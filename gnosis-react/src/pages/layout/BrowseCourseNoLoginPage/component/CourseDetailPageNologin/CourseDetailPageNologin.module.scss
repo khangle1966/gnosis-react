@@ -1,0 +1,674 @@
+/* CourseDetailPageNologin.module.scss */
+
+/* General styles for the course detail page container */
+.navbar {
+    background-color: #148725;
+    color: #fff;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    animation: slideDown 0.5s ease;
+
+    @keyframes slideDown {
+        0% {
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+}
+
+.courseSidebar {
+    position: fixed;
+    top: 100px;
+    right: 6rem;
+    width: 300px;
+    background-color: #ffffff;
+    padding: 1.8rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    animation: fadeInRight 0.5s ease;
+
+    @keyframes fadeInRight {
+        0% {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .coursePreview {
+        text-align: center;
+        margin-bottom: 20px;
+
+        img {
+            width: 100%;
+        }
+    }
+
+    .coursePurchase {
+        .addToCartButton {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #8e44ad;
+            color: #fff;
+        }
+
+        .moneyBackGuarantee {
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+    }
+
+    .courseIncludes {
+        h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            padding: 0;
+
+            li {
+                font-size: 14px;
+                margin-bottom: 5px;
+
+                &:before {
+                    content: '✔';
+                    color: green;
+                    margin-right: 5px;
+                }
+            }
+        }
+    }
+}
+
+.courseDetailContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 6rem;
+    animation: fadeInUp 0.5s ease;
+    background-color: #fdfdf6;
+
+    @keyframes fadeInUp {
+        0% {
+            transform: translateY(100%);
+            opacity: 0;
+        }
+
+        100% {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    }
+
+    .addChapterButton {
+        background-color: #129118;
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #0a6d20;
+        }
+    }
+
+    .customselect {
+        position: relative;
+        display: inline-block;
+
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+            appearance: none;
+            transition: border-color 0.3s ease;
+        }
+
+        &:after {
+            content: '\25BC';
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            font-size: 16px;
+            color: #555;
+            transform: translateY(-50%);
+            transition: color 0.3s ease;
+        }
+
+        select:hover {
+            border-color: #999;
+        }
+
+        select:focus {
+            border-color: #555;
+        }
+
+        &:hover:after {
+            color: #999;
+        }
+
+        select:disabled {
+            cursor: not-allowed;
+            background-color: #f0f0f0;
+            color: #999;
+        }
+    }
+
+    .chapterControls {
+        display: flex;
+        gap: 10px;
+
+        button {
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            width: 35px;
+            height: 35px;
+
+            &:hover {
+                background-color: darken(#007BFF, 10%);
+            }
+        }
+    }
+
+    .courseHeader {
+        width: 100%;
+
+        .saveButton,
+        .exitButton,
+        .editButton {
+            margin: 0 5px;
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: none;
+        }
+
+        .saveButton {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .exitButton {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .editButton {
+            background-color: #008CBA;
+            color: white;
+        }
+
+        .saveButton:hover,
+        .exitButton:hover,
+        .editButton:hover {
+            opacity: 0.8;
+        }
+
+        .breadcrumbs {
+            font-size: 0.85rem;
+            color: #026618;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .courseTitle {
+            font-size: 1.8rem;
+            color: #212529;
+            margin-bottom: 10px;
+        }
+
+        .courseSubtitle {
+            font-size: 1rem;
+            color: #212529;
+            font-weight: 400;
+            margin-bottom: 10px;
+        }
+
+        .courseRating {
+            display: flex;
+            align-items: center;
+            font-size: 1rem;
+            color: #212529;
+            margin-bottom: 10px;
+
+            .starFull,
+            .starHalf,
+            .starEmpty {
+                color: #ccc;
+                font-size: 16px;
+            }
+
+            .starFull {
+                color: #ffc107;
+            }
+
+            .starHalf {
+                color: #ffc107;
+                background: linear-gradient(90deg, #ffc107 50%, #ccc 50%);
+            }
+
+            .enrollment {
+                margin-left: 10px;
+            }
+        }
+
+        .instructorInfo {
+            font-size: 0.9rem;
+            color: #212529;
+
+            .updateDate,
+            .language {
+                margin-left: 10px;
+            }
+        }
+    }
+
+    .courseContent {
+        width: 50rem;
+        max-width: 800px;
+        margin: 20px auto;
+        background: #fff;
+        padding: 20px;
+        border: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        .chapterControls {
+            display: flex;
+            gap: 10px;
+
+            button {
+                padding: 5px 10px;
+                background-color: #007BFF;
+                color: white;
+                border-radius: 5px;
+                border: none;
+                cursor: pointer;
+
+                &:hover {
+                    background-color: darken(#007BFF, 10%);
+                }
+            }
+        }
+
+        .addLessonButton {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #4CAF50, #2E7D32);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: block;
+            margin-left: auto;
+
+            &:hover {
+                background: linear-gradient(135deg, #3e8e41, #266828);
+                box-shadow: 0 6px 10px rgba(0, 0, 0, 0.3);
+                transform: translateY(-2px);
+                transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+            }
+        }
+
+        .sublist {
+            margin-top: 10px;
+            list-style-type: none;
+        }
+
+        .lesson {
+            margin-bottom: 5px;
+        }
+
+        span {
+            &:hover {
+                cursor: pointer;
+            }
+        }
+
+        h2 {
+            display: flex;
+            justify-content: center;
+            color: #333;
+            font-size: 1.25rem;
+            padding-bottom: 15px;
+            margin-bottom: 0;
+            border-bottom: none;
+        }
+
+        .list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+
+            .item {
+                flex-grow: 1;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 20px;
+                background-color: #f5f5f5;
+                border-bottom: 1px solid #ddd;
+                cursor: pointer;
+                transition: background-color 0.3s ease-in-out;
+
+                h4 {
+                    font-size: 10px;
+                    font-size: 1rem;
+                }
+
+                &:hover {
+                    background-color: #e0e0e0;
+                }
+
+                &.open {
+                    background-color: #fff;
+                }
+
+                .title {
+                    font-size: 1rem;
+                    color: #333;
+                    font-weight: bold;
+                }
+
+                .duration {
+                    font-size: 0.9rem;
+                    color: #999;
+                    margin-right: 10px;
+                }
+
+                .right {
+                    display: flex;
+                    align-items: center;
+                }
+            }
+
+            form {
+                background-color: #ffffff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+                margin-top: 20px;
+
+                input[type="text"],
+                input[type="number"],
+                textarea {
+                    width: 100%;
+                    padding: 10px;
+                    margin-bottom: 10px;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+
+                    &:focus {
+                        outline: none;
+                        border-color: #0056b3;
+                        box-shadow: 0 0 8px rgba(0, 86, 179, 0.2);
+                    }
+                }
+
+                textarea {
+                    height: 100px;
+                }
+
+                button {
+                    width: 100%;
+                    padding: 10px 0;
+                    font-size: 16px;
+                    background-color: #4CAF50;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease-in-out;
+
+                    &:hover {
+                        background-color: darken(#4CAF50, 10%);
+                    }
+                }
+            }
+
+            .sublist {
+                padding-left: 20px;
+
+                .lesson {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: center;
+                    padding: 5px 10px;
+                    font-size: 0.9rem;
+                    color: #666;
+
+                    &:not(:last-child) {
+                        border-bottom: 1px solid #d96161;
+                    }
+                }
+
+                .left {
+                    display: flex;
+                    align-items: center;
+
+                    .lessonDuration {
+                        margin: 0 1rem;
+                    }
+                }
+
+                .deleteLesson {
+                    padding: 9px 8px;
+                    background-color: #d60a0a;
+                    color: white;
+                    border-radius: 5px;
+                    border: none;
+                    cursor: pointer;
+                    width: 15px;
+                    height: 15px;
+
+                    .icon {
+                        display: flex;
+                        gap: 10px;
+                    }
+
+                    &:hover {
+                        background-color: darken(#8e0808, 10%);
+                    }
+                }
+            }
+        }
+    }
+
+    .courseContentOverview {
+        button {
+            margin-left: 4rem;
+            font-size: 0.9rem;
+            color: #026618;
+            font-weight: bold;
+
+            &:hover {
+                color: rgb(2, 60, 4);
+            }
+        }
+    }
+
+    .requirements {
+        width: 50rem;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 1.5rem;
+
+        h3 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        ul {
+            list-style: inside;
+            margin: 0;
+            padding: 0;
+
+            li {
+                font-size: 1rem;
+                color: #666;
+            }
+        }
+    }
+
+    .description {
+        width: 100%;
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+
+        h3 {
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+    }
+}
+
+.courseContent2 {
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+    background: #fff;
+    padding: 20px;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+    h2,
+    h1,
+    h3 {
+        display: flex;
+        justify-content: center;
+        color: #333;
+        font-size: 1.55rem;
+        padding-bottom: 15px;
+        margin-bottom: 0;
+        border-bottom: none;
+    }
+
+    .list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+
+        .item {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            padding: 10px 20px;
+
+            .description {
+                padding: 10px;
+                overflow-wrap: break-word;
+                word-wrap: break-word;
+                word-break: break-all;
+                overflow: hidden;
+            }
+
+            .title {
+                font-size: 13px;
+                color: #333;
+                font-weight: bold;
+            }
+
+            .duration {
+                font-size: 0.9rem;
+                color: #999;
+            }
+        }
+
+        .sublist {
+            padding-left: 20px;
+
+            .lesson {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 10px;
+                font-size: 0.9rem;
+                color: #666;
+
+                &:not(:last-child) {
+                    border-bottom: 1px solid #d96161;
+                }
+            }
+        }
+    }
+}
+
+.requirements {
+    width: 50rem;
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 1.5rem;
+
+    h3 {
+        font-size: 1.5rem;
+        color: #333;
+    }
+
+    ul {
+        list-style: inside;
+        margin: 0;
+        padding: 0;
+
+        li {
+            font-size: 1rem;
+            color: #666;
+        }
+    }
+}

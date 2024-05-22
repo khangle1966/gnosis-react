@@ -71,6 +71,11 @@ const authReducer = (state = initialState, action) => {
                 error: '',
                 registerSuccessMessage: 'Tạo thành công tài khoản, bạn có thể đăng nhập ngay bây giờ.' // Cập nhật thông báo ở đây
             };
+        case 'RESET_REGISTER_SUCCESS_MESSAGE':
+            return {
+                ...state,
+                registerSuccessMessage: ''
+            };
         case 'REGISTER_FAILURE':
             return {
                 ...state,

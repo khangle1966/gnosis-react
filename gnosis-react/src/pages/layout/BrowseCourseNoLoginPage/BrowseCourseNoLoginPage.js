@@ -2,44 +2,25 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../../../redux/action/courseActions';
-import { fetchProfile } from '../../../redux/action/profileActions'; // Import fetchProfile action
 import { addToCart } from '../../../redux/action/cartActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import styles from './BrowseCourseNoLoginPage.module.scss';
 
-import styles from './BrowseCoursePage.module.scss';
-
-const BrowseCoursePage = () => {
+const BrowseCourseNoLoginPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector(state => state.course);
-    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-    const { profile, loading: profileLoading } = useSelector(state => state.profile); // Thêm profileLoading để theo dõi trạng thái tải profile
     const [notification, setNotification] = useState({ show: false, message: '' });
     const [activeCategory, setActiveCategory] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
     const coursesPerPage = 9;
-    const [searchTerm, setSearchTerm] = useState(''); // Thêm state cho từ khóa tìm kiếm
-    const [filteredCourses, setFilteredCourses] = useState([]); // Thêm state cho các khóa học đã lọc
-    const [ownedCourses, setOwnedCourses] = useState([]); // Thêm state cho các khóa học đã sở hữu
+    const [searchTerm, setSearchTerm] = useState('');
+    const [filteredCourses, setFilteredCourses] = useState([]);
 
     useEffect(() => {
-        if (!isLoggedIn) {
-            navigate('/login');
-        } else {
-            dispatch(fetchCourses());
-            if (profile && profile.courses) {
-                const ownedCourseIds = profile.courses.map(course => course._id);
-                setOwnedCourses(ownedCourseIds);
-            }
-        }
-    }, [isLoggedIn, navigate, dispatch, profile]); // Thêm profile vào dependency array
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            dispatch(fetchProfile(profile.id)); // Thêm fetchProfile vào useEffect để đảm bảo profile luôn được cập nhật
-        }
-    }, [dispatch, isLoggedIn]);
+        dispatch(fetchCourses());
+    }, [dispatch]);
 
     useEffect(() => {
         const filtered = courses.filter(course =>
@@ -50,16 +31,10 @@ const BrowseCoursePage = () => {
         setFilteredCourses(filtered);
     }, [courses, activeCategory, searchTerm]);
 
-    const handleAddToCart = (course) => {
-        dispatch(addToCart(course));
-        setNotification({ show: true, message: `Added "${course.name}" to cart.` });
-        setTimeout(() => {
-            setNotification({ show: false, message: '' });
-        }, 3000);
-    };
+
 
     const handleDescriptionClick = (courseId) => {
-        navigate(`/course/${courseId}`);
+        navigate(`/coursedetailpagenologin/${courseId}`);
     };
 
     const truncateDescription = (description) => {
@@ -90,7 +65,7 @@ const BrowseCoursePage = () => {
 
     const renderPageNumbers = () => {
         const totalPages = pageNumbers.length;
-        const maxPagesToShow = 5; // Số lượng trang tối đa để hiển thị
+        const maxPagesToShow = 5;
         const pages = [];
 
         if (totalPages <= maxPagesToShow) {
@@ -141,11 +116,7 @@ const BrowseCoursePage = () => {
         );
     };
 
-    const isCourseOwned = (courseId) => {
-        return ownedCourses.includes(courseId);
-    };
-
-    if (loading || profileLoading) {
+    if (loading) {
         return <div>Loading...</div>;
     }
 
@@ -164,7 +135,7 @@ const BrowseCoursePage = () => {
                         type="text"
                         placeholder="Search..."
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)} // Thêm sự kiện onChange
+                        onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
             </div>
@@ -196,13 +167,7 @@ const BrowseCoursePage = () => {
                             <h3>{truncateNameCourse(course.name)}</h3>
                             <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p>
                             <div className={styles.courseActions}>
-                                <button
-                                    onClick={() => handleAddToCart(course)}
-                                    disabled={isCourseOwned(course._id)}
-                                    style={{ backgroundColor: isCourseOwned(course._id) ? '#ccc' : '' }}
-                                >
-                                    Add to Cart
-                                </button>
+
                                 <button onClick={() => handleDescriptionClick(course._id)}>Description</button>
                             </div>
                         </div>
@@ -228,4 +193,4 @@ const BrowseCoursePage = () => {
     );
 };
 
-export default BrowseCoursePage;
+export default BrowseCourseNoLoginPage;

@@ -1,0 +1,218 @@
+// Sidebar.module.scss
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+
+@mixin transition($properties...) {
+    -webkit-transition: $properties;
+    -moz-transition: $properties;
+    -o-transition: $properties;
+    transition: $properties;
+}
+
+// Variables for consistent theming
+$sidebar-width: 15%;
+$sidebar-collapsed-width: 50px; // Enough space for icons and some padding
+$sidebar-transition-duration: 0.3s;
+$sidebar-background: #013f11;
+$hover-background: #001a0e; // Lighter green for hover state
+$sidebar-padding: 1.5rem;
+$text-color: white;
+$transition-effect: 0.4s ease;
+$shadow-effect: 0 4px 8px rgba(0, 0, 0, 0.1);
+$hover-scale: 1.05;
+$avatar-size: 6rem;
+$focus-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+$transition-duration: 0.3s; // Define your transition duration
+
+// Mixins for repeated styles
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+@mixin hover-effect {
+    @include transition(background-color $transition-effect, transform $transition-effect);
+
+    &:hover {
+        transform: scale($hover-scale);
+        background-color: $hover-background;
+    }
+}
+
+.sidebar {
+    position: sticky;
+    top: 0;
+    overflow: hidden;
+
+    background: linear-gradient(135deg, $sidebar-background 0%, darken($sidebar-background, 5%) 100%);
+    color: $text-color;
+    height: 100vh;
+    padding: $sidebar-padding;
+    background-color: $sidebar-background;
+    width: $sidebar-width;
+    transition: width $sidebar-transition-duration ease;
+
+    z-index: 1000;
+    @include transition(width $transition-effect);
+
+    &:hover {
+        box-shadow: $shadow-effect;
+    }
+
+    .toggleButton {
+        background: transparent;
+        border: none;
+        color: white;
+        font-size: 24px; // Icon size
+        position: absolute;
+        top: 1.6rem; // Adjust as needed
+        right: -1.7rem; // Adjust as needed
+        padding-bottom: 2rem;
+        cursor: pointer;
+    }
+
+    &.collapsed {
+        width: $sidebar-collapsed-width;
+
+
+        .search input,
+        .logo img,
+        .userInfo {
+            // Hide text and other elements when collapsed
+            opacity: 0;
+            max-height: 0;
+            padding: 0; // Collapse padding
+            // Include transition for padding if you want a smoother effect
+            transition: opacity $transition-duration ease, max-height $transition-duration ease, padding $transition-duration ease;
+
+
+        }
+
+        // Keep icons and other necessary elements visible
+        .fa-icon {
+            display: block;
+        }
+    }
+
+    .userInfo {
+        @include flex-center;
+        flex-direction: column;
+        padding: $sidebar-padding 0;
+
+        .avatar {
+            width: $avatar-size;
+            height: $avatar-size;
+            border-radius: 50%;
+            margin-bottom: 0.5rem;
+            border: 2px solid lighten($sidebar-background, 20%);
+        }
+
+        p {
+            color: $text-color;
+            margin: 0;
+
+            font-weight: 600
+        }
+    }
+
+    .logo {
+        @include flex-center;
+        padding-bottom: rem;
+        width: 90%;
+        transition: opacity $transition-effect;
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        &:hover {
+            opacity: 0.8;
+        }
+    }
+
+    .search {
+        margin-bottom: 20px;
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            @include transition(box-shadow $transition-effect);
+
+            &:focus {
+                box-shadow: $focus-shadow;
+            }
+        }
+    }
+
+    .menu {
+        width: fit-content;
+        cursor: pointer;
+        gap: 0.625rem;
+
+        .menuItem {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 0;
+            color: $text-color;
+            font-size: 1.2em;
+            text-decoration: none;
+            @include hover-effect;
+
+            svg {
+                margin-right: 10px;
+            }
+        }
+    }
+
+    .Seting {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem 0;
+        color: $text-color;
+        font-size: 1.2em;
+        margin-top: auto;
+        position: absolute;
+        width: 75%;
+        bottom: 0;
+        text-decoration: none;
+        @include hover-effect;
+
+        svg {
+            margin-right: 10px;
+        }
+    }
+}
+
+// Responsive Design
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed; // Fixed position on smaller screens
+        height: 100vh;
+        width: 100%; // Full width for mobile view
+        z-index: 1000; // Make sure it's above other content
+        transform: translateX(0); // Reset any transformations
+
+        &.collapsed {
+            transform: translateX(-100%); // Completely hide off-screen
+        }
+    }
+}
+
+// Adding a dark theme option
+@media (prefers-color-scheme: dark) {
+    $sidebar-background: #333;
+    $hover-background: #444;
+
+    .sidebar {
+        background: linear-gradient(135deg, $sidebar-background 0%, darken($sidebar-background, 5%) 100%);
+    }
+
+    .userInfo {
+        .avatar {
+            border-color: lighten($sidebar-background, 20%);
+        }
+    }
+}

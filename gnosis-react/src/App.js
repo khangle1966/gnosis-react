@@ -7,6 +7,8 @@ import Welcome from './pages/Welcome/Welcome'; // Tạo một file HomePage.js t
 import Register from './pages/Register/register'
 import CreateProfilePage from './pages/CreateProfilePage/createprofilepage'
 import Layout from "./pages/layout/Layout"
+import LayoutNologin from "./pages/layout/LayoutNologin"
+
 import BrowseCoursePage from './pages/layout/BrowseCoursePage/BrowseCoursePage'
 import CourseDetailPage from './pages/layout/BrowseCoursePage/component/CourseDetailPage/CourseDetailPage'
 import store from './redux/store';
@@ -16,7 +18,8 @@ import InstructorsPage from './pages/layout/InstructorsPage/InstructorsPage';
 import HomePage from './pages/layout/HomePage/Homepage';
 import LessonPage from './pages/layout/BrowseCoursePage/component/LessonPage/LessonPage';
 import PaymentPage from './pages/layout/Cart/component/payment';
-
+import BrowseCourseNoLoginPage from './pages/layout/BrowseCourseNoLoginPage/BrowseCourseNoLoginPage';
+import CourseDetailPageNologin from './pages/layout/BrowseCourseNoLoginPage/component/CourseDetailPageNologin/CourseDetailPageNologin';
 function App() {
   return (
     <Provider store={store} >
@@ -34,10 +37,22 @@ function App() {
             <Route path="/payment" element={<PaymentPage />} />
 
           </Route>
+          <Route path="/" element={<LayoutNologin />}>
+
+
+            <Route path="/browsecoursenologin" element={<BrowseCourseNoLoginPage />} />
+            <Route path="/coursedetailpagenologin/:courseId" element={<CourseDetailPageNologin />} />
+
+
+          </Route>
+
+
           <Route path="/login" element={<Login />} />
           <Route path="course/:courseId/lesson/:lessonId" element={<LessonPage />} />
 
           <Route path="/welcome" element={<Welcome />} />
+
+
           <Route path="/register" element={<Register />} />
           <Route path="/createprofile" element={<CreateProfilePage />} />
         </Routes>

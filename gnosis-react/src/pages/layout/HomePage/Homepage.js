@@ -8,6 +8,7 @@ import StatisticsComponent from './component/StatisticsComponent/StatisticsCompo
 import CalendarComponent from './component/CalendarComponent/CalendarComponent';
 import { fetchProfile } from '../../../redux/action/profileActions';
 import { fetchUserCourses } from '../../../redux/action/courseActions';
+import { fetchLessonsByCourseId } from '../../../redux/action/lessonActions'; // Import fetchLessonsByCourseId action
 import { addToFavorite, removeFromFavorite, fetchFavorites } from '../../../redux/action/favoriteActions';
 import { updateProfile } from '../../../redux/action/profileActions';
 
@@ -17,7 +18,8 @@ const HomePage = () => {
     const { userCourses, loading, error } = useSelector(state => state.course);
     const { user } = useSelector(state => state.auth);
     const { profile } = useSelector(state => state.profile);
-    const { favorites } = useSelector(state => state.favorite);
+    const { favorites = [] } = useSelector(state => state.favorite);
+    const lessonsByCourse = useSelector(state => state.lessonDetail); // Get lessons from state
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [activeTab, setActiveTab] = useState('all');
     const [filteredCourses, setFilteredCourses] = useState([]);
@@ -66,16 +68,26 @@ const HomePage = () => {
         setFilteredCourses(filtered);
     }, [activeTab, userCourses, profile, favorites, searchTerm]);
 
-    const handleStartCourse = (courseId) => {
+    const handleStartCourse = async (courseId) => {
         if (user && user.uid) {
-            const updatedOngoingCourse = profile.ongoingCourse
-                ? Array.from(new Set([...profile.ongoingCourse.map(id => id?._id?.toString() || ''), courseId.toString()]))
-                : [courseId.toString()];
-            const updatedProfile = { ...profile, ongoingCourse: updatedOngoingCourse };
+            await dispatch(fetchLessonsByCourseId(courseId));
+            if (lessonsByCourse && lessonsByCourse.lessons && lessonsByCourse.lessons.length > 0) {
+                const courseLessons = lessonsByCourse.lessons.filter(lesson => lesson.courseId === courseId);
+                if (courseLessons.length > 0) {
+                    const firstLessonId = courseLessons[0]._id;
+                    const updatedOngoingCourse = profile.ongoingCourse
+                        ? Array.from(new Set([...profile.ongoingCourse.map(id => id?._id?.toString() || ''), courseId.toString()]))
+                        : [courseId.toString()];
+                    const updatedProfile = { ...profile, ongoingCourse: updatedOngoingCourse };
 
-            dispatch(updateProfile(updatedProfile, user.uid));
-
-            navigate(`/course/${courseId}`);
+                    dispatch(updateProfile(updatedProfile, user.uid));
+                    navigate(`/course/${courseId}/lesson/${firstLessonId}`);
+                } else {
+                    console.error('No lessons found for the course.');
+                }
+            } else {
+                console.error('No lessons found for the course.');
+            }
         }
     };
 
