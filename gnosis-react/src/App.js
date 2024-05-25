@@ -20,6 +20,7 @@ import LessonPage from './pages/layout/BrowseCoursePage/component/LessonPage/Les
 import PaymentPage from './pages/layout/Cart/component/payment';
 import BrowseCourseNoLoginPage from './pages/layout/BrowseCourseNoLoginPage/BrowseCourseNoLoginPage';
 import CourseDetailPageNologin from './pages/layout/BrowseCourseNoLoginPage/component/CourseDetailPageNologin/CourseDetailPageNologin';
+import AdminPage from './pages/AdminPage/AdminPage';
 function App() {
   return (
     <Provider store={store} >
@@ -29,13 +30,12 @@ function App() {
             <Route index element={<Navigate replace to="/welcome" />} />
             <Route path="/browsecourse" element={<BrowseCoursePage />} />
             <Route path="/home" element={<HomePage />} />
-
             <Route path="course/:courseId" element={<CourseDetailPage />} />
             <Route path="/profile" element={< ProfilePage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/instructor" element={<InstructorsPage />} />
             <Route path="/payment" element={<PaymentPage />} />
-
+            <Route path="/admin" element={<AdminPage />} />
           </Route>
           <Route path="/" element={<LayoutNologin />}>
 

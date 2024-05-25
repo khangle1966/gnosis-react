@@ -1,7 +1,5 @@
 import { Prop, SchemaFactory, Schema } from '@nestjs/mongoose';
 import { HydratedDocument, Types } from 'mongoose';
-import { Image } from '../../upload/entities/image.entity';  // Đảm bảo đường dẫn đến file Image entity đúng
-import internal from 'stream';
 
 export type CourseDocument = HydratedDocument<Course>;
 
@@ -14,19 +12,20 @@ export enum Category {
   MUSIC = 'Music',
   COOK = 'Cook',
 }
-@Schema({ timestamps: true }) // Use Mongoose's automatic timestamps
+
+@Schema({ timestamps: true })
 export class Course {
   @Prop({ required: true })
   name: string;
 
   @Prop()
   description: string;
+
   @Prop()
   subTitle: string;
 
-
   @Prop()
-  img: string; // This should be a URL to the image
+  img: string;
 
   @Prop({ enum: Category, required: true })
   category: Category;
@@ -40,37 +39,52 @@ export class Course {
       validator: function (v) {
         return v >= 0 && v <= 5 && Number.isFinite(v);
       },
-      message: props => `${props.value} is not a valid rating! Must be between 0 and 5.`
-    }
+      message: props => `${props.value} is not a valid rating! Must be between 0 and 5.`,
+    },
   })
   rating: number;
 
   @Prop({ required: true })
   language: string;
+
   @Prop({ required: true })
   request: string;
+
   @Prop({ required: true })
   describe: string;
+
   @Prop({ default: false })
   isReleased: boolean;
 
   @Prop({ required: true, type: String })
   author: string;
+
   @Prop({ required: true, type: String })
   authorId: string;
 
   @Prop({ required: true })
-  duration: number; // In hours
+  duration: number;
 
   @Prop({ type: Date, default: () => Date.now() })
   publishedDate: Date;
-
 
   @Prop({ default: 0 })
   numberOfStudents: number;
 
   @Prop({ default: 0 })
   numberOfReviews: number;
+
+
+
+static calculateInstructorLevel(rating: number, numberOfStudents: number): string {
+  if (rating >= 4.5 && numberOfStudents >= 1000) {
+    return 'master';
+  } else if (rating >= 3.5 && numberOfStudents >= 500) {
+    return 'medium';
+  } else {
+    return 'new';
+  }
+}
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

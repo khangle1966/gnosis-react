@@ -7,7 +7,7 @@ export type ProfileDocument = HydratedDocument<Profile>;
 
 @Schema({ timestamps: true })
 export class Profile {
-    @Prop({ required: true, unique: true,index: true  })
+    @Prop({ required: true, unique: true, index: true })
     id: string;
 
     @Prop({ required: true, unique: true })
@@ -20,7 +20,7 @@ export class Profile {
     @Prop({ required: true, unique: true })
     email: string;
 
-  
+
     @Prop()
     gender: string;
 
@@ -48,10 +48,10 @@ export class Profile {
     @Prop({
         type: [{ type: mongoose.Schema.Types.ObjectId }],
         ref: 'Course',
-    
-    
+
+
     })
-    
+
     ongoingCourse: Course[];
 
     @Prop({
@@ -59,8 +59,11 @@ export class Profile {
         ref: 'Course',
     })
 
-    
+
     courses: Course[];
+
+    @Prop({ default: 'new' })
+    instructorLevel: string;
 
 }
 

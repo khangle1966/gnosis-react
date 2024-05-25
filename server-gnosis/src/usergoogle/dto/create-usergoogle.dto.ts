@@ -6,5 +6,7 @@ export class CreateUsergoogleDto {
         public picture: string,
         public profile: string,
         public role: string,
+
+
     ) { }
 }

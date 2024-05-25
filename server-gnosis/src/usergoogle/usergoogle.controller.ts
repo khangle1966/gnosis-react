@@ -53,7 +53,11 @@ export class UsergoogleController {
       throw error;
     }
   }
-
+  @Get('update-instructor-level/:uid')
+  async updateInstructorLevel(@Param('uid') uid: string) {
+    await this.usergoogleService.updateInstructorLevel(uid);
+    return this.usergoogleService.findByUid(uid);
+  }
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -87,5 +91,19 @@ export class UsergoogleController {
     } catch (error) {
       throw error;
     }
+  }
+  @Get('getintstructor/instructors')
+  async getAllInstructors() {
+    return this.usergoogleService.findAllInstructors();
+  }
+
+  @Get('calculate-salary/:uid')
+  async calculateSalary(@Param('uid') uid: string) {
+    const salary = await this.usergoogleService.calculateSalary(uid);
+    return { uid, salary };
+  }
+  @Get('monthly-data/:uid')
+  async getMonthlyData(@Param('uid') uid: string) {
+    return this.usergoogleService.getMonthlyData(uid);
   }
 }

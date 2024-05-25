@@ -284,6 +284,13 @@ export const CourseDetailPage = () => {
                 <div className={styles.coursePurchase}>
                     {!isCoursePurchased && (
                         <>
+                            <div
+                                className={`${styles.coursePrice} ${editMode ? styles.editable : ''}`}
+                                contentEditable={editMode}
+                                onInput={(e) => handlePriceInput(e)}
+                                onBlur={(e) => handlePriceChange(e)}
+                                dangerouslySetInnerHTML={{ __html: `$${courseDetail.price}` }}
+                            />
                             <button className={styles.addToCartButton} onClick={handleAddToCart}>Add to Cart</button>
                             <button className={styles.buyNowButton} onClick={() => handleBuyCourse(courseDetail)}>Buy Now</button>
                         </>
