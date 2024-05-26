@@ -19,7 +19,7 @@ export class VNPayService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
     private readonly loggerService: LoggerService, // Inject LoggerService
-  ) {}
+  ) { }
 
   async createPaymentUrl(amount: number, bankCode: string, courseIds: string[], userId: string): Promise<string> {
     const date = new Date();
@@ -90,7 +90,11 @@ export class VNPayService {
     this.loggerService.log(`Fetched order details: ${JSON.stringify(orderDetails)}`); // Log thông tin đơn hàng đã lấy
     return orderDetails;
   }
-
+  async getAllOrders(): Promise<Order[]> {
+    const orders = await this.orderModel.find().exec();
+    this.loggerService.log(`Fetched all orders: ${JSON.stringify(orders)}`); // Log tất cả đơn hàng đã lấy
+    return orders;
+  }
   private sortObject(obj: any): any {
     const sorted: any = {};
     const keys = Object.keys(obj).sort();

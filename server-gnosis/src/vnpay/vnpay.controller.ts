@@ -3,6 +3,7 @@ import { VNPayService } from './vnpay.service';
 import { ProfileService } from '../profile/profile.service';
 import { LoggerService } from '../logger/logger.service';
 import { CourseService } from '../course/course.service';
+import { Order } from './order.entity';
 
 @Controller('vnpay')
 export class VNPayController {
@@ -57,5 +58,9 @@ export class VNPayController {
       this.loggerService.log('Payment verification failed.');
       res.redirect('http://localhost:3000/payment-fail');
     }
+  }
+  @Get('order')
+  async getAllOrders(): Promise<Order[]> {
+    return this.vnpayService.getAllOrders();
   }
 }

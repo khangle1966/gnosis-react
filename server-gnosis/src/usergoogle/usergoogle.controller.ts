@@ -40,7 +40,14 @@ export class UsergoogleController {
       throw error;
     }
   }
-
+  @Get('monthly/monthly-data')
+  async getMonthlyDataUser() {
+    try {
+      return this.usergoogleService.getMonthlyDataUser();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Usergoogle> {
     try {

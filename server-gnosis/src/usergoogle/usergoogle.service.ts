@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Usergoogle, UserDocument } from './entities/usergoogle.entity';
 import { Course, CourseDocument } from '../course/entities/course.entity';
+import * as moment from 'moment';
 
 @Injectable()
 export class UsergoogleService {
@@ -99,6 +100,20 @@ export class UsergoogleService {
       throw new HttpException(error.message, error.status);
     }
   }
+  async getMonthlyDataUser(): Promise<any[]> {
+    const users = await this.usergoogleModel.find().exec();
+    const monthlyData = {};
+
+    users.forEach(user => {
+      const month = moment(user.createdAt).format('YYYY-MM');
+      if (!monthlyData[month]) {
+        monthlyData[month] = { month, count: 0 };
+      }
+      monthlyData[month].count += 1;
+    });
+
+    return Object.values(monthlyData);
+  }
   async getMonthlyData(uid: string): Promise<any[]> {
     const courses = await this.courseModel.find({ authorId: uid }).exec();
     const monthlyData = {};
@@ -158,4 +173,5 @@ export class UsergoogleService {
     // Tính lương dựa trên phần trăm thu nhập
     return totalEarnings * salaryPercentage;
   }
+
 }

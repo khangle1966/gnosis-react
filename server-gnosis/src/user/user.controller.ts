@@ -31,7 +31,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-  
+
   @Get()
   async findAllUser() {
     try {
@@ -93,5 +93,13 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+  @Get('monthly/monthly-data')
+  async getMonthlyData() {
+    try {
+      return this.userService.getMonthlyData();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
