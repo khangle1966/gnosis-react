@@ -1,6 +1,9 @@
 // App.js
 import React from 'react';
 import { Provider } from 'react-redux';
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Login from './pages/LoginPage/LoginPage'; // Thay đổi đường dẫn tương ứng với cấu trúc dự án của bạn
 import Welcome from './pages/Welcome/Welcome'; // Tạo một file HomePage.js tương tự như LoginPage.js
@@ -8,7 +11,7 @@ import Register from './pages/Register/register'
 import CreateProfilePage from './pages/CreateProfilePage/createprofilepage'
 import Layout from "./pages/layout/Layout"
 import LayoutNologin from "./pages/layout/LayoutNologin"
-
+import Adminlayout from './pages/AdminPage/Adminlayout';
 import BrowseCoursePage from './pages/layout/BrowseCoursePage/BrowseCoursePage'
 import CourseDetailPage from './pages/layout/BrowseCoursePage/component/CourseDetailPage/CourseDetailPage'
 import store from './redux/store';
@@ -21,6 +24,7 @@ import PaymentPage from './pages/layout/Cart/component/payment';
 import BrowseCourseNoLoginPage from './pages/layout/BrowseCourseNoLoginPage/BrowseCourseNoLoginPage';
 import CourseDetailPageNologin from './pages/layout/BrowseCourseNoLoginPage/component/CourseDetailPageNologin/CourseDetailPageNologin';
 import AdminPage from './pages/AdminPage/AdminPage';
+import Admin_InstructorSalary from './pages/AdminPage/component/InstructorSalary/Admin_InstructorSalary';
 function App() {
   return (
     <Provider store={store} >
@@ -35,7 +39,6 @@ function App() {
             <Route path="/cart" element={<CartPage />} />
             <Route path="/instructor" element={<InstructorsPage />} />
             <Route path="/payment" element={<PaymentPage />} />
-            <Route path="/admin" element={<AdminPage />} />
           </Route>
           <Route path="/" element={<LayoutNologin />}>
 
@@ -45,6 +48,16 @@ function App() {
 
 
           </Route>
+
+          <Route path="/" element={<Adminlayout />}>
+
+
+            <Route path="/admin/dashboard" element={<AdminPage />} />
+            <Route path="/admin/instructor-salary" element={<Admin_InstructorSalary />} />
+
+
+          </Route>
+
 
 
           <Route path="/login" element={<Login />} />
