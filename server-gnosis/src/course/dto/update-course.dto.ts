@@ -1,3 +1,4 @@
+import { IsBoolean, IsOptional } from 'class-validator';
 import * as mongoose from 'mongoose';
 export class UpdateCourseDto {
     readonly title?: string;
@@ -9,4 +10,7 @@ export class UpdateCourseDto {
     readonly price?: number;
     readonly level?: string;
     readonly publishedDate?: Date;
+    @IsBoolean()
+    @IsOptional()
+    isReleased?: boolean;  // Thêm thuộc tính này
 }

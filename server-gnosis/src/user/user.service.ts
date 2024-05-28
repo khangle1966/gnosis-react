@@ -1,4 +1,4 @@
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, NotFoundException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -71,5 +71,11 @@ export class UserService {
     });
 
     return Object.values(monthlyData);
+  }
+  async deleteByUid(uid: string): Promise<void> {
+    const result = await this.userModel.findOneAndDelete({ uid }).exec();
+    if (!result) {
+      throw new NotFoundException(`User with UID "${uid}" not found`);
+    }
   }
 }

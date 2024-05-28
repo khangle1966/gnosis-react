@@ -1,17 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers, fetchOrders, fetchInstructors, fetchMonthlyUserData, fetchMonthlyUsergoogleData, fetchMonthlyCourseData, fetchMonthlyRevenueData } from '../../redux/action/adminActions';
-import { fetchCourses } from '../../redux/action/courseActions';
-import { Card, CardContent, Typography, Grid, Box } from '@mui/material';
+import { fetchCourses, approveCourse, deleteCourse } from '../../redux/action/courseActions';
+import { Card, CardContent, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Tabs, Tab, TablePagination, TextField } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
 import BookIcon from '@mui/icons-material/Book';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SchoolIcon from '@mui/icons-material/School';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
+import { useNavigate } from 'react-router-dom';
 import styles from './AdminPage.module.scss';
+import RevenueChart from './component/RevenueChart/RevenueChart';
 
 const AdminPage = () => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const totalUsers = useSelector(state => state.admin.users ? state.admin.users : 0);
     const totalCourses = useSelector(state => state.course.courses.length);
@@ -21,6 +24,12 @@ const AdminPage = () => {
     const usergoogleRegistrationData = useSelector(state => state.admin.monthlyUsergoogleData || []);
     const courseEnrollmentData = useSelector(state => state.admin.monthlyCourseData || []);
     const revenueData = useSelector(state => state.admin.monthlyRevenueData || []);
+    const courses = useSelector(state => state.course.courses || []);
+
+    const [tabIndex, setTabIndex] = useState(0);
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         dispatch(fetchUsers());
@@ -33,16 +42,40 @@ const AdminPage = () => {
         dispatch(fetchMonthlyRevenueData());
     }, [dispatch]);
 
-    console.log('User Registration Data:', userRegistrationData);
-    console.log('Usergoogle Registration Data:', usergoogleRegistrationData);
+    const handleApproveCourse = (courseId) => {
+        dispatch(approveCourse(courseId));
+    };
+
+    const handleDeleteCourse = (courseId) => {
+        dispatch(deleteCourse(courseId));
+    };
+
+    const filteredCourses = (isReleased) => {
+        return courses.filter(course =>
+            course.isReleased === isReleased &&
+            (course.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                course._id.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+    };
+
+    const handleTabChange = (event, newValue) => {
+        setTabIndex(newValue);
+    };
+
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(parseInt(event.target.value, 10));
+        setPage(0);
+    };
 
     // Chuyển đổi userRegistrationData để phù hợp với cấu trúc data của AreaChart
     const formattedUserRegistrationData = userRegistrationData.map(data => ({
         month: data.month,
         count: data.userCount,
     }));
-
-    console.log('Formatted User Registration Data:', formattedUserRegistrationData);
 
     return (
         <div className={styles.adminPage}>
@@ -109,6 +142,9 @@ const AdminPage = () => {
                 </Grid>
             </Grid>
             <Grid container spacing={3} className={styles.chartsContainer}>
+                <Grid item xs={12}>
+                    <RevenueChart />
+                </Grid>
                 <Grid item xs={12} md={6}>
                     <Card className={styles.chartCard}>
                         <CardContent>
@@ -145,9 +181,75 @@ const AdminPage = () => {
                         </CardContent>
                     </Card>
                 </Grid>
-
-
             </Grid>
+            <Box className={styles.separator}>
+                <Typography variant="body1" className={styles.separatorText}>
+                    Quản lý khóa học
+                </Typography>
+            </Box>
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+                <Tabs value={tabIndex} onChange={handleTabChange} className={styles.tabs}>
+                    <Tab label="Các khóa học chưa duyệt" />
+                    <Tab label="Các khóa học đã duyệt" />
+                </Tabs>
+                <TextField
+                    label="Tìm kiếm khóa học"
+                    variant="outlined"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className={styles.searchInput}
+                />
+            </Box>
+            <TableContainer component={Paper} className={styles.tableContainer}>
+                <Table>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>ID</TableCell>
+                            <TableCell>Name</TableCell>
+                            <TableCell>Description</TableCell>
+                            <TableCell>Category</TableCell>
+                            <TableCell>Price</TableCell>
+                            <TableCell>Author</TableCell>
+                            <TableCell>Url</TableCell>
+                            <TableCell>Action</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {filteredCourses(tabIndex === 1).slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((course) => (
+                            <TableRow key={course._id}>
+                                <TableCell>{course._id}</TableCell>
+                                <TableCell>{course.name}</TableCell>
+                                <TableCell>{course.description}</TableCell>
+                                <TableCell>{course.category}</TableCell>
+                                <TableCell>{course.price}</TableCell>
+                                <TableCell>{course.author}</TableCell>
+                                <TableCell>
+                                    <a href={`/course/${course._id}`}>{course.name}</a>
+                                </TableCell>
+                                <TableCell>
+                                    {tabIndex === 0 ? (
+                                        <>
+                                            <Button onClick={() => handleApproveCourse(course._id)}>Duyệt</Button>
+                                            <Button onClick={() => handleDeleteCourse(course._id)} color="secondary">Xóa</Button>
+                                        </>
+                                    ) : (
+                                        <Button disabled>Đã duyệt</Button>
+                                    )}
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+                <TablePagination
+                    rowsPerPageOptions={[5, 10, 25]}
+                    component="div"
+                    count={filteredCourses(tabIndex === 1).length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </TableContainer>
         </div>
     );
 };

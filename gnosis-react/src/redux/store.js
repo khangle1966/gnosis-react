@@ -12,6 +12,8 @@ import { notesReducer, noteAddReducer } from './reducers/noteReducer';
 import { ratingReducer } from './reducers/ratingReducer';
 import favoriteReducer from './reducers/favoriteReducer';
 import adminReducer from './reducers/adminReducer';
+import { userReducer } from './reducers/userReducer';
+import { userGoogleReducer } from './reducers/userGoogleReducer';
 // Combine reducers để tạo rootReducer
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -28,6 +30,9 @@ const rootReducer = combineReducers({
     ratings: ratingReducer,
     favorite: favoriteReducer,
     admin: adminReducer,
+    user: userReducer,
+    userGoogle: userGoogleReducer,
+
 
 });
 const persistedState = localStorage.getItem('reduxState') ? JSON.parse(localStorage.getItem('reduxState')) : {};

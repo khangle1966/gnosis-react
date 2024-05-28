@@ -181,8 +181,12 @@ export const CourseDetailPage = () => {
     };
 
     const handleLessonClick = (lessonId) => {
-        if (user.uid === courseDetail.authorId) {
+        if (user.uid === courseDetail.authorId)  {
             navigate(`lesson/${lessonId}`);
+        }
+        else if (user.role === "admin") {
+            navigate(`lesson/${lessonId}`);
+
         }
     };
 

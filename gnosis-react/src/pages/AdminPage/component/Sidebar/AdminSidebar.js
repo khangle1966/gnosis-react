@@ -1,11 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Toolbar, Typography } from '@mui/material';
+import { Drawer, List, ListItem, ListItemText, ListItemIcon, Toolbar, Typography, Collapse } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import BookIcon from '@mui/icons-material/Book';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
 import PaymentIcon from '@mui/icons-material/Payment';
+import PersonIcon from '@mui/icons-material/Person';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
 import { styled } from '@mui/material/styles';
 
 const drawerWidth = 240;
@@ -40,6 +43,16 @@ const ListItemTextStyled = styled(ListItemText)(({ theme }) => ({
 }));
 
 const AdminSidebar = () => {
+    const [openUser, setOpenUser] = useState(false);
+    const [openInstructor, setOpenInstructor] = useState(false);
+
+    const handleClickOpenUser = () => {
+        setOpenUser(!openUser);
+    };
+    const handleClickOpenInstructor = () => {
+        setOpenInstructor(!openInstructor);
+    };
+
     return (
         <DrawerStyled
             variant="permanent"
@@ -53,34 +66,67 @@ const AdminSidebar = () => {
                 <NavLinkStyled to="/admin/dashboard">
                     <ListItem button>
                         <ListItemIcon><DashboardIcon style={{ color: '#ffffff' }} /></ListItemIcon>
-                        <ListItemTextStyled primary="Dashboard" />
+                        <ListItemTextStyled primary="Trang chủ" />
                     </ListItem>
                 </NavLinkStyled>
-                <NavLinkStyled to="/admin/instructor-salary">
-                    <ListItem button>
-                        <ListItemIcon><PeopleIcon style={{ color: '#ffffff' }} /></ListItemIcon>
-                        <ListItemTextStyled primary="Instructors" />
-                    </ListItem>
-                </NavLinkStyled>
+                <ListItem button onClick={handleClickOpenUser}>
+                    <ListItemIcon><PersonIcon style={{ color: '#ffffff' }} /></ListItemIcon>
+                    <ListItemTextStyled primary="Quản lý người dùng" />
+                    {openUser ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openUser} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <NavLinkStyled to="/admin/user-list">
+                            <ListItem button style={{ paddingLeft: 32 }}>
+                                <ListItemTextStyled primary="Danh sách người dùng" />
+                            </ListItem>
+                        </NavLinkStyled>
+                        <NavLinkStyled to="/admin/add-user">
+                            <ListItem button style={{ paddingLeft: 32 }}>
+                                <ListItemTextStyled primary="Thêm người dùng" />
+                            </ListItem>
+                        </NavLinkStyled>
+                    </List>
+                </Collapse>
+                <ListItem button onClick={handleClickOpenInstructor}>
+                    <ListItemIcon><PeopleIcon style={{ color: '#ffffff' }} /></ListItemIcon>
+                    <ListItemTextStyled primary="Giảng viên" />
+                    {openInstructor ? <ExpandLess /> : <ExpandMore />}
+                </ListItem>
+                <Collapse in={openInstructor} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <NavLinkStyled to="/admin/instructor-salary">
+                            <ListItem button style={{ paddingLeft: 32 }}>
+                                <ListItemTextStyled primary="Salary" />
+                            </ListItem>
+                        </NavLinkStyled>
+                        <NavLinkStyled to="/admin/instructor-salary">
+                            <ListItem button style={{ paddingLeft: 32 }}>
+                                <ListItemTextStyled primary="Salary-2" />
+                            </ListItem>
+                        </NavLinkStyled>
+                    </List>
+                </Collapse>
+
                 <NavLinkStyled to="/admin/courses">
                     <ListItem button>
                         <ListItemIcon><BookIcon style={{ color: '#ffffff' }} /></ListItemIcon>
-                        <ListItemTextStyled primary="Courses" />
+                        <ListItemTextStyled primary="Khóa học" />
                     </ListItem>
                 </NavLinkStyled>
                 <NavLinkStyled to="/admin/lessons">
                     <ListItem button>
                         <ListItemIcon><MenuBookIcon style={{ color: '#ffffff' }} /></ListItemIcon>
-                        <ListItemTextStyled primary="Lessons" />
+                        <ListItemTextStyled primary="Bài học" />
                     </ListItem>
                 </NavLinkStyled>
                 <NavLinkStyled to="/admin/payments">
                     <ListItem button>
                         <ListItemIcon><PaymentIcon style={{ color: '#ffffff' }} /></ListItemIcon>
-                        <ListItemTextStyled primary="Payments" />
+                        <ListItemTextStyled primary="Thanh toán" />
                     </ListItem>
                 </NavLinkStyled>
-                {/* Add more links as needed */}
+
             </List>
         </DrawerStyled>
     );

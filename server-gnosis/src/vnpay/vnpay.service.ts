@@ -6,7 +6,8 @@ import * as config from 'config';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order } from './order.entity';
-import { LoggerService } from '../logger/logger.service'; // Import LoggerService
+import { LoggerService } from '../logger/logger.service';
+import { Revenue, RevenueDocument } from '../revenue/entities/revenue.entity'; // Import Revenue schema
 
 @Injectable()
 export class VNPayService {
@@ -18,7 +19,8 @@ export class VNPayService {
 
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
-    private readonly loggerService: LoggerService, // Inject LoggerService
+    @InjectModel(Revenue.name) private revenueModel: Model<RevenueDocument>, // Inject Revenue model
+    private readonly loggerService: LoggerService,
   ) { }
 
   async createPaymentUrl(amount: number, bankCode: string, courseIds: string[], userId: string): Promise<string> {
@@ -90,11 +92,28 @@ export class VNPayService {
     this.loggerService.log(`Fetched order details: ${JSON.stringify(orderDetails)}`); // Log thông tin đơn hàng đã lấy
     return orderDetails;
   }
+
   async getAllOrders(): Promise<Order[]> {
     const orders = await this.orderModel.find().exec();
     this.loggerService.log(`Fetched all orders: ${JSON.stringify(orders)}`); // Log tất cả đơn hàng đã lấy
     return orders;
   }
+
+  async recordRevenue(orderId: string, amount: number): Promise<void> {
+    const date = new Date();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear();
+
+    const revenue = new this.revenueModel({
+      month,
+      year,
+      amount,
+    });
+
+    await revenue.save();
+    this.loggerService.log(`Recorded revenue for order ${orderId}: ${JSON.stringify(revenue)}`);
+  }
+
   private sortObject(obj: any): any {
     const sorted: any = {};
     const keys = Object.keys(obj).sort();

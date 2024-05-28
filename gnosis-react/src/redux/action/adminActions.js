@@ -6,6 +6,10 @@ export const FETCH_MONTHLY_REVENUE_DATA = 'FETCH_MONTHLY_REVENUE_DATA';
 
 export const FETCH_MONTHLY_USER_DATA = 'FETCH_MONTHLY_USER_DATA';
 export const FETCH_MONTHLY_USERGOOGLE_DATA = 'FETCH_MONTHLY_USERGOOGLE_DATA';
+
+
+export const FETCH_MONTHLY_REVENUE_SUCCESS = 'FETCH_MONTHLY_REVENUE_SUCCESS';
+export const FETCH_MONTHLY_REVENUE_FAILURE = 'FETCH_MONTHLY_REVENUE_FAILURE';
 export const fetchInstructors = () => async (dispatch) => {
   try {
     const response = await fetch('http://localhost:3000/v1/usergoogle/getintstructor/instructors');
@@ -94,3 +98,4 @@ export const fetchMonthlyRevenueData = () => async dispatch => {
     console.error('Failed to fetch monthly revenue data:', error);
   }
 };
+

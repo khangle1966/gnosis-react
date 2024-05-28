@@ -25,6 +25,8 @@ import BrowseCourseNoLoginPage from './pages/layout/BrowseCourseNoLoginPage/Brow
 import CourseDetailPageNologin from './pages/layout/BrowseCourseNoLoginPage/component/CourseDetailPageNologin/CourseDetailPageNologin';
 import AdminPage from './pages/AdminPage/AdminPage';
 import Admin_InstructorSalary from './pages/AdminPage/component/InstructorSalary/Admin_InstructorSalary';
+import UserManagementPage from './pages/AdminPage/component/UserManagementPage/UserManagementPage';
+import AddUserPage from './pages/AdminPage/component/UserManagementPage/AddUserPage/AddUserPage';
 function App() {
   return (
     <Provider store={store} >
@@ -51,8 +53,14 @@ function App() {
 
           <Route path="/" element={<Adminlayout />}>
 
+            <Route path="/admin" element={<Navigate replace to="/admin/dashboard" />} />
 
             <Route path="/admin/dashboard" element={<AdminPage />} />
+            <Route path="/admin/user-list" element={<UserManagementPage />} />
+            <Route path="/admin/add-user" element={<AddUserPage />} />
+
+
+
             <Route path="/admin/instructor-salary" element={<Admin_InstructorSalary />} />
 
 

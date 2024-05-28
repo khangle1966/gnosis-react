@@ -49,6 +49,10 @@ export class VNPayController {
 
         await this.profileService.addCoursesToUserProfile(userId, courseIds);
         await this.courseService.increaseNumberOfStudents(courseIds);
+
+        const amount = query.vnp_Amount / 100; // Assuming amount is in smallest currency unit (e.g., cents)
+        await this.vnpayService.recordRevenue(orderId, amount); // Ghi nhận doanh thu
+
         res.redirect('http://localhost:4000/home');
       } else {
         this.loggerService.log('Order details not found.');
@@ -59,6 +63,7 @@ export class VNPayController {
       res.redirect('http://localhost:3000/payment-fail');
     }
   }
+
   @Get('order')
   async getAllOrders(): Promise<Order[]> {
     return this.vnpayService.getAllOrders();

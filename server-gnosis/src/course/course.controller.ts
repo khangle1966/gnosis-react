@@ -121,4 +121,18 @@ export class CourseController {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  @Put(':id/approve')
+  async approveCourse(
+    @Param('id') id: string,
+  ): Promise<Course> {
+    try {
+      const updateCourseDto: UpdateCourseDto = { isReleased: true };
+      const course = await this.courseService.update(id, updateCourseDto);
+      return course;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
 }

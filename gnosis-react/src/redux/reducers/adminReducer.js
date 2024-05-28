@@ -1,3 +1,10 @@
+
+import {
+    FETCH_MONTHLY_REVENUE_SUCCESS,
+    FETCH_MONTHLY_REVENUE_FAILURE,
+    // Các action khác
+} from '../action/adminActions';
+
 const initialState = {
     instructors: [],
     salaries: {},
@@ -44,6 +51,16 @@ const adminReducer = (state = initialState, action) => {
             return { ...state, monthlyCourseData: action.payload };
         case 'FETCH_MONTHLY_REVENUE_DATA':
             return { ...state, monthlyRevenueData: action.payload };
+        case FETCH_MONTHLY_REVENUE_SUCCESS:
+            return {
+                ...state,
+                monthlyRevenue: action.payload,
+            };
+        case FETCH_MONTHLY_REVENUE_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            };
         default:
             return state;
     }

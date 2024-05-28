@@ -1,0 +1,70 @@
+.userManagementPage {
+    padding: 20px;
+
+    width: 85vw;
+
+    .header {
+        margin-bottom: 20px;
+        font-weight: bold;
+        font-size: 24px;
+        color: #333;
+    }
+
+    .searchAndExport {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .searchField {
+        width: 70%;
+    }
+
+    .exportButton {
+        background-color: #4caf50;
+        color: white;
+
+        &:hover {
+            background-color: #45a049;
+        }
+    }
+
+    .tabs {
+        margin-bottom: 20px;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .tableContainer {
+        margin-top: 20px;
+        background-color: #fff;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .MuiTableCell-root {
+        text-align: center;
+        padding: 10px;
+    }
+
+    .MuiButton-root {
+        margin: 0 5px;
+        transition: all 0.3s ease;
+
+        &:hover {
+            transform: scale(1.05);
+        }
+    }
+
+    .MuiTableRow-root {
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #f5f5f5;
+        }
+    }
+
+    .MuiTablePagination-root {
+        margin-top: 20px;
+    }
+}

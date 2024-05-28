@@ -43,6 +43,7 @@ const BrowseCoursePage = () => {
 
     useEffect(() => {
         const filtered = courses.filter(course =>
+            course.isReleased && // Lọc theo isReleased
             (activeCategory === 'All' || course.category === activeCategory) &&
             ((course.name && course.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
                 (course.description && course.description.toLowerCase().includes(searchTerm.toLowerCase())))

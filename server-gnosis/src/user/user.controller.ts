@@ -102,4 +102,8 @@ export class UserController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+  @Delete('uid/:uid')
+  async deleteUserByUid(@Param('uid') uid: string): Promise<void> {
+    await this.userService.deleteByUid(uid);
+  }
 }
