@@ -50,8 +50,8 @@ export class VNPayController {
         await this.profileService.addCoursesToUserProfile(userId, courseIds);
         await this.courseService.increaseNumberOfStudents(courseIds);
 
-        const amount = query.vnp_Amount / 100; // Assuming amount is in smallest currency unit (e.g., cents)
-        await this.vnpayService.recordRevenue(orderId, amount); // Ghi nhận doanh thu
+        const amount = query.vnp_Amount / 100;
+        await this.vnpayService.recordRevenue(orderId, amount);
 
         res.redirect('http://localhost:4000/home');
       } else {

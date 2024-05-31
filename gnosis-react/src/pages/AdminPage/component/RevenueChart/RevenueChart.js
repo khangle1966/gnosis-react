@@ -59,7 +59,7 @@ const RevenueChart = () => {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="_id" label={{ value: 'Tháng', position: 'insideBottomRight', offset: 0 }} />
-                    <YAxis label={{ value: 'VNĐ', angle: -90, position: 'insideLeft' }} />
+                    <YAxis label={{ value: 'Doanh thu', angle: -90, position: 'insideLeft' }} />
                     <Tooltip />
                     <Legend verticalAlign="top" height={36} />
                     <Area type="monotone" dataKey="totalRevenue" stroke="#4caf50" fillOpacity={1} fill="url(#colorRevenue)" name="Doanh thu" />

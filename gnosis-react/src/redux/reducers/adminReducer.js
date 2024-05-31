@@ -1,8 +1,21 @@
-
 import {
     FETCH_MONTHLY_REVENUE_SUCCESS,
     FETCH_MONTHLY_REVENUE_FAILURE,
-    // Các action khác
+    FETCH_INSTRUCTORS_SUCCESS,
+    CALCULATE_SALARY_SUCCESS,
+    FETCH_MONTHLY_DATA_SUCCESS,
+    FETCH_USERS,
+    FETCH_ORDERS,
+    FETCH_MONTHLY_USER_DATA,
+    FETCH_MONTHLY_USERGOOGLE_DATA,
+    FETCH_MONTHLY_COURSE_DATA,
+    FETCH_MONTHLY_REVENUE_DATA,
+    FETCH_PROFIT_SUCCESS,
+    FETCH_PROFIT_FAILURE,
+    FETCH_INSTRUCTOR_SALARIES_SUCCESS,
+    FETCH_INSTRUCTOR_SALARIES_FAILURE,
+    PAY_SALARIES_SUCCESS,
+    PAY_SALARIES_FAILURE
 } from '../action/adminActions';
 
 const initialState = {
@@ -11,19 +24,22 @@ const initialState = {
     monthlyData: {},
     users: 0,
     orders: [],
-
     monthlyUserData: [],
     monthlyUsergoogleData: [],
     monthlyCourseData: [],
     monthlyRevenueData: [],
+    monthlyRevenue: [],
+    profit: 0,
+    instructorSalaries: [],
+    error: null
 };
 
 const adminReducer = (state = initialState, action) => {
     switch (action.type) {
-        case 'FETCH_INSTRUCTORS_SUCCESS':
-            console.log('Reducer Instructors:', action.payload); // Kiểm tra dữ liệu trong reducer
+        case FETCH_INSTRUCTORS_SUCCESS:
+            console.log('Reducer Instructors:', action.payload);
             return { ...state, instructors: action.payload };
-        case 'CALCULATE_SALARY_SUCCESS':
+        case CALCULATE_SALARY_SUCCESS:
             return {
                 ...state,
                 salaries: {
@@ -31,7 +47,7 @@ const adminReducer = (state = initialState, action) => {
                     [action.payload.uid]: action.payload.salary,
                 },
             };
-        case 'FETCH_MONTHLY_DATA_SUCCESS':
+        case FETCH_MONTHLY_DATA_SUCCESS:
             return {
                 ...state,
                 monthlyData: {
@@ -39,24 +55,52 @@ const adminReducer = (state = initialState, action) => {
                     [action.payload.uid]: action.payload.data,
                 },
             };
-        case 'FETCH_USERS':
+        case FETCH_USERS:
             return { ...state, users: action.payload };
-        case 'FETCH_ORDERS':
+        case FETCH_ORDERS:
             return { ...state, orders: action.payload };
-        case 'FETCH_MONTHLY_USER_DATA':
+        case FETCH_MONTHLY_USER_DATA:
             return { ...state, monthlyUserData: action.payload };
-        case 'FETCH_MONTHLY_USERGOOGLE_DATA':
+        case FETCH_MONTHLY_USERGOOGLE_DATA:
             return { ...state, monthlyUsergoogleData: action.payload };
-        case 'FETCH_MONTHLY_COURSE_DATA':
+        case FETCH_MONTHLY_COURSE_DATA:
             return { ...state, monthlyCourseData: action.payload };
-        case 'FETCH_MONTHLY_REVENUE_DATA':
-            return { ...state, monthlyRevenueData: action.payload };
         case FETCH_MONTHLY_REVENUE_SUCCESS:
             return {
                 ...state,
                 monthlyRevenue: action.payload,
             };
         case FETCH_MONTHLY_REVENUE_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            };
+        case FETCH_PROFIT_SUCCESS:
+            return {
+                ...state,
+                profit: action.payload,
+            };
+        case FETCH_PROFIT_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            };
+        case FETCH_INSTRUCTOR_SALARIES_SUCCESS:
+            return {
+                ...state,
+                instructorSalaries: action.payload,
+            };
+        case FETCH_INSTRUCTOR_SALARIES_FAILURE:
+            return {
+                ...state,
+                error: action.payload,
+            };
+        case PAY_SALARIES_SUCCESS:
+            return {
+                ...state,
+                salaries: {},
+            };
+        case PAY_SALARIES_FAILURE:
             return {
                 ...state,
                 error: action.payload,

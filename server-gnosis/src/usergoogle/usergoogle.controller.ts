@@ -104,11 +104,7 @@ export class UsergoogleController {
     return this.usergoogleService.findAllInstructors();
   }
 
-  @Get('calculate-salary/:uid')
-  async calculateSalary(@Param('uid') uid: string) {
-    const salary = await this.usergoogleService.calculateSalary(uid);
-    return { uid, salary };
-  }
+
   @Get('monthly-data/:uid')
   async getMonthlyData(@Param('uid') uid: string) {
     return this.usergoogleService.getMonthlyData(uid);

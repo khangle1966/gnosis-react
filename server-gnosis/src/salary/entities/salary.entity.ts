@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
-export type RevenueDocument = Revenue & Document;
+export type SalaryDocument = Salary & Document;
 
 @Schema({ timestamps: true })
-export class Revenue {
+export class Salary {
   @Prop({ required: true })
-  orderId: string;
+  userId: string;
 
   @Prop({ required: true })
   amount: number;
@@ -18,12 +18,11 @@ export class Revenue {
   year: number;
 
   @Prop({ required: true })
-  authorId: string;
+  role: string;
 
   @Prop({ required: true })
   courseId: string;
 
-
 }
 
-export const RevenueSchema = SchemaFactory.createForClass(Revenue);
+export const SalarySchema = SchemaFactory.createForClass(Salary);

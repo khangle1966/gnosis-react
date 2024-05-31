@@ -100,11 +100,7 @@ const AdminSidebar = () => {
                                 <ListItemTextStyled primary="Salary" />
                             </ListItem>
                         </NavLinkStyled>
-                        <NavLinkStyled to="/admin/instructor-salary">
-                            <ListItem button style={{ paddingLeft: 32 }}>
-                                <ListItemTextStyled primary="Salary-2" />
-                            </ListItem>
-                        </NavLinkStyled>
+
                     </List>
                 </Collapse>
 

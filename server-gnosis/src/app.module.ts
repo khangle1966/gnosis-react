@@ -25,6 +25,8 @@ import { VnpayModule } from './vnpay/vnpay.module';
 import { LoggerModule } from './logger/logger.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { RevenueModule } from './revenue/revenue.module';
+import { SalaryModule } from './salary/salary.module';
+
 
 
 
@@ -57,6 +59,8 @@ import { RevenueModule } from './revenue/revenue.module';
     LoggerModule,
     FavoritesModule,
     RevenueModule,
+    SalaryModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -7,7 +7,9 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Order } from './order.entity';
 import { LoggerService } from '../logger/logger.service';
-import { Revenue, RevenueDocument } from '../revenue/entities/revenue.entity'; // Import Revenue schema
+import { Revenue, RevenueDocument } from '../revenue/entities/revenue.entity';
+import { Course } from '../course/entities/course.entity';
+import { SalaryService } from '../salary/salary.service';
 
 @Injectable()
 export class VNPayService {
@@ -19,14 +21,16 @@ export class VNPayService {
 
   constructor(
     @InjectModel(Order.name) private orderModel: Model<Order>,
-    @InjectModel(Revenue.name) private revenueModel: Model<RevenueDocument>, // Inject Revenue model
+    @InjectModel(Revenue.name) private revenueModel: Model<RevenueDocument>,
+    @InjectModel(Course.name) private courseModel: Model<Course>,
     private readonly loggerService: LoggerService,
+    private readonly salaryService: SalaryService,
   ) { }
 
   async createPaymentUrl(amount: number, bankCode: string, courseIds: string[], userId: string): Promise<string> {
     const date = new Date();
     const createDate = moment(date).format('YYYYMMDDHHmmss');
-    const ipAddr = '127.0.0.1'; // Replace with actual IP address
+    const ipAddr = '127.0.0.1';
     const orderId = moment(date).format('DDHHmmss');
     const locale = 'vn';
     const currCode = 'VND';
@@ -48,8 +52,8 @@ export class VNPayService {
       vnp_Params['vnp_BankCode'] = bankCode;
     }
 
-    // Save the order details with userId and courseIds
-    await this.createOrder(orderId, userId, courseIds);
+    const courseDetails = await this.getCourseDetails(courseIds, amount);
+    await this.createOrder(orderId, userId, courseIds, amount, courseDetails);
 
     vnp_Params = this.sortObject(vnp_Params);
 
@@ -59,7 +63,7 @@ export class VNPayService {
     vnp_Params['vnp_SecureHash'] = signed;
     const paymentUrl = this.vnp_Url + '?' + qs.stringify(vnp_Params, { encode: false });
 
-    this.loggerService.log(`Payment URL: ${paymentUrl}`); // Log URL thanh toán
+    this.loggerService.log(`Payment URL: ${paymentUrl}`);
 
     return paymentUrl;
   }
@@ -81,37 +85,70 @@ export class VNPayService {
     return secureHash === signed;
   }
 
-  async createOrder(orderId: string, userId: string, courseIds: string[]): Promise<void> {
-    const newOrder = new this.orderModel({ orderId, userId, courseIds });
+  async getAuthorIdsFromCourseIds(courseIds: string[]): Promise<string[]> {
+    const courses = await this.courseModel.find({ _id: { $in: courseIds } });
+    const authorIds = courses.map(course => course.authorId);
+    return [...new Set(authorIds)]; // Loại bỏ các authorId trùng lặp
+  }
+  async createOrder(
+    orderId: string,
+    userId: string,
+    courseIds: string[],
+    amount: number,
+    courseDetails: { courseId: string; authorId: string; courseName: string; amount: number }[]
+  ): Promise<void> {
+    const newOrder = new this.orderModel({ orderId, userId, courseIds, amount, courseDetails });
     await newOrder.save();
-    this.loggerService.log(`Created order: ${JSON.stringify(newOrder)}`); // Log thông tin đơn hàng đã tạo
+    this.loggerService.log(`Created order: ${JSON.stringify(newOrder)}`);
   }
 
   async getOrderDetails(orderId: string): Promise<Order> {
     const orderDetails = await this.orderModel.findOne({ orderId }).exec();
-    this.loggerService.log(`Fetched order details: ${JSON.stringify(orderDetails)}`); // Log thông tin đơn hàng đã lấy
+    this.loggerService.log(`Fetched order details: ${JSON.stringify(orderDetails)}`);
     return orderDetails;
+  }
+
+  async getCourseDetails(courseIds: string[], totalAmount: number): Promise<{ courseId: string; authorId: string; courseName: string; amount: number }[]> {
+    const courses = await this.courseModel.find({ _id: { $in: courseIds } });
+    const totalCoursePrices = courses.reduce((sum, course) => sum + course.price, 0);
+
+    return courses.map(course => ({
+      courseId: course._id.toString(),
+      authorId: course.authorId,
+      courseName: course.name, // Đảm bảo thêm trường courseName ở đây
+      amount: (course.price / totalCoursePrices) * totalAmount,
+    }));
   }
 
   async getAllOrders(): Promise<Order[]> {
     const orders = await this.orderModel.find().exec();
-    this.loggerService.log(`Fetched all orders: ${JSON.stringify(orders)}`); // Log tất cả đơn hàng đã lấy
+    this.loggerService.log(`Fetched all orders: ${JSON.stringify(orders)}`);
     return orders;
   }
 
   async recordRevenue(orderId: string, amount: number): Promise<void> {
+    const orderDetails = await this.getOrderDetails(orderId);
+    if (!orderDetails) return;
+
     const date = new Date();
     const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
-    const revenue = new this.revenueModel({
-      month,
-      year,
-      amount,
-    });
+    for (const detail of orderDetails.courseDetails) {
+      const revenue = new this.revenueModel({
+        orderId,
+        amount: detail.amount,
+        month,
+        year,
+        authorId: detail.authorId,
+        courseId: detail.courseId,
+      });
 
-    await revenue.save();
-    this.loggerService.log(`Recorded revenue for order ${orderId}: ${JSON.stringify(revenue)}`);
+      await revenue.save();
+      this.loggerService.log(`Recorded revenue for order ${orderId} and course ${detail.courseId}: ${JSON.stringify(revenue)}`);
+
+      await this.salaryService.calculateSalary(orderId, detail.authorId, detail.courseId,  detail.amount, date);
+    }
   }
 
   private sortObject(obj: any): any {

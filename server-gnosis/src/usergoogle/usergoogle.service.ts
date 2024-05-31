@@ -150,28 +150,4 @@ export class UsergoogleService {
     return instructorData;
   }
 
-  async calculateSalary(uid: string): Promise<number> {
-    const user = await this.usergoogleModel.findOne({ uid }).exec();
-    if (!user) {
-      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-
-    const courses = await this.courseModel.find({ authorId: uid }).exec();
-    let totalEarnings = 0;
-
-    courses.forEach(course => {
-      totalEarnings += course.numberOfStudents * course.price;
-    });
-
-    let salaryPercentage = 0.55; // Default for 'new'
-    if (user.instructorLevel === 'medium') {
-      salaryPercentage = 0.65;
-    } else if (user.instructorLevel === 'master') {
-      salaryPercentage = 0.7;
-    }
-
-    // Tính lương dựa trên phần trăm thu nhập
-    return totalEarnings * salaryPercentage;
-  }
-
 }
