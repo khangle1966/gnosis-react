@@ -103,6 +103,16 @@ const AdminSidebar = () => {
 
                     </List>
                 </Collapse>
+                <Collapse in={openInstructor} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                        <NavLinkStyled to="/admin/instructor-payment">
+                            <ListItem button style={{ paddingLeft: 32 }}>
+                                <ListItemTextStyled primary="Payment" />
+                            </ListItem>
+                        </NavLinkStyled>
+
+                    </List>
+                </Collapse>
 
                 <NavLinkStyled to="/admin/courses">
                     <ListItem button>

@@ -20,13 +20,13 @@ import CartPage from './pages/layout/Cart/cart';
 import InstructorsPage from './pages/layout/InstructorsPage/InstructorsPage';
 import HomePage from './pages/layout/HomePage/Homepage';
 import LessonPage from './pages/layout/BrowseCoursePage/component/LessonPage/LessonPage';
-import PaymentPage from './pages/layout/Cart/component/payment';
 import BrowseCourseNoLoginPage from './pages/layout/BrowseCourseNoLoginPage/BrowseCourseNoLoginPage';
 import CourseDetailPageNologin from './pages/layout/BrowseCourseNoLoginPage/component/CourseDetailPageNologin/CourseDetailPageNologin';
 import AdminPage from './pages/AdminPage/AdminPage';
 import Admin_InstructorSalary from './pages/AdminPage/component/InstructorSalary/Admin_InstructorSalary';
 import UserManagementPage from './pages/AdminPage/component/UserManagementPage/UserManagementPage';
 import AddUserPage from './pages/AdminPage/component/UserManagementPage/AddUserPage/AddUserPage';
+import PaymentPage from './pages/AdminPage/component/InstructorSalary/PaymentPage/PaymentPage';
 function App() {
   return (
     <Provider store={store} >
@@ -40,7 +40,6 @@ function App() {
             <Route path="/profile" element={< ProfilePage />} />
             <Route path="/cart" element={<CartPage />} />
             <Route path="/instructor" element={<InstructorsPage />} />
-            <Route path="/payment" element={<PaymentPage />} />
           </Route>
           <Route path="/" element={<LayoutNologin />}>
 
@@ -62,6 +61,7 @@ function App() {
 
 
             <Route path="/admin/instructor-salary" element={<Admin_InstructorSalary />} />
+            <Route path="/admin/instructor-payment" element={<PaymentPage />} />
 
 
           </Route>

@@ -33,6 +33,10 @@ const RevenueChart = () => {
         return fullData;
     };
 
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+    };
+
     return (
         <Box className={styles.revenueChartContainer}>
             <Select
@@ -59,8 +63,11 @@ const RevenueChart = () => {
                     </defs>
                     <CartesianGrid strokeDasharray="3 3" />
                     <XAxis dataKey="_id" label={{ value: 'Tháng', position: 'insideBottomRight', offset: 0 }} />
-                    <YAxis label={{ value: 'Doanh thu', angle: -90, position: 'insideLeft' }} />
-                    <Tooltip />
+                    <YAxis
+                        label={{ value: 'Doanh thu', angle: -90, position: 'insideLeft' }}
+                        tickFormatter={formatCurrency}
+                    />
+                    <Tooltip formatter={(value) => formatCurrency(value)} />
                     <Legend verticalAlign="top" height={36} />
                     <Area type="monotone" dataKey="totalRevenue" stroke="#4caf50" fillOpacity={1} fill="url(#colorRevenue)" name="Doanh thu" />
                 </AreaChart>

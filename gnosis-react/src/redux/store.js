@@ -14,6 +14,7 @@ import favoriteReducer from './reducers/favoriteReducer';
 import adminReducer from './reducers/adminReducer';
 import { userReducer } from './reducers/userReducer';
 import { userGoogleReducer } from './reducers/userGoogleReducer';
+import salaryReducer from './reducers/salaryReducer';
 // Combine reducers để tạo rootReducer
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -32,6 +33,7 @@ const rootReducer = combineReducers({
     admin: adminReducer,
     user: userReducer,
     userGoogle: userGoogleReducer,
+    salary: salaryReducer,
 
 
 });

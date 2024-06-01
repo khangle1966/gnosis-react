@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers, fetchOrders, fetchInstructors, fetchMonthlyUserData, fetchMonthlyUsergoogleData, fetchMonthlyCourseData, fetchMonthlyRevenueData } from '../../redux/action/adminActions';
+import { fetchUsers, fetchOrders, fetchInstructors, fetchMonthlyUserData, fetchMonthlyUsergoogleData, fetchMonthlyCourseData } from '../../redux/action/adminActions';
 import { fetchCourses, approveCourse, deleteCourse } from '../../redux/action/courseActions';
 import { Card, CardContent, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Tabs, Tab, TablePagination, TextField } from '@mui/material';
 import PeopleIcon from '@mui/icons-material/People';
@@ -23,7 +23,6 @@ const AdminPage = () => {
     const userRegistrationData = useSelector(state => state.admin.monthlyUserData || []);
     const usergoogleRegistrationData = useSelector(state => state.admin.monthlyUsergoogleData || []);
     const courseEnrollmentData = useSelector(state => state.admin.monthlyCourseData || []);
-    const revenueData = useSelector(state => state.admin.monthlyRevenueData || []);
     const courses = useSelector(state => state.course.courses || []);
 
     const [tabIndex, setTabIndex] = useState(0);
@@ -39,7 +38,6 @@ const AdminPage = () => {
         dispatch(fetchMonthlyUserData());
         dispatch(fetchMonthlyUsergoogleData());
         dispatch(fetchMonthlyCourseData());
-        dispatch(fetchMonthlyRevenueData());
     }, [dispatch]);
 
     const handleApproveCourse = (courseId) => {
@@ -71,7 +69,6 @@ const AdminPage = () => {
         setPage(0);
     };
 
-    // Chuyển đổi userRegistrationData để phù hợp với cấu trúc data của AreaChart
     const formattedUserRegistrationData = userRegistrationData.map(data => ({
         month: data.month,
         count: data.userCount,
@@ -153,11 +150,17 @@ const AdminPage = () => {
                             </Typography>
                             <ResponsiveContainer width="100%" height={300}>
                                 <AreaChart data={formattedUserRegistrationData}>
+                                    <defs>
+                                        <linearGradient id="colorUser" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#8884d8" stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor="#8884d8" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="month" />
                                     <YAxis />
                                     <Tooltip />
-                                    <Area type="monotone" dataKey="count" stroke="#8884d8" fill="#8884d8" />
+                                    <Area type="monotone" dataKey="count" stroke="#8884d8" fillOpacity={1} fill="url(#colorUser)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </CardContent>
@@ -171,11 +174,17 @@ const AdminPage = () => {
                             </Typography>
                             <ResponsiveContainer width="100%" height={300}>
                                 <AreaChart data={usergoogleRegistrationData}>
+                                    <defs>
+                                        <linearGradient id="colorUserGoogle" x1="0" y1="0" x2="0" y2="1">
+                                            <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8} />
+                                            <stop offset="95%" stopColor="#82ca9d" stopOpacity={0} />
+                                        </linearGradient>
+                                    </defs>
                                     <CartesianGrid strokeDasharray="3 3" />
                                     <XAxis dataKey="month" />
                                     <YAxis />
                                     <Tooltip />
-                                    <Area type="monotone" dataKey="count" stroke="#82ca9d" fill="#82ca9d" />
+                                    <Area type="monotone" dataKey="count" stroke="#82ca9d" fillOpacity={1} fill="url(#colorUserGoogle)" />
                                 </AreaChart>
                             </ResponsiveContainer>
                         </CardContent>

@@ -3,15 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Salary, SalaryDocument } from './entities/salary.entity';
 import { Usergoogle, UserDocument } from '../usergoogle/entities/usergoogle.entity';
+import { LoggerService } from '../logger/logger.service'; // Import LoggerService
 
 @Injectable()
 export class SalaryService {
   constructor(
     @InjectModel(Salary.name) private salaryModel: Model<SalaryDocument>,
     @InjectModel(Usergoogle.name) private userModel: Model<UserDocument>,
-  ) {}
+    private readonly loggerService: LoggerService, // Inject LoggerService
+  ) { }
 
-  async calculateSalary(orderId: string, authorId: string, courseId: string,  amount: number, date: Date): Promise<void> {
+  async calculateSalary(orderId: string, authorId: string, courseId: string, amount: number, date: Date): Promise<void> {
     const user = await this.userModel.findOne({ uid: authorId });
     if (!user) {
       throw new Error('User not found');
@@ -44,7 +46,6 @@ export class SalaryService {
       year,
       role: 'instructor',
       courseId,
-      
     });
 
     await instructorSalary.save();
@@ -56,21 +57,111 @@ export class SalaryService {
       year,
       role: 'admin',
       courseId,
-     
     });
 
     await adminSalary.save();
+
+    this.loggerService.log(`Calculated salary for order ${orderId}, author ${authorId}, course ${courseId}`);
   }
 
   async findAll(): Promise<Salary[]> {
-    return this.salaryModel.find().exec();
+    this.loggerService.log('Fetching all salaries');
+    const result = await this.salaryModel.find().exec();
+    this.loggerService.log(`Found all salaries: ${JSON.stringify(result)}`);
+    return result;
   }
 
   async findByUserId(userId: string): Promise<Salary[]> {
-    return this.salaryModel.find({ userId }).exec();
+    this.loggerService.log(`Fetching salaries for user ${userId}`);
+    const result = await this.salaryModel.find({ userId }).exec();
+    this.loggerService.log(`Found salaries for user ${userId}: ${JSON.stringify(result)}`);
+    return result;
   }
 
   async findByMonthAndYear(month: number, year: number): Promise<Salary[]> {
-    return this.salaryModel.find({ month, year }).exec();
+    this.loggerService.log(`Fetching salaries for month ${month} and year ${year}`);
+    const result = await this.salaryModel.find({ month, year }).exec();
+    this.loggerService.log(`Found salaries for month ${month} and year ${year}: ${JSON.stringify(result)}`);
+    return result;
+  }
+
+  async getTotalInstructorSalary(): Promise<{ month: number, year: number, total: number }[]> {
+    this.loggerService.log('Starting getTotalInstructorSalary');
+    const result = await this.salaryModel.aggregate([
+      { $match: { role: 'instructor' } },
+      {
+        $group: {
+          _id: { month: "$month", year: "$year" },
+          total: { $sum: '$amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id.month",
+          year: "$_id.year",
+          total: 1
+        }
+      },
+      {
+        $sort: { year: 1, month: 1 }
+      }
+    ]);
+    this.loggerService.log(`getTotalInstructorSalary aggregation pipeline result: ${JSON.stringify(result)}`);
+    return result;
+  }
+
+  async getTotalAdminSalary(): Promise<{ month: number, year: number, total: number }[]> {
+    this.loggerService.log('Starting getTotalAdminSalary');
+    const result = await this.salaryModel.aggregate([
+      { $match: { role: 'admin' } },
+      {
+        $group: {
+          _id: { month: "$month", year: "$year" },
+          total: { $sum: '$amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id.month",
+          year: "$_id.year",
+          total: 1
+        }
+      },
+      {
+        $sort: { year: 1, month: 1 }
+      }
+    ]);
+    this.loggerService.log(`getTotalAdminSalary aggregation pipeline result: ${JSON.stringify(result)}`);
+    return result;
+  }
+
+  async getTotalInstructorSalaryById(instructorId: string): Promise<{ month: number, year: number, total: number }[]> {
+    this.loggerService.log(`Starting getTotalInstructorSalaryById for instructor ${instructorId}`);
+    const result = await this.salaryModel.aggregate([
+      { $match: { userId: instructorId, role: 'instructor' } },
+      {
+        $group: {
+          _id: { month: "$month", year: "$year" },
+          total: { $sum: '$amount' }
+        }
+      },
+      {
+        $project: {
+          _id: 0,
+          month: "$_id.month",
+          year: "$_id.year",
+          total: 1
+        }
+      },
+      {
+        $sort: { year: 1, month: 1 }
+      }
+    ]);
+    this.loggerService.log(`getTotalInstructorSalaryById aggregation pipeline result: ${JSON.stringify(result)}`);
+    return result;
   }
 }
+
+export default SalaryService;
