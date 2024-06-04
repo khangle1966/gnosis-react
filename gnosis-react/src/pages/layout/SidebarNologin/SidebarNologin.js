@@ -3,18 +3,14 @@ import { Link } from 'react-router-dom';
 import styles from './SidebarNologin.module.scss'; // SCSS module cho styles
 import logoImage from '../../../assets/images/Gnosis.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
-import { faHome, faBook, faUser, faShoppingCart, faCog, faSignOut, faBars } from '@fortawesome/free-solid-svg-icons';
+
+import { faHome, faBook, faUser, faCog, faBars } from '@fortawesome/free-solid-svg-icons';
 
 const SidebarNologin = () => {
     const sidebarRef = useRef(null);
 
 
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
     const [isOpen, setIsOpen] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 

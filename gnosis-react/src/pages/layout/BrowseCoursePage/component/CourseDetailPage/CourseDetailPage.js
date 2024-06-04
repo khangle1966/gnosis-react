@@ -10,7 +10,7 @@ import { addToCart } from '../../../../../redux/action/cartActions';  // Import 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { updateChapterOrder } from '../../../../../redux/action/chapterActions';
 import { ObjectId } from 'bson';
-import { faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import {  faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn đã import LessonModal đúng
@@ -27,11 +27,10 @@ export const CourseDetailPage = () => {
     const navigate = useNavigate();
 
     const dispatch = useDispatch();
-    const { courseDetail, loading: loadingCourse, error: errorCourse } = useSelector(state => state.courseDetail);
-    const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
-    const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail || { chapters: [] });
+    const { courseDetail, loading: loadingCourse } = useSelector(state => state.courseDetail);
+    const { lessons, loading: loadingLessons } = useSelector(state => state.lessonDetail);
+    const { chapters, loadingChapters } = useSelector(state => state.chapterDetail || { chapters: [] });
 
-    const { rating } = courseDetail;
 
     const { user } = useSelector(state => state.auth);
     const { profile } = useSelector(state => state.profile);
@@ -181,7 +180,7 @@ export const CourseDetailPage = () => {
     };
 
     const handleLessonClick = (lessonId) => {
-        if (user.uid === courseDetail.authorId)  {
+        if (user.uid === courseDetail.authorId) {
             navigate(`lesson/${lessonId}`);
         }
         else if (user.role === "admin") {

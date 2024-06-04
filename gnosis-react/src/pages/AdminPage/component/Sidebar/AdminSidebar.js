@@ -103,35 +103,10 @@ const AdminSidebar = () => {
 
                     </List>
                 </Collapse>
-                <Collapse in={openInstructor} timeout="auto" unmountOnExit>
-                    <List component="div" disablePadding>
-                        <NavLinkStyled to="/admin/instructor-payment">
-                            <ListItem button style={{ paddingLeft: 32 }}>
-                                <ListItemTextStyled primary="Payment" />
-                            </ListItem>
-                        </NavLinkStyled>
 
-                    </List>
-                </Collapse>
 
-                <NavLinkStyled to="/admin/courses">
-                    <ListItem button>
-                        <ListItemIcon><BookIcon style={{ color: '#ffffff' }} /></ListItemIcon>
-                        <ListItemTextStyled primary="Khóa học" />
-                    </ListItem>
-                </NavLinkStyled>
-                <NavLinkStyled to="/admin/lessons">
-                    <ListItem button>
-                        <ListItemIcon><MenuBookIcon style={{ color: '#ffffff' }} /></ListItemIcon>
-                        <ListItemTextStyled primary="Bài học" />
-                    </ListItem>
-                </NavLinkStyled>
-                <NavLinkStyled to="/admin/payments">
-                    <ListItem button>
-                        <ListItemIcon><PaymentIcon style={{ color: '#ffffff' }} /></ListItemIcon>
-                        <ListItemTextStyled primary="Thanh toán" />
-                    </ListItem>
-                </NavLinkStyled>
+
+
 
             </List>
         </DrawerStyled>

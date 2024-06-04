@@ -26,7 +26,7 @@ export const LessonPage = () => {
     const dispatch = useDispatch();
     const [expanded, setExpanded] = useState({});
     const { videoURL, loading, error } = useSelector(state => state.uploadVideo);
-    const { courseDetail, loading: courseLoading, error: courseError } = useSelector(state => state.courseDetail);
+    const { courseDetail, loading: courseLoading } = useSelector(state => state.courseDetail);
     const { user } = useSelector(state => state.auth);
     const userId = user.uid;
     const [currentTime, setCurrentTime] = useState(0);
@@ -38,13 +38,13 @@ export const LessonPage = () => {
     const [activeSection, setActiveSection] = useState('overview');
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showNoteViewer, setShowNoteViewer] = useState(false);
-    const [currentNote, setCurrentNote] = useState('');
+    const [currentNote] = useState('');
     const [playing, setPlaying] = useState(true);
     const [timeToSeek, setTimeToSeek] = useState(null);
     const [playerReady, setPlayerReady] = useState(false);
     const [key, setKey] = useState(0);
     const { lesson, loading: lessonLoading, error: lessonError } = useSelector(state => state.lessonDetail);
-    const { notes, loading: loadingnotes, error: errornotes } = useSelector(state => state.notesData);
+    const { notes } = useSelector(state => state.notesData);
     const [showRatingModal, setShowRatingModal] = useState(false);
     const { ratings } = useSelector(state => state.ratings);
     const [userNames, setUserNames] = useState({}); // State to store user names

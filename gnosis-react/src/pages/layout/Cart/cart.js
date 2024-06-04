@@ -11,7 +11,7 @@ const CartPage = () => {
     const cartItems = useSelector(state => state.cart.cartItems);
     const { profile, loading: profileLoading } = useSelector(state => state.profile);
     const { user } = useSelector(state => state.auth);
-    const [notification, setNotification] = useState({ show: false, message: '' });
+    const [notification] = useState({ show: false, message: '' });
     const [searchTerm, setSearchTerm] = useState('');
     const [filteredItems, setFilteredItems] = useState(cartItems);
 

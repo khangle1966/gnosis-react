@@ -6,8 +6,11 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { GoogleOAuthProvider } from '@react-oauth/google';
-
+import { Buffer } from 'buffer';
+import process from 'process';
 const root = ReactDOM.createRoot(document.getElementById('root'));
+window.Buffer = Buffer;
+window.process = process;
 root.render(
   <Provider store={store}> {/* Sử dụng Provider để bao bọc App và GoogleOAuthProvider */}
     <GoogleOAuthProvider clientId="840218405895-07abtcjiasttgjuidc5rdjt5nlh667d4.apps.googleusercontent.com">

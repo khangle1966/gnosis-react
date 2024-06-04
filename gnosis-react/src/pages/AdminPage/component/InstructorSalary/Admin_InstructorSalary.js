@@ -7,13 +7,13 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContai
 import PeopleIcon from '@mui/icons-material/People';
 import BookIcon from '@mui/icons-material/Book';
 import CheckIcon from '@mui/icons-material/Check';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 import styles from './Admin_InstructorSalary.module.scss';
 
 const Admin_InstructorSalary = () => {
     const dispatch = useDispatch();
     const instructors = useSelector(state => state.admin.instructors);
-    const instructorSalary = useSelector(state => state.salary.instructorSalary);
     const adminSalary = useSelector(state => state.salary.adminSalary);
     const instructorsSalary = useSelector(state => state.salary.instructorsSalary);
     const payments = useSelector(state => state.salary.payments || []); // đảm bảo payments là mảng trống nếu không có dữ liệu
@@ -126,21 +126,32 @@ const Admin_InstructorSalary = () => {
     };
 
 
-    const handleExportToExcel = () => {
+
+    const handleExportToExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Salary Data');
+
+        worksheet.columns = [
+            { header: 'Tháng', key: 'month', width: 10 },
+            { header: 'Lương giảng viên', key: 'total', width: 30 },
+            { header: 'Đã thanh toán', key: 'paid', width: 20 },
+        ];
+
         const data = Array.from({ length: 12 }, (_, index) => {
             const month = index + 1;
             const salaryData = salaries.find(salary => salary.month === month) || { total: 0 };
             return {
-                Month: month,
-                Total: salaryData.total,
-                Paid: isMonthPaid(month) ? 'Yes' : 'No'
+                month,
+                total: salaryData.total,
+                paid: isMonthPaid(month) ? 'Yes' : 'No'
             };
         });
 
-        const ws = XLSX.utils.json_to_sheet(data);
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, ws, 'Salary Data');
-        XLSX.writeFile(wb, `SalaryData_${selectedInstructor ? selectedInstructor.name : 'Instructor'}_${selectedYear}.xlsx`);
+        worksheet.addRows(data);
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, `SalaryData_${selectedInstructor ? selectedInstructor.name : 'Instructor'}_${selectedYear}.xlsx`);
     };
 
     return (
@@ -257,7 +268,7 @@ const Admin_InstructorSalary = () => {
                 <Grid item xs={12}>
                     <Box className={styles.separator}>
                         <Typography variant="body1" className={styles.separatorText}>
-                            Chi tiết lương giảng viên
+                            Chi tiết lương giảng viên {instructorInfo.name}
                         </Typography>
                     </Box>
                     <TableContainer component={Paper} className={styles.tableContainer}>

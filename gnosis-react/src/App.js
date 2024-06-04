@@ -26,7 +26,6 @@ import AdminPage from './pages/AdminPage/AdminPage';
 import Admin_InstructorSalary from './pages/AdminPage/component/InstructorSalary/Admin_InstructorSalary';
 import UserManagementPage from './pages/AdminPage/component/UserManagementPage/UserManagementPage';
 import AddUserPage from './pages/AdminPage/component/UserManagementPage/AddUserPage/AddUserPage';
-import PaymentPage from './pages/AdminPage/component/InstructorSalary/PaymentPage/PaymentPage';
 function App() {
   return (
     <Provider store={store} >
@@ -61,7 +60,6 @@ function App() {
 
 
             <Route path="/admin/instructor-salary" element={<Admin_InstructorSalary />} />
-            <Route path="/admin/instructor-payment" element={<PaymentPage />} />
 
 
           </Route>

@@ -5,7 +5,9 @@ import { fetchUserGoogle, deleteUserGoogle, updateUserGoogle } from '../../../..
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Typography, Tabs, Tab, Box, TablePagination, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DownloadIcon from '@mui/icons-material/GetApp';
-import * as XLSX from 'xlsx';
+import ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
+
 import styles from './UserManagementPage.module.scss';
 
 const UserManagementPage = () => {
@@ -67,12 +69,36 @@ const UserManagementPage = () => {
     const filteredUsers = filterUsers(users);
     const filteredUserGoogle = filterUsers(userGoogle);
 
-    const handleExportExcel = () => {
+    const handleExportExcel = async () => {
         const userList = tabIndex === 0 ? filteredUsers : filteredUserGoogle;
-        const worksheet = XLSX.utils.json_to_sheet(userList);
-        const workbook = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(workbook, worksheet, 'Users');
-        XLSX.writeFile(workbook, 'users.xlsx');
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Users');
+
+        worksheet.columns = [
+            { header: 'STT', key: 'stt', width: 10 },
+            { header: 'Email', key: 'email', width: 30 },
+            { header: 'Họ và tên', key: 'name', width: 30 },
+            { header: 'Số điện thoại', key: 'phone', width: 20 },
+            { header: 'Ngày sinh', key: 'dateOfBirth', width: 15 },
+            { header: 'Giới tính', key: 'gender', width: 10 },
+            { header: 'Quyền', key: 'role', width: 10 }
+        ];
+
+        userList.forEach((user, index) => {
+            worksheet.addRow({
+                stt: index + 1,
+                email: user.email,
+                name: user.name,
+                phone: user.phone || 'N/A',
+                dateOfBirth: new Date(user.dateOfBirth).toLocaleDateString(),
+                gender: user.gender,
+                role: user.role
+            });
+        });
+
+        const buffer = await workbook.xlsx.writeBuffer();
+        const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        saveAs(blob, 'users.xlsx');
     };
 
     const renderUserTable = (userList, type) => (

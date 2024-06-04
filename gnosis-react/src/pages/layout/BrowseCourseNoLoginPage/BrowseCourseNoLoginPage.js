@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../../../redux/action/courseActions';
-import { addToCart } from '../../../redux/action/cartActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import styles from './BrowseCourseNoLoginPage.module.scss';
@@ -11,7 +10,7 @@ const BrowseCourseNoLoginPage = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector(state => state.course);
-    const [notification, setNotification] = useState({ show: false, message: '' });
+    const [notification] = useState({ show: false, message: '' });
     const [activeCategory, setActiveCategory] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
     const coursesPerPage = 9;

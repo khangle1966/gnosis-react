@@ -6,7 +6,6 @@ import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActi
 import renderStars from './renderStars';
 import { fetchCourseDetail } from '../../../../../redux/action/courseActions';
 import { useParams, useNavigate } from 'react-router-dom';
-import { addToCart } from '../../../../../redux/action/cartActions';
 
 const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -17,19 +16,15 @@ const CourseDetailPageNologin = () => {
     const { courseId, chapterId } = useParams();
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { courseDetail, loading: loadingCourse, error: errorCourse } = useSelector(state => state.courseDetail);
-    const { lessons, loading: loadingLessons, error: errorLessons } = useSelector(state => state.lessonDetail);
-    const { chapters, loadingChapters, errorChapters } = useSelector(state => state.chapterDetail || { chapters: [] });
+    const { courseDetail, loading: loadingCourse} = useSelector(state => state.courseDetail);
+    const { lessons, loading: loadingLessons} = useSelector(state => state.lessonDetail);
+    const { chapters, loadingChapters} = useSelector(state => state.chapterDetail || { chapters: [] });
 
-    const { rating } = courseDetail;
 
-    const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0, courseId: courseId });
-    const [showModal, setShowModal] = useState(false);
 
     const [groupedChapters, setGroupedChapters] = useState([]);
     const [openChapters, setOpenChapters] = useState([]);
 
-    const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
 
     useEffect(() => {
         const totalChapters = groupedChapters.length;
@@ -37,9 +32,6 @@ const CourseDetailPageNologin = () => {
         console.log("Total chapters:", totalChapters, "Total lessons:", totalLessons);
     }, [groupedChapters]);
 
-    const [selectedChapterId, setSelectedChapterId] = useState(null);
-    const [selectedChapter, setSelectedChapter] = useState(null);
-    const [editMode, setEditMode] = useState(false);
 
     const { totalChapters, totalLessons, formattedDuration } = useMemo(() => {
         const totalChapters = groupedChapters.length;
@@ -72,10 +64,7 @@ const CourseDetailPageNologin = () => {
         }
     }, [dispatch, courseId, chapterId]);
 
-    useEffect(() => {
-        setEditableCourse({ ...courseDetail });
-    }, [courseDetail]);
-
+ 
     useEffect(() => {
         if (!chapters || !Array.isArray(chapters)) return;
 
@@ -121,9 +110,7 @@ const CourseDetailPageNologin = () => {
 
     };
 
-    const handleBuyCourse = (course) => {
-        console.log("Purchasing course:", course.name);
-    };
+  
 
     if (loadingCourse || loadingLessons || loadingChapters) {
         return <div>Đang tải...</div>;

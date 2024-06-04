@@ -13,8 +13,8 @@ const InstructorsPage = () => {
 
     const dispatch = useDispatch();
     const [courseSubmitted, setCourseSubmitted] = useState(false);
-    const [img, setImg] = useState(null);
-    const [isImageUploaded, setIsImageUploaded] = useState(false);
+    // const [img, setImg] = useState(null);
+    // const [isImageUploaded, setIsImageUploaded] = useState(false);
     const navigate = useNavigate();
 
     const [course, setCourse] = useState({
@@ -51,8 +51,8 @@ const InstructorsPage = () => {
         if (imageFile) {
             try {
                 const imageUrl = await dispatch(uploadImage(imageFile)); // Upload image and get back the URL
-                setIsImageUploaded(true);
-                setImg(imageUrl);  // Cập nhật state img để kiểm tra điều kiện render hình ảnh
+                // setIsImageUploaded(true);
+                // setImg(imageUrl);  // Cập nhật state img để kiểm tra điều kiện render hình ảnh
                 setCourse(prevCourse => ({
                     ...prevCourse,
                     img: imageUrl // Store image URL in the course state

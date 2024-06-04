@@ -36,8 +36,6 @@ const salaryReducer = (state = initialState, action) => {
     case FETCH_TOTAL_SALARY:
     case FETCH_INSTRUCTOR_SALARY_BY_ID:
     case FETCH_ADMIN_SALARY:
-
-
     case FETCH_INSTRUCTORS_SALARY:
       return {
         ...state,
@@ -102,7 +100,6 @@ const salaryReducer = (state = initialState, action) => {
         error: action.payload,
       };
     case FETCH_PAYMENTS_FAILURE:
-
     case CREATE_PAYMENT_FAILURE:
       return {
         ...state,

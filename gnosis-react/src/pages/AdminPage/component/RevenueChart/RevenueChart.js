@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchMonthlyRevenueData } from '../../../../redux/action/adminActions';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend, defs, linearGradient } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, Legend, linearGradient } from 'recharts';
 import { Box, MenuItem, Select, Typography } from '@mui/material';
 import styles from '../../AdminPage.module.scss'; // Import the SCSS file
 

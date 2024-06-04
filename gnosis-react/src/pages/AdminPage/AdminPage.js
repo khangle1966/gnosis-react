@@ -22,22 +22,26 @@ const AdminPage = () => {
     const totalInstructors = useSelector(state => state.admin.instructors ? state.admin.instructors.length : 0);
     const userRegistrationData = useSelector(state => state.admin.monthlyUserData || []);
     const usergoogleRegistrationData = useSelector(state => state.admin.monthlyUsergoogleData || []);
-    const courseEnrollmentData = useSelector(state => state.admin.monthlyCourseData || []);
     const courses = useSelector(state => state.course.courses || []);
-
+    const { user } = useSelector(state => state.auth);
+    console.log("auth", user)
     const [tabIndex, setTabIndex] = useState(0);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        dispatch(fetchUsers());
-        dispatch(fetchCourses());
-        dispatch(fetchOrders());
-        dispatch(fetchInstructors());
-        dispatch(fetchMonthlyUserData());
-        dispatch(fetchMonthlyUsergoogleData());
-        dispatch(fetchMonthlyCourseData());
+        if (user.role !== 'admin') {
+            navigate('/browsecourse');
+        } else {
+            dispatch(fetchUsers());
+            dispatch(fetchCourses());
+            dispatch(fetchOrders());
+            dispatch(fetchInstructors());
+            dispatch(fetchMonthlyUserData());
+            dispatch(fetchMonthlyUsergoogleData());
+            dispatch(fetchMonthlyCourseData());
+        }
     }, [dispatch]);
 
     const handleApproveCourse = (courseId) => {
@@ -73,7 +77,10 @@ const AdminPage = () => {
         month: data.month,
         count: data.userCount,
     }));
-
+    const truncateDescription = (description) => {
+        if (!description) return '';
+        return description.length > 50 ? description.substring(0, 50) + '...' : description;
+    };
     return (
         <div className={styles.adminPage}>
             <Typography variant="h4" gutterBottom>
@@ -228,7 +235,7 @@ const AdminPage = () => {
                             <TableRow key={course._id}>
                                 <TableCell>{course._id}</TableCell>
                                 <TableCell>{course.name}</TableCell>
-                                <TableCell>{course.description}</TableCell>
+                                <TableCell> <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p></TableCell>
                                 <TableCell>{course.category}</TableCell>
                                 <TableCell>{course.price}</TableCell>
                                 <TableCell>{course.author}</TableCell>
