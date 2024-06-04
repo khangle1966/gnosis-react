@@ -11,6 +11,13 @@ import {
   FETCH_INSTRUCTORS_SALARY,
   FETCH_INSTRUCTORS_SALARY_SUCCESS,
   FETCH_INSTRUCTORS_SALARY_FAILURE,
+  CREATE_PAYMENT,
+  CREATE_PAYMENT_SUCCESS,
+  CREATE_PAYMENT_FAILURE,
+  FETCH_PAYMENTS,
+  FETCH_PAYMENTS_SUCCESS,
+  FETCH_PAYMENTS_FAILURE,
+  UPDATE_PAYMENT_SUCCESS
 } from '../types/salaryTypes';
 
 const initialState = {
@@ -19,6 +26,7 @@ const initialState = {
   adminSalary: null,
   instructorsSalary: [],
   instructors: [], // Thêm instructors vào state
+  payments: [],
   loading: false,
   error: null,
 };
@@ -28,7 +36,16 @@ const salaryReducer = (state = initialState, action) => {
     case FETCH_TOTAL_SALARY:
     case FETCH_INSTRUCTOR_SALARY_BY_ID:
     case FETCH_ADMIN_SALARY:
+
+
     case FETCH_INSTRUCTORS_SALARY:
+      return {
+        ...state,
+        loading: true,
+        error: null,
+      };
+    case FETCH_PAYMENTS:
+    case CREATE_PAYMENT:
       return {
         ...state,
         loading: true,
@@ -58,10 +75,35 @@ const salaryReducer = (state = initialState, action) => {
         instructorsSalary: action.payload,
         loading: false,
       };
+    case FETCH_PAYMENTS_SUCCESS:
+      return {
+        ...state,
+        payments: action.payload,
+        loading: false,
+      };
+
+    case CREATE_PAYMENT_SUCCESS:
+      return {
+        ...state,
+        loading: false,
+      };
+    case UPDATE_PAYMENT_SUCCESS:
+      return {
+        ...state,
+        payments: [...state.payments, action.payload],
+      };
     case FETCH_TOTAL_SALARY_FAILURE:
     case FETCH_INSTRUCTOR_SALARY_BY_ID_FAILURE:
     case FETCH_ADMIN_SALARY_FAILURE:
     case FETCH_INSTRUCTORS_SALARY_FAILURE:
+      return {
+        ...state,
+        loading: false,
+        error: action.payload,
+      };
+    case FETCH_PAYMENTS_FAILURE:
+
+    case CREATE_PAYMENT_FAILURE:
       return {
         ...state,
         loading: false,

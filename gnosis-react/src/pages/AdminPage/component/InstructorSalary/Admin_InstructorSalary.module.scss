@@ -2,6 +2,26 @@
     padding: 20px;
     width: 85vw;
 
+    .exels {
+
+        background-color: #4caf50;
+        color: white;
+
+        &:hover {
+            background-color: #2e7531;
+        }
+    }
+
+    .pay {
+        background-color: #4c4ec7;
+        color: white;
+
+        &:hover {
+            background-color: #1e2d80;
+        }
+
+    }
+
     .separator {
         background-color: #d3d3d3;
         padding: 10px;
@@ -148,6 +168,65 @@
         margin-left: auto;
         width: 300px;
     }
+
+    .tableContainer {
+        margin-top: 20px;
+        border-radius: 8px;
+        overflow: hidden;
+
+        .MuiTableCell-root {
+            padding: 12px 16px;
+        }
+
+        .MuiTableHead-root {
+            background-color: #f5f5f5;
+        }
+
+        .MuiTableRow-root {
+            &:nth-of-type(even) {
+                background-color: #f9f9f9;
+            }
+        }
+
+        .MuiTablePagination-root {
+            background-color: #fff;
+        }
+
+        .MuiButton-root {
+            margin-right: 8px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .tableHeader {
+        background-color: #1f814b;
+        color: white;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .tableRow {
+        &:nth-of-type(even) {
+            background-color: #f9f9f9;
+        }
+
+        &:hover {
+            background-color: #e0e0e0;
+        }
+    }
+
+    .tableCell {
+        padding: 12px 16px;
+        text-align: center;
+    }
 }
 
 .revenueChartContainer {
@@ -172,7 +251,11 @@
         border-radius: 4px;
         padding: 5px;
     }
+
+
 }
+
+
 
 @keyframes fadeIn {
     from {
@@ -181,42 +264,5 @@
 
     to {
         opacity: 1;
-    }
-}
-
-.tableContainer {
-    margin-top: 20px;
-    border-radius: 8px;
-    overflow: hidden;
-
-    .MuiTableCell-root {
-        padding: 12px 16px;
-    }
-
-    .MuiTableHead-root {
-        background-color: #f5f5f5;
-    }
-
-    .MuiTableRow-root {
-        &:nth-of-type(even) {
-            background-color: #f9f9f9;
-        }
-    }
-
-    .MuiTablePagination-root {
-        background-color: #fff;
-    }
-
-    .MuiButton-root {
-        margin-right: 8px;
-    }
-
-    a {
-        color: #007bff;
-        text-decoration: none;
-
-        &:hover {
-            text-decoration: underline;
-        }
     }
 }

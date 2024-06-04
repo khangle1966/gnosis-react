@@ -15,11 +15,14 @@ import {
     FETCH_INSTRUCTOR_SALARIES_SUCCESS,
     FETCH_INSTRUCTOR_SALARIES_FAILURE,
     PAY_SALARIES_SUCCESS,
-    PAY_SALARIES_FAILURE
+    PAY_SALARIES_FAILURE,
+    FETCH_INSTRUCTOR_LEVEL_SUCCESS,
+
 } from '../action/adminActions';
 
 const initialState = {
     instructors: [],
+    instructorLevels: {},
     salaries: {},
     monthlyData: {},
     users: 0,
@@ -34,11 +37,20 @@ const initialState = {
     error: null
 };
 
+
 const adminReducer = (state = initialState, action) => {
     switch (action.type) {
         case FETCH_INSTRUCTORS_SUCCESS:
             console.log('Reducer Instructors:', action.payload);
-            return { ...state, instructors: action.payload };
+            return { ...state, instructors: action.payload || [] };
+        case FETCH_INSTRUCTOR_LEVEL_SUCCESS:
+            return {
+                ...state,
+                instructorLevels: {
+                    ...state.instructorLevels,
+                    [action.payload.uid]: action.payload.level,
+                },
+            };
         case CALCULATE_SALARY_SUCCESS:
             return {
                 ...state,

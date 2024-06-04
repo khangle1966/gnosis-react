@@ -20,6 +20,7 @@ export const FETCH_INSTRUCTOR_SALARIES_SUCCESS = 'FETCH_INSTRUCTOR_SALARIES_SUCC
 export const FETCH_INSTRUCTOR_SALARIES_FAILURE = 'FETCH_INSTRUCTOR_SALARIES_FAILURE';
 export const PAY_SALARIES_SUCCESS = 'PAY_SALARIES_SUCCESS';
 export const PAY_SALARIES_FAILURE = 'PAY_SALARIES_FAILURE';
+export const FETCH_INSTRUCTOR_LEVEL_SUCCESS = 'FETCH_INSTRUCTOR_LEVEL_SUCCESS';
 
 export const fetchInstructors = () => async (dispatch) => {
   try {
@@ -27,10 +28,17 @@ export const fetchInstructors = () => async (dispatch) => {
     const data = await response.json();
     console.log('Fetched Instructors:', data);
     dispatch({ type: FETCH_INSTRUCTORS_SUCCESS, payload: data });
+
+    // Fetch instructor levels
+    for (const instructor of data) {
+      const levelResponse = await axios.get(`http://localhost:3000/v1/usergoogle/instructor-level/${instructor.uid}`);
+      dispatch({ type: FETCH_INSTRUCTOR_LEVEL_SUCCESS, payload: { uid: instructor.uid, level: levelResponse.data } });
+    }
   } catch (error) {
-    console.error('Failed to fetch instructors:', error);
+    console.error('Error fetching instructors:', error);
   }
 };
+
 
 export const calculateSalary = (uid) => async (dispatch) => {
   try {
