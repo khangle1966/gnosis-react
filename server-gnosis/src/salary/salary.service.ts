@@ -162,6 +162,7 @@ export class SalaryService {
     this.loggerService.log(`getTotalInstructorSalaryById aggregation pipeline result: ${JSON.stringify(result)}`);
     return result;
   }
+
 }
 
 export default SalaryService;

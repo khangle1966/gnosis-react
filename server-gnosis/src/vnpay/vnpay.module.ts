@@ -9,6 +9,7 @@ import { CourseModule } from '../course/course.module';
 import { Revenue, RevenueSchema } from '../revenue/entities/revenue.entity';
 import { Course, CourseSchema } from '../course/entities/course.entity';
 import { SalaryModule } from '../salary/salary.module';
+import { UsergoogleModule } from '../usergoogle/usergoogle.module'; // Thêm dòng này
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { SalaryModule } from '../salary/salary.module';
       { name: Course.name, schema: CourseSchema },
     ]),
     SalaryModule,
+
   ],
   controllers: [VNPayController],
   providers: [VNPayService],

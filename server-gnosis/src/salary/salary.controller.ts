@@ -50,6 +50,8 @@ export class SalaryController {
     this.loggerService.log(`Fetching total salary for instructor ${instructorId}`);
     return this.salaryService.getTotalInstructorSalaryById(instructorId);
   }
+
+
 }
 
 export default SalaryController;

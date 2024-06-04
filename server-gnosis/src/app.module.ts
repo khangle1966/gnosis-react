@@ -26,6 +26,7 @@ import { LoggerModule } from './logger/logger.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { RevenueModule } from './revenue/revenue.module';
 import { SalaryModule } from './salary/salary.module';
+import { PaymentModule } from './payment/payment.module';
 
 
 
@@ -60,6 +61,7 @@ import { SalaryModule } from './salary/salary.module';
     FavoritesModule,
     RevenueModule,
     SalaryModule,
+    PaymentModule,
 
   ],
   controllers: [AppController],

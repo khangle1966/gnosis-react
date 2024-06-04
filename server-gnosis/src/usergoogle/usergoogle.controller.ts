@@ -109,4 +109,9 @@ export class UsergoogleController {
   async getMonthlyData(@Param('uid') uid: string) {
     return this.usergoogleService.getMonthlyData(uid);
   }
+  @Get('instructor-level/:uid')
+async getInstructorLevel(@Param('uid') uid: string) {
+    return this.usergoogleService.getInstructorLevel(uid);
+}
+
 }
