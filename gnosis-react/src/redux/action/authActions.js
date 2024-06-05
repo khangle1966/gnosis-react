@@ -22,7 +22,9 @@ export const loginWithGoogleSuccess = (user, role) => {
     };
 };
 
-
+export const resetRegisterSuccessMessage = () => {
+    return { type: 'RESET_REGISTER_SUCCESS_MESSAGE' };
+};
 
 export const setProfileComplete = (isComplete) => {
     return { type: 'PROFILE_COMPLETE', payload: isComplete };

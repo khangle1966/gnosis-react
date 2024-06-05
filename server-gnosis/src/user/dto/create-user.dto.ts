@@ -7,5 +7,6 @@ export class CreateUserDto {
         public picture: string,
         public profile: string,
         public role: string,
+        public createdAt:Date,
     ) { }
 }

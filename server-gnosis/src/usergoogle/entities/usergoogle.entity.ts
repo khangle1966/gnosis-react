@@ -1,8 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { IsEmail } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
-export type UserDocument = HydratedDocument<Usergoogle>;
 
+export type UserDocument = HydratedDocument<Usergoogle>;
 
 @Schema({ timestamps: true })
 export class Usergoogle {
@@ -13,7 +13,6 @@ export class Usergoogle {
     @Prop({ required: true, unique: true })
     email: string;
 
-
     @Prop()
     name: string;
 
@@ -22,12 +21,14 @@ export class Usergoogle {
 
     @Prop({ default: null })
     profile: string;
+
     @Prop({ default: 'user' })
     role: string;
 
-
-    
+    @Prop({ required: function () { return this.role === 'instructor'; }, default: 'new' })
+    instructorLevel: string;
+    @Prop() // Khai báo trường createdAt
+    createdAt: Date;
 }
-
 
 export const UsergoogleSchema = SchemaFactory.createForClass(Usergoogle);

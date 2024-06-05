@@ -18,13 +18,14 @@ const ProfilePage = () => {
     const { userCourses, loading, error } = useSelector(state => state.course);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
-
     const [formData, setFormData] = useState({
         userName: '',
         gender: 'male',
         country: '',
         bio: ''
     });
+
+    const [visibleCourses, setVisibleCourses] = useState(3); // Số lượng khóa học ban đầu được hiển thị
 
     useEffect(() => {
         if (profile) {
@@ -48,20 +49,24 @@ const ProfilePage = () => {
             dispatch(fetchUserCourses(profile.courses));
         }
     }, [isLoggedIn, profile, dispatch, navigate]);
+
     const handleChange = (event) => {
         setFormData({
             ...formData,
             [event.target.id]: event.target.value
         });
     };
+
     const truncateDescription = (description) => {
         if (!description) return ''; // Kiểm tra nếu không tồn tại mô tả
         return description.length > 50 ? description.substring(0, 50) + '...' : description;
     };
+
     const truncateNameCourse = (name) => {
         if (!name) return ''; // Kiểm tra nếu không tồn tại mô tả
         return name.length > 50 ? name.substring(0, 50) + '...' : name;
     };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -74,12 +79,18 @@ const ProfilePage = () => {
             setNotification({ show: false, message: '' });
         }, 3000);
     };
+
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
+
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
+    };
+
+    const handleLoadMore = () => {
+        setVisibleCourses(visibleCourses + 3); // Hiển thị thêm 3 khóa học khi nhấp vào nút "Load More"
     };
 
     if (loading) return <p>Loading...</p>;
@@ -87,7 +98,6 @@ const ProfilePage = () => {
 
     return (
         <div className={styles.profilePage}>
-
             {notification.show && (
                 <div className={styles.notification}>
                     {notification.message}
@@ -157,10 +167,8 @@ const ProfilePage = () => {
                     <h2 className={styles.coursesHeader}>Courses</h2>
                     {loading && <div>Loading courses...</div>}
                     {error && <div>Error fetching courses: {error.message}</div>}
-                    {userCourses && userCourses.map(course => (
-                        <div className={styles.courseCard}>
-
-
+                    {userCourses && userCourses.slice(0, visibleCourses).map(course => (
+                        <div className={styles.courseCard} key={course._id}>
                             <div className={styles.courseImageWrapper}>
                                 <img src={course.img} alt={course.name} />
                             </div>
@@ -174,9 +182,10 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     ))}
-
+                    {userCourses && visibleCourses < userCourses.length && (
+                        <button onClick={handleLoadMore} className={styles.loadMoreButton}>Loading more...</button>
+                    )}
                 </section>
-
             </main>
         </div>
     );

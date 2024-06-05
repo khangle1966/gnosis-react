@@ -13,8 +13,8 @@ const InstructorsPage = () => {
 
     const dispatch = useDispatch();
     const [courseSubmitted, setCourseSubmitted] = useState(false);
-    const [img, setImg] = useState(null);
-    const [isImageUploaded, setIsImageUploaded] = useState(false);
+    // const [img, setImg] = useState(null);
+    // const [isImageUploaded, setIsImageUploaded] = useState(false);
     const navigate = useNavigate();
 
     const [course, setCourse] = useState({
@@ -51,8 +51,8 @@ const InstructorsPage = () => {
         if (imageFile) {
             try {
                 const imageUrl = await dispatch(uploadImage(imageFile)); // Upload image and get back the URL
-                setIsImageUploaded(true);
-                setImg(imageUrl);  // Cập nhật state img để kiểm tra điều kiện render hình ảnh
+                // setIsImageUploaded(true);
+                // setImg(imageUrl);  // Cập nhật state img để kiểm tra điều kiện render hình ảnh
                 setCourse(prevCourse => ({
                     ...prevCourse,
                     img: imageUrl // Store image URL in the course state
@@ -119,8 +119,12 @@ const InstructorsPage = () => {
                         <select id="category" value={course.category} onChange={handleChange}>
                             <option value="">Select a category</option>
                             <option value="Web Development">Web Development</option>
-                            <option value="Mobile Development">Mobile Development</option>
-                            {/* Thêm các lựa chọn khác dựa trên enum Category */}
+                            <option value="Popular">Popular</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="English">English</option>
+                            <option value="Music">Music</option>
+                            <option value="Cook">Cook</option>
+
                         </select>
                     </div>
                     <div className={styles.formGroup}>

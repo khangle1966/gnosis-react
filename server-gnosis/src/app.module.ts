@@ -25,6 +25,11 @@ import { VnpayModule } from './vnpay/vnpay.module';
 import { ZaloPayModule } from './zalopay/zalopay.module';
 
 import { LoggerModule } from './logger/logger.module';
+import { FavoritesModule } from './favorites/favorites.module';
+import { RevenueModule } from './revenue/revenue.module';
+import { SalaryModule } from './salary/salary.module';
+import { PaymentModule } from './payment/payment.module';
+
 
 
 
@@ -57,6 +62,11 @@ import { LoggerModule } from './logger/logger.module';
     ZaloPayModule,
 
     LoggerModule,
+    FavoritesModule,
+    RevenueModule,
+    SalaryModule,
+    PaymentModule,
+
   ],
   controllers: [AppController],
   providers: [AppService],

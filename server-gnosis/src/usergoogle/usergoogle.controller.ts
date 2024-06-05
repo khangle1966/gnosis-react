@@ -40,7 +40,14 @@ export class UsergoogleController {
       throw error;
     }
   }
-
+  @Get('monthly/monthly-data')
+  async getMonthlyDataUser() {
+    try {
+      return this.usergoogleService.getMonthlyDataUser();
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Usergoogle> {
     try {
@@ -53,7 +60,11 @@ export class UsergoogleController {
       throw error;
     }
   }
-
+  @Get('update-instructor-level/:uid')
+  async updateInstructorLevel(@Param('uid') uid: string) {
+    await this.usergoogleService.updateInstructorLevel(uid);
+    return this.usergoogleService.findByUid(uid);
+  }
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -88,4 +99,19 @@ export class UsergoogleController {
       throw error;
     }
   }
+  @Get('getintstructor/instructors')
+  async getAllInstructors() {
+    return this.usergoogleService.findAllInstructors();
+  }
+
+
+  @Get('monthly-data/:uid')
+  async getMonthlyData(@Param('uid') uid: string) {
+    return this.usergoogleService.getMonthlyData(uid);
+  }
+  @Get('instructor-level/:uid')
+async getInstructorLevel(@Param('uid') uid: string) {
+    return this.usergoogleService.getInstructorLevel(uid);
+}
+
 }

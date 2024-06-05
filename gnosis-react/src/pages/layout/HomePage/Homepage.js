@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { faSearch, faPlus, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faPlus, faEdit, faHeart } from '@fortawesome/free-solid-svg-icons';
 import styles from './HomePage.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StatisticsComponent from './component/StatisticsComponent/StatisticsComponent';
 import CalendarComponent from './component/CalendarComponent/CalendarComponent';
 import { fetchProfile } from '../../../redux/action/profileActions';
 import { fetchUserCourses } from '../../../redux/action/courseActions';
+import { fetchLessonsByCourseId } from '../../../redux/action/lessonActions'; // Import fetchLessonsByCourseId action
+import { addToFavorite, removeFromFavorite, fetchFavorites } from '../../../redux/action/favoriteActions';
 import { updateProfile } from '../../../redux/action/profileActions';
 
 const HomePage = () => {
@@ -16,6 +18,8 @@ const HomePage = () => {
     const { userCourses, loading, error } = useSelector(state => state.course);
     const { user } = useSelector(state => state.auth);
     const { profile } = useSelector(state => state.profile);
+    const { favorites = [] } = useSelector(state => state.favorite);
+    const lessonsByCourse = useSelector(state => state.lessonDetail); // Get lessons from state
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
     const [activeTab, setActiveTab] = useState('all');
     const [filteredCourses, setFilteredCourses] = useState([]);
@@ -24,6 +28,7 @@ const HomePage = () => {
     useEffect(() => {
         if (user && user.uid) {
             dispatch(fetchProfile(user.uid));
+            dispatch(fetchFavorites(user.uid));
         } else {
             console.log('User is not defined or user.uid is not available');
         }
@@ -48,6 +53,9 @@ const HomePage = () => {
         } else if (activeTab === 'completed' && profile.completedCourse) {
             const completedCoursesIds = profile.completedCourse.map(id => id?._id?.toString() || '');
             filtered = userCourses.filter(course => completedCoursesIds.includes(course._id));
+        } else if (activeTab === 'favorites') {
+            const favoriteCourseIds = favorites.map(fav => fav);
+            filtered = userCourses.filter(course => favoriteCourseIds.includes(course._id));
         }
 
         if (searchTerm) {
@@ -58,19 +66,43 @@ const HomePage = () => {
         }
 
         setFilteredCourses(filtered);
-    }, [activeTab, userCourses, profile, searchTerm]);
+    }, [activeTab, userCourses, profile, favorites, searchTerm]);
 
-    const handleStartCourse = (courseId) => {
+    const handleStartCourse = async (courseId) => {
         if (user && user.uid) {
-            const updatedOngoingCourse = profile.ongoingCourse
-                ? Array.from(new Set([...profile.ongoingCourse.map(id => id?._id?.toString() || ''), courseId.toString()]))
-                : [courseId.toString()];
-            const updatedProfile = { ...profile, ongoingCourse: updatedOngoingCourse };
+            await dispatch(fetchLessonsByCourseId(courseId));
+            if (lessonsByCourse && lessonsByCourse.lessons && lessonsByCourse.lessons.length > 0) {
+                const courseLessons = lessonsByCourse.lessons.filter(lesson => lesson.courseId === courseId);
+                if (courseLessons.length > 0) {
+                    const firstLessonId = courseLessons[0]._id;
+                    const updatedOngoingCourse = profile.ongoingCourse
+                        ? Array.from(new Set([...profile.ongoingCourse.map(id => id?._id?.toString() || ''), courseId.toString()]))
+                        : [courseId.toString()];
+                    const updatedProfile = { ...profile, ongoingCourse: updatedOngoingCourse };
 
-            dispatch(updateProfile(updatedProfile, user.uid));
-
-            navigate(`/course/${courseId}`);
+                    dispatch(updateProfile(updatedProfile, user.uid));
+                    navigate(`/course/${courseId}/lesson/${firstLessonId}`);
+                } else {
+                    console.error('No lessons found for the course.');
+                }
+            } else {
+                console.error('No lessons found for the course.');
+            }
         }
+    };
+
+    const handleFavoriteCourse = (courseId) => {
+        if (user && user.uid) {
+            if (isCourseFavorited(courseId)) {
+                dispatch(removeFromFavorite(user.uid, courseId));
+            } else {
+                dispatch(addToFavorite(user.uid, courseId));
+            }
+        }
+    };
+
+    const isCourseFavorited = (courseId) => {
+        return favorites.some(fav => fav === courseId);
     };
 
     const truncateDescription = (description) => {
@@ -120,6 +152,7 @@ const HomePage = () => {
                         <button className={activeTab === 'all' ? styles.active : ''} onClick={() => setActiveTab('all')}>Tất cả bài học</button>
                         <button className={activeTab === 'ongoing' ? styles.active : ''} onClick={() => setActiveTab('ongoing')}>Đang học</button>
                         <button className={activeTab === 'completed' ? styles.active : ''} onClick={() => setActiveTab('completed')}>Đã học xong</button>
+                        <button className={`${activeTab === 'favorites' ? styles.activeFavorite : ''} ${styles.favoriteButton}`} onClick={() => setActiveTab('favorites')}>Khóa học yêu thích</button>
                     </div>
                     <div className={styles.addIcon}>
                         <FontAwesomeIcon icon={faPlus} />
@@ -138,7 +171,14 @@ const HomePage = () => {
                                 <p dangerouslySetInnerHTML={{ __html: truncateDescription(course.description) }}></p>
                                 <div className={styles.courseActions}>
                                     <button onClick={() => handleStartCourse(course._id)}>Start</button>
+
+                                    <FontAwesomeIcon
+                                        icon={faHeart}
+                                        className={`${styles.favoriteIcon} ${isCourseFavorited(course._id) ? styles.favorited : ''}`}
+                                        onClick={() => handleFavoriteCourse(course._id)}
+                                    />
                                 </div>
+
                             </div>
                         </div>
                     ))}

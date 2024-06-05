@@ -13,11 +13,12 @@ export const addToCart = (item) => ({
     payload: item
 });
 
-export const removeFromCart = (itemId) => ({
-    type: REMOVE_FROM_CART,
-    payload: itemId
-});
-
+export const removeFromCart = (id) => (dispatch) => {
+    dispatch({
+        type: REMOVE_FROM_CART,
+        payload: id
+    });
+};
 export const buyCourses = (userId, courses) => async (dispatch) => {
     try {
         const res = await axios.put(`http://localhost:3000/v1/profile/${userId}`, {

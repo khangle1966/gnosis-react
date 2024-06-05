@@ -108,6 +108,9 @@ const Login = () => {
                 </div>
                 <div className={styles.footer}>
                     <p>Not registered? <a href="/register">Create an account</a></p>
+                    <div className={styles.trythis}>
+                        <a href="/browsecoursenologin">Preview</a>
+                    </div>
                 </div>
             </div>
         </div>

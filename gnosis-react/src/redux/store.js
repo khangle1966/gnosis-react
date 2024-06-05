@@ -10,7 +10,11 @@ import { videoUploadReducer } from './reducers/uploadReducer';
 import lessonReducer from './reducers/lessonCompleteReducer';
 import { notesReducer, noteAddReducer } from './reducers/noteReducer';
 import { ratingReducer } from './reducers/ratingReducer';
-
+import favoriteReducer from './reducers/favoriteReducer';
+import adminReducer from './reducers/adminReducer';
+import { userReducer } from './reducers/userReducer';
+import { userGoogleReducer } from './reducers/userGoogleReducer';
+import salaryReducer from './reducers/salaryReducer';
 // Combine reducers để tạo rootReducer
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -21,10 +25,17 @@ const rootReducer = combineReducers({
     chapterDetail: chapterReducer,
     cart: cartReducer,
     uploadVideo: videoUploadReducer,
-    lessonComplete: lessonReducer,  
+    lessonComplete: lessonReducer,
     notesData: notesReducer,
     noteAdd: noteAddReducer,
     ratings: ratingReducer,
+    favorite: favoriteReducer,
+    admin: adminReducer,
+    user: userReducer,
+    userGoogle: userGoogleReducer,
+    salary: salaryReducer,
+
+
 });
 const persistedState = localStorage.getItem('reduxState') ? JSON.parse(localStorage.getItem('reduxState')) : {};
 

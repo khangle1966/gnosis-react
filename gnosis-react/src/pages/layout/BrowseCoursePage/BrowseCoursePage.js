@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCourses } from '../../../redux/action/courseActions';
+import { fetchProfile } from '../../../redux/action/profileActions'; // Import fetchProfile action
 import { addToCart } from '../../../redux/action/cartActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
@@ -13,15 +14,14 @@ const BrowseCoursePage = () => {
     const dispatch = useDispatch();
     const { courses, loading, error } = useSelector(state => state.course);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+    const { profile, loading: profileLoading } = useSelector(state => state.profile); // Thêm profileLoading để theo dõi trạng thái tải profile
     const [notification, setNotification] = useState({ show: false, message: '' });
     const [activeCategory, setActiveCategory] = useState('All');
     const [currentPage, setCurrentPage] = useState(1);
     const coursesPerPage = 9;
     const [searchTerm, setSearchTerm] = useState(''); // Thêm state cho từ khóa tìm kiếm
     const [filteredCourses, setFilteredCourses] = useState([]); // Thêm state cho các khóa học đã lọc
-    const { profile } = useSelector(state => state.profile);
-    const ownedCourses = profile.courses.map(course => course._id); // Mảng các ID khóa học
-    const isCourseOwned = (courseId) => ownedCourses.includes(courseId);
+    const [ownedCourses, setOwnedCourses] = useState([]); // Thêm state cho các khóa học đã sở hữu
 
  
     useEffect(() => {
@@ -29,11 +29,22 @@ const BrowseCoursePage = () => {
             navigate('/login');
         } else {
             dispatch(fetchCourses());
+            if (profile && profile.courses) {
+                const ownedCourseIds = profile.courses.map(course => course._id);
+                setOwnedCourses(ownedCourseIds);
+            }
         }
-    }, [isLoggedIn, navigate, dispatch]);
+    }, [isLoggedIn, navigate, dispatch, profile]); // Thêm profile vào dependency array
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            dispatch(fetchProfile(profile.id)); // Thêm fetchProfile vào useEffect để đảm bảo profile luôn được cập nhật
+        }
+    }, [dispatch, isLoggedIn]);
 
     useEffect(() => {
         const filtered = courses.filter(course =>
+            course.isReleased && // Lọc theo isReleased
             (activeCategory === 'All' || course.category === activeCategory) &&
             ((course.name && course.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
                 (course.description && course.description.toLowerCase().includes(searchTerm.toLowerCase())))
@@ -132,6 +143,14 @@ const BrowseCoursePage = () => {
         );
     };
 
+    const isCourseOwned = (courseId) => {
+        return ownedCourses.includes(courseId);
+    };
+
+    if (loading || profileLoading) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <div className={styles.homePageContent}>
             {notification.show && (
@@ -141,7 +160,6 @@ const BrowseCoursePage = () => {
             )}
             <div className={styles.searchbarandnreadcrumbs}>
                 <div className={styles.breadcrumbs}>Home &gt; Browse</div>
-
                 <div className={styles.searchBar}>
                     <FontAwesomeIcon icon={faSearch} />
                     <input
@@ -153,19 +171,12 @@ const BrowseCoursePage = () => {
                 </div>
             </div>
             <div className={styles.promotions}>
-
-
-
                 <span>70% off all courses today</span>
                 <span>70% off all courses today</span>
                 <span>70% off all courses today</span>
                 <span>70% off all courses today</span>
                 <span>70% off all courses today</span>
-
-
             </div>
-
-
             <div className={styles.filterBar}>
                 <button className={activeCategory === 'All' ? styles.active : ''} onClick={() => handleCategoryClick('All')}>All</button>
                 <button className={activeCategory === 'Popular' ? styles.active : ''} onClick={() => handleCategoryClick('Popular')}>Popular</button>

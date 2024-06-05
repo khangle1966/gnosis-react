@@ -12,8 +12,10 @@ import {
     FETCH_COURSE_DETAIL,
     FETCH_COURSE_DETAIL_SUCCESS,
     FETCH_COURSE_DETAIL_FAILURE,
-    UPDATE_COURSE_FAILURE
+    UPDATE_COURSE_FAILURE,
+    APPROVE_COURSE_SUCCESS
 } from '../types/courseType';
+
 
 export const fetchCourses = () => async (dispatch) => {
     try {
@@ -128,3 +130,24 @@ export function submitCourse(courseData) {
         }
     };
 }
+export const approveCourse = (courseId) => async (dispatch) => {
+    try {
+      const response = await axios.put(`http://localhost:3000/v1/course/${courseId}/approve`);
+      dispatch({
+        type: APPROVE_COURSE_SUCCESS,
+        payload: response.data,
+      });
+      dispatch(fetchCourses()); // Fetch lại danh sách courses sau khi duyệt
+    } catch (error) {
+      console.error('Failed to approve course:', error);
+    }
+  };
+
+  export const deleteCourse = (courseId) => async (dispatch) => {
+    try {
+        await axios.delete(`http://localhost:3000/v1/course/${courseId}`);
+        dispatch(fetchCourses()); // Fetch lại danh sách courses sau khi xóa
+    } catch (error) {
+        console.error('Failed to delete course:', error);
+    }
+};

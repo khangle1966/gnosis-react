@@ -11,7 +11,8 @@ import {
     FETCH_COURSE_DETAIL,
     FETCH_COURSE_DETAIL_SUCCESS,
     FETCH_COURSE_DETAIL_FAILURE,
-    UPDATE_COURSE_FAILURE
+    UPDATE_COURSE_FAILURE,
+    APPROVE_COURSE_SUCCESS
 } from '../types/courseType';
 
 const initialState = {
@@ -90,6 +91,13 @@ export const courseReducer = (state = initialState, action) => {
                 ...state,
                 loading: false,
                 error: action.payload
+            };
+        case APPROVE_COURSE_SUCCESS:
+            return {
+                ...state,
+                courses: state.courses.map(course =>
+                    course._id === action.payload._id ? action.payload : course
+                ),
             };
         default:
             return state;

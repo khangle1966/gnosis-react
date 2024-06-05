@@ -10,7 +10,7 @@ import { fetchLessonsByCourseId, fetchLessonById } from '../../../../../redux/ac
 import { fetchChaptersByCourseId } from '../../../../../redux/action/chapterActions';
 import { fetchCourseDetail, updateCourseRating } from '../../../../../redux/action/courseActions'; // import action
 import { faFacebook, faTwitter, faLinkedin } from '@fortawesome/free-brands-svg-icons'; // Import social icons
-
+import logo from '../../../../../assets/images/logo1.png';
 import { completeLesson, fetchLessonComplete } from '../../../../../redux/action/lessonCompleteActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import NoteModal from './components/NoteModal';
@@ -26,7 +26,7 @@ export const LessonPage = () => {
     const dispatch = useDispatch();
     const [expanded, setExpanded] = useState({});
     const { videoURL, loading, error } = useSelector(state => state.uploadVideo);
-    const { courseDetail, loading: courseLoading, error: courseError } = useSelector(state => state.courseDetail);
+    const { courseDetail, loading: courseLoading } = useSelector(state => state.courseDetail);
     const { user } = useSelector(state => state.auth);
     const userId = user.uid;
     const [currentTime, setCurrentTime] = useState(0);
@@ -38,13 +38,13 @@ export const LessonPage = () => {
     const [activeSection, setActiveSection] = useState('overview');
     const [showNoteModal, setShowNoteModal] = useState(false);
     const [showNoteViewer, setShowNoteViewer] = useState(false);
-    const [currentNote, setCurrentNote] = useState('');
+    const [currentNote] = useState('');
     const [playing, setPlaying] = useState(true);
     const [timeToSeek, setTimeToSeek] = useState(null);
     const [playerReady, setPlayerReady] = useState(false);
     const [key, setKey] = useState(0);
     const { lesson, loading: lessonLoading, error: lessonError } = useSelector(state => state.lessonDetail);
-    const { notes, loading: loadingnotes, error: errornotes } = useSelector(state => state.notesData);
+    const { notes } = useSelector(state => state.notesData);
     const [showRatingModal, setShowRatingModal] = useState(false);
     const { ratings } = useSelector(state => state.ratings);
     const [userNames, setUserNames] = useState({}); // State to store user names
@@ -57,13 +57,15 @@ export const LessonPage = () => {
     const { total, completed } = getTotalAndCompletedLessons();
 
     useEffect(() => {
-        console.log("useEffect triggered");
-        console.log("completed: ", completed, "total: ", total);
+        const lastViewedLesson = localStorage.getItem('lastViewedLesson');
+        if (lastViewedLesson) {
+            navigate(`/course/${courseId}/lesson/${lastViewedLesson}`);
+        }
+    }, [courseId, navigate]);
+
+    useEffect(() => {
         if (completed === total && total !== 0) {
-            console.log("Dispatching completeCourse");
             dispatch(completeCourse(userId, courseId));
-        } else {
-            console.log("Condition not met for dispatching completeCourse");
         }
         dispatch(fetchVideoUrl(lessonId));
         dispatch(fetchChaptersByCourseId(courseId));
@@ -83,11 +85,9 @@ export const LessonPage = () => {
 
     useEffect(() => {
         // Fetch profiles for all rating users
-        console.log("Ratings: ", ratings);
         ratings.forEach(rating => {
             if (!userNames[rating.userId]) {
                 dispatch(fetchProfile(rating.userId)).then(profileData => {
-                    console.log("Profile data fetched: ", profileData);
                     setUserNames(prevUserNames => ({
                         ...prevUserNames,
                         [rating.userId]: profileData.userName
@@ -188,11 +188,12 @@ export const LessonPage = () => {
 
     const handleLessonClick = (lessonId) => {
         dispatch(fetchVideoUrl(lessonId));
+        localStorage.setItem('lastViewedLesson', lessonId);  // Lưu lessonId vào localStorage
         navigate(`/course/${courseId}/lesson/${lessonId}`);
     };
 
     const handleBackclick = (courseId) => {
-        navigate(`/course/${courseId}`);
+        navigate(`/home`);
     };
 
     function formatDuration(seconds) {
@@ -216,7 +217,9 @@ export const LessonPage = () => {
     };
 
     const handleRatingClick = () => {
-        setShowRatingModal(true);
+        if (completed > 0 && !ratings.some(rating => rating.userId === userId)) {
+            setShowRatingModal(true);
+        }
     };
 
     const handleRatingModalClose = () => {
@@ -249,10 +252,12 @@ export const LessonPage = () => {
                     <span>{courseDetail.name}</span>
                 </div>
                 <div className={styles.right}>
-                    <div className={styles.ratingContainer} onClick={handleRatingClick}>
-                        <FontAwesomeIcon icon={faStar} className={styles.ratingIcon} />
-                        Đưa ra xếp hạng
-                    </div>
+                    {completed > 0 && !ratings.some(rating => rating.userId === userId) && (
+                        <div className={styles.ratingContainer} onClick={handleRatingClick}>
+                            <FontAwesomeIcon icon={faStar} className={styles.ratingIcon} />
+                            Đưa ra xếp hạng
+                        </div>
+                    )}
                     <div className={styles.progressContainer}>
                         <div className={styles.progressCircle}>
                             <span className={styles.progressPercentage}>{Math.round((completed / total) * 100)}%</span>
@@ -431,7 +436,7 @@ export const LessonPage = () => {
             <footer className={styles.footer}>
                 <div className={styles.footerContent}>
                     <div className={styles.footerLogo}>
-                        <img src="/path/to/logo.png" alt="Gnosis Logo" />
+                        <img src={logo} alt="Gnosis Logo" />
                     </div>
                     <div className={styles.footerLinks}>
                         <a href="/about">About Us</a>
