@@ -24,6 +24,9 @@ import { RatingModule } from './rating/rating.module';
 import { VnpayModule } from './vnpay/vnpay.module';
 import { ZaloPayModule } from './zalopay/zalopay.module';
 
+import { LoggerModule } from './logger/logger.module';
+
+
 
 @Module({
   imports: [
@@ -52,8 +55,11 @@ import { ZaloPayModule } from './zalopay/zalopay.module';
     RatingModule,
     VnpayModule,
     ZaloPayModule,
+
+    LoggerModule,
   ],
-  controllers: [AppController ],
+  controllers: [AppController],
   providers: [AppService],
+ 
 })
 export class AppModule { }

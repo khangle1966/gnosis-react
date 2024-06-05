@@ -1,9 +1,17 @@
-import { ADD_TO_CART, REMOVE_FROM_CART, BUY_COURSES_SUCCESS, BUY_COURSES_FAIL } from '../types/cartTypes';
+import {
+    ADD_TO_CART,
+    REMOVE_FROM_CART,
+    BUY_COURSES_SUCCESS,
+    BUY_COURSES_FAIL,
+    PAYMENT_SUCCESS,
+    PAYMENT_FAIL
+} from '../types/cartTypes';
 
 const initialState = {
     cartItems: [],
     userCourses: [],
-    error: null
+    error: null,
+    paymentStatus: null
 };
 
 const cartReducer = (state = initialState, action) => {
@@ -38,6 +46,18 @@ const cartReducer = (state = initialState, action) => {
         case BUY_COURSES_FAIL:
             return {
                 ...state,
+                error: action.payload
+            };
+        case PAYMENT_SUCCESS:
+            return {
+                ...state,
+                paymentStatus: 'success',
+                cartItems: [] // Làm trống giỏ hàng sau khi thanh toán thành công
+            };
+        case PAYMENT_FAIL:
+            return {
+                ...state,
+                paymentStatus: 'fail',
                 error: action.payload
             };
         default:

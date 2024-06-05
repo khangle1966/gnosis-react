@@ -113,7 +113,12 @@ export class ProfileService {
       throw new HttpException(error.message, error.status);
     }
   }
-
+  async addCoursesToUserProfile(userId: string, courseIds: string[]): Promise<void> {
+    await this.profileModel.updateOne(
+      { id: userId }, // Sử dụng 'id' để tìm kiếm người dùng
+      { $addToSet: { courses: { $each: courseIds.map(id => new mongoose.Types.ObjectId(id)) } } } // Thêm các khóa học vào mảng courses
+    ).exec();
+  }
 
   async remove(id: string) {
     try {

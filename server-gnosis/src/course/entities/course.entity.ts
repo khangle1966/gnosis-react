@@ -71,6 +71,9 @@ export class Course {
 
   @Prop({ default: 0 })
   numberOfReviews: number;
+
+  @Prop({ default: false })
+  isFavorited: boolean;
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);
