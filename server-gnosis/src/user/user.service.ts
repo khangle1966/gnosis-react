@@ -3,24 +3,25 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User } from './entities/user.entity'; // Đảm bảo đường dẫn đến User schema đúng
+import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import * as moment from 'moment';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<User>, // Sử dụng InjectModel cho Mongoose
+    @InjectModel(User.name) private userModel: Model<User>,
   ) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+    console.log('hashedPassword khi tạo người dùng:', createUserDto.password); 
+
     const createdUser = new this.userModel({
       ...createUserDto,
-      password: hashedPassword,
     });
     return createdUser.save();
   }
+
 
   async findOne(email: string): Promise<User | undefined> {
     return this.userModel.findOne({ email }).exec();
@@ -38,6 +39,7 @@ export class UserService {
       throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
 
   async findOneByEmail(email: string): Promise<User | null> {
     return await this.userModel.findOne({ email }).exec();
@@ -58,6 +60,7 @@ export class UserService {
       throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
   async getMonthlyData(): Promise<any[]> {
     const users = await this.userModel.find().exec();
     const monthlyData = {};
@@ -72,6 +75,7 @@ export class UserService {
 
     return Object.values(monthlyData);
   }
+
   async deleteByUid(uid: string): Promise<void> {
     const result = await this.userModel.findOneAndDelete({ uid }).exec();
     if (!result) {

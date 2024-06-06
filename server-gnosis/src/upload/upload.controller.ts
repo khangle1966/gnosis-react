@@ -26,4 +26,13 @@ export class UploadController {
       const response = await this.uploadService.createVideoRecord(file);
       return response;
   }
+  @Post('avatar')
+  @UseInterceptors(FileInterceptor('avatar', { storage: memoryStorage() }))
+  async uploadAvatar(@UploadedFile() file: Express.Multer.File) {
+    if (!file) {
+      throw new HttpException('No file uploaded', HttpStatus.BAD_REQUEST);
+    }
+    const response = await this.uploadService.createImageRecord(file);
+    return response;
+  }
 }

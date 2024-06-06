@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { HydratedDocument } from 'mongoose';
@@ -14,10 +13,10 @@ export class User {
     @IsEmail()
     @Prop({ required: true, unique: true })
     email: string;
-    @IsNotEmpty()
-    @Prop({ required: true, unique: true })
-    password: string;
 
+    @IsNotEmpty()
+    @Prop({ required: true })
+    password: string;
 
     @Prop()
     name: string;
@@ -30,6 +29,7 @@ export class User {
 
     @Prop({ default: 'user' })
     role: string;
+
     @Prop() // Khai báo trường createdAt
     createdAt: Date;
 }

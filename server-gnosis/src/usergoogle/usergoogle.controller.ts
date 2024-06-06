@@ -113,5 +113,14 @@ export class UsergoogleController {
 async getInstructorLevel(@Param('uid') uid: string) {
     return this.usergoogleService.getInstructorLevel(uid);
 }
-
+@Put('update-picurl/:id')
+async updatePicUrl(
+  @Param('id') id: string,
+  @Body('picUrl') picUrl: string
+) {
+  if (!picUrl) {
+    throw new HttpException('picUrl is required', HttpStatus.BAD_REQUEST);
+  }
+  return this.usergoogleService.updatePicUrl(id, picUrl);
+}
 }

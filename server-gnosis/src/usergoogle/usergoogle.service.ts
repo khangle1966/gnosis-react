@@ -156,5 +156,19 @@ export class UsergoogleService {
     }
     return user.instructorLevel;
 }
-
+async updatePicUrl(userId: string, picUrl: string): Promise<Usergoogle> {
+  try {
+    const user = await this.usergoogleModel.findOneAndUpdate(
+      { uid: userId },
+      { picture: picUrl },
+      { new: true }
+    );
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+    return user;
+  } catch (error) {
+    throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+  }
+}
 }

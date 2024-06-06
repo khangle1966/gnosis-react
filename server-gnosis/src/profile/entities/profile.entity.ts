@@ -17,7 +17,7 @@ export class Profile {
     displayName: string;
 
     @IsEmail()
-    @Prop({ required: true, unique: true })
+    @Prop({ required: true,  unique: true })
     email: string;
 
 

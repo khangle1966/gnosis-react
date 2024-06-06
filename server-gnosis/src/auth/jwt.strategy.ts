@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, ExtractJwt } from 'passport-jwt';
+import { jwtConstants } from './constants'; // Import constants
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-            secretOrKey: process.env.JWT_SECRET, // Đảm bảo rằng giá trị này đúng với giá trị trong module
+            secretOrKey: jwtConstants.secret, // Sử dụng giá trị từ constants
         });
     }
 
