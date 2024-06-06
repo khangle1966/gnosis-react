@@ -49,11 +49,11 @@ export const createVNPayPayment = (amount, orderId, orderInfo, returnUrl, userId
             bankCode: '',
             returnUrl,
             userId,
-            courseIds: courseIds.join(',') // Gửi mảng courseIds dưới dạng chuỗi
+            courseIds: courseIds.join(',') 
         }).toString();
 
         const { data } = await axios.get(`http://localhost:3000/vnpay/create-payment-url?${params}`);
-        console.log('Payment URL received from server:', data.paymentUrl); // Log URL nhận được từ server
+        console.log('Payment URL received from server:', data.paymentUrl); 
         window.location.href = data.paymentUrl;
     } catch (error) {
         console.error('Error creating VNPay payment URL:', error);

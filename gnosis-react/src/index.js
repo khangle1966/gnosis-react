@@ -18,7 +18,7 @@ root.render(
   <Provider store={store}> {/* Sử dụng Provider để bao bọc App và GoogleOAuthProvider */}
     <GoogleOAuthProvider clientId="840218405895-07abtcjiasttgjuidc5rdjt5nlh667d4.apps.googleusercontent.com">
 
-        <App />
+      <App />
     </GoogleOAuthProvider>
 
 

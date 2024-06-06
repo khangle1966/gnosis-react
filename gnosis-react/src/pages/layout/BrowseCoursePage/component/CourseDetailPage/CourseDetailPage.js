@@ -276,9 +276,7 @@ export const CourseDetailPage = () => {
     return (
         <>
             <nav className={styles.navbar}>
-                {/* You can add your logo, navigation links or any other content here */}
                 <h1 className={styles.courseTitle}>{courseDetail.name}</h1>
-                {/* Add additional nav items here if needed */}
             </nav>
             <div className={styles.courseSidebar}>
                 <div className={styles.coursePreview}>

@@ -25,8 +25,12 @@ const ProfilePage = () => {
         bio: ''
     });
 
+
     const [userPicture, setUserPicture] = useState(user?.picture);
     const fileInputRef = useRef(null);
+
+    const [visibleCourses, setVisibleCourses] = useState(3); // Số lượng khóa học ban đầu được hiển thị
+
 
     useEffect(() => {
         if (profile) {
@@ -51,9 +55,11 @@ const ProfilePage = () => {
         }
     }, [isLoggedIn, profile, dispatch, navigate]);
 
+
     useEffect(() => {
         setUserPicture(user?.picture);
     }, [user]);
+
 
     const handleChange = (event) => {
         setFormData({
@@ -61,6 +67,7 @@ const ProfilePage = () => {
             [event.target.id]: event.target.value
         });
     };
+
 
     const handleAvatarClick = () => {
         fileInputRef.current.click();
@@ -73,6 +80,7 @@ const ProfilePage = () => {
             await dispatch(uploadAvatar(file, user.uid));
         }
     };
+
 
     const truncateDescription = (description) => {
         if (!description) return '';
@@ -104,6 +112,10 @@ const ProfilePage = () => {
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
+    };
+
+    const handleLoadMore = () => {
+        setVisibleCourses(visibleCourses + 3); // Hiển thị thêm 3 khóa học khi nhấp vào nút "Load More"
     };
 
     if (loading) return <p>Loading...</p>;
@@ -187,7 +199,11 @@ const ProfilePage = () => {
                     <h2 className={styles.coursesHeader}>Courses</h2>
                     {loading && <div>Loading courses...</div>}
                     {error && <div>Error fetching courses: {error.message}</div>}
-                    {userCourses && userCourses.map(course => (
+
+
+
+                    {userCourses && userCourses.slice(0, visibleCourses).map(course => (
+
                         <div className={styles.courseCard} key={course._id}>
                             <div className={styles.courseImageWrapper}>
                                 <img src={course.img} alt={course.name} />
@@ -202,6 +218,12 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     ))}
+
+
+                    {userCourses && visibleCourses < userCourses.length && (
+                        <button onClick={handleLoadMore} className={styles.loadMoreButton}>Loading more...</button>
+                    )}
+
                 </section>
             </main>
         </div>

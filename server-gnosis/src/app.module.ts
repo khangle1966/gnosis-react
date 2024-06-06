@@ -22,6 +22,8 @@ import { LessonCompletionModule } from './lesson-completion/lesson-completion.mo
 import { NoteModule } from './note/note.module';
 import { RatingModule } from './rating/rating.module';
 import { VnpayModule } from './vnpay/vnpay.module';
+import { ZaloPayModule } from './zalopay/zalopay.module';
+
 import { LoggerModule } from './logger/logger.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { RevenueModule } from './revenue/revenue.module';
@@ -57,6 +59,8 @@ import { PaymentModule } from './payment/payment.module';
     NoteModule,
     RatingModule,
     VnpayModule,
+    ZaloPayModule,
+
     LoggerModule,
     FavoritesModule,
     RevenueModule,

@@ -23,6 +23,7 @@ const BrowseCoursePage = () => {
     const [filteredCourses, setFilteredCourses] = useState([]); // Thêm state cho các khóa học đã lọc
     const [ownedCourses, setOwnedCourses] = useState([]); // Thêm state cho các khóa học đã sở hữu
 
+ 
     useEffect(() => {
         if (!isLoggedIn) {
             navigate('/login');

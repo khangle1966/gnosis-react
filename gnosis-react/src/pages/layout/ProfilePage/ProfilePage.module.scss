@@ -26,7 +26,6 @@
     }
 
     .breadcrumbs {
-
         font-size: 0.85rem;
         color: rgb(4, 136, 4);
         font-weight: bold;
@@ -90,7 +89,6 @@
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     gap: 20px;
-
 }
 
 .leftColumn,
@@ -134,8 +132,6 @@
             height: auto;
         }
 
-
-
         // Thêm các thuộc tính CSS khác cho avatar nếu cần
     }
 
@@ -175,7 +171,6 @@
     width: fit-content; // Để `width` tự động điều chỉnh theo nội dung bên trong
     // Các kiểu dáng khác của .middleColumn
     border-right: 2px solid #ccc; // Thêm viền ngăn cách bên phải
-
     // margin-left: 0; // Không cần thiết nếu bạn muốn nó tựa sát vào bên trái
     width: auto; // Cho phép nó mở rộng tùy theo nội dung
     max-width: 80%; // Cho phép mở rộng tối đa dựa trên chiều rộng của container cha
@@ -214,7 +209,6 @@
                 border-radius: 20px; // Viền bo tròn
                 box-sizing: border-box;
                 background: rgba(255, 255, 255, 0.5); // Màu nền mờ
-
                 font-size: 1rem; // Kích thước chữ
             }
         }
@@ -239,7 +233,6 @@
             border-radius: 20px; // Viền bo tròn
             box-sizing: border-box;
             background: rgba(255, 255, 255, 0.5); // Màu nền mờ
-
             font-size: 1rem; // Kích thước chữ
         }
 
@@ -268,7 +261,6 @@
         }
     }
 }
-
 
 .rightColumn {
     display: flex;
@@ -353,6 +345,24 @@
                     }
                 }
             }
+        }
+    }
+
+    .loadMoreButton {
+        align-self: center;
+        margin-left: 5rem;
+        padding: 8px 30px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: white;
+        background-color: #4CAF50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+            background-color: #45a049;
         }
     }
 

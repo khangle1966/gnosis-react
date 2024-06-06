@@ -31,7 +31,7 @@ const AdminPage = () => {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        if (user.role !== 'admin') {
+        if (user?.role !== 'admin') {
             navigate('/browsecourse');
         } else {
             dispatch(fetchUsers());
