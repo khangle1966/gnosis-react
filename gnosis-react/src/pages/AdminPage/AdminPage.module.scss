@@ -1,6 +1,8 @@
 .adminPage {
     padding: 20px;
     width: 85vw;
+    animation-name: zoomIn;
+    animation-duration: 1s;
 
     .separator {
         background-color: #d3d3d3;
@@ -183,5 +185,17 @@
         border: 1px solid #ccc;
         border-radius: 4px;
         padding: 5px;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }

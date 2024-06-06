@@ -10,7 +10,8 @@ import {
     PROFILE_UPDATE_FAILURE,
     PROFILE_FETCH_REQUEST,
     PROFILE_FETCH_SUCCESS,
-    PROFILE_FETCH_FAILURE
+    PROFILE_FETCH_FAILURE,
+
 } from '../types/profileActionTypes';
 export const checkDuplicateProfileRequest = () => {
     return { type: 'CHECK_DUPLICATE_PROFILE_REQUEST' };
@@ -37,6 +38,7 @@ export const fetchProfile = (userId) => async (dispatch) => {
         });
     }
 };
+
 
 export const completeCourse = (userId, courseId) => async (dispatch, getState) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });
@@ -89,7 +91,6 @@ export const updateProfile = (profileData, userId) => async (dispatch) => {
         });
     }
 };
-
 export const updateProfile2 = (profileData, userId) => async (dispatch) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });
     try {

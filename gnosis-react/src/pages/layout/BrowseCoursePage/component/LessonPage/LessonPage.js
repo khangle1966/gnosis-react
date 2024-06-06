@@ -28,7 +28,7 @@ export const LessonPage = () => {
     const { videoURL, loading, error } = useSelector(state => state.uploadVideo);
     const { courseDetail, loading: courseLoading } = useSelector(state => state.courseDetail);
     const { user } = useSelector(state => state.auth);
-    const userId = user.uid;
+    const userId = user ? user.uid : null;
     const [currentTime, setCurrentTime] = useState(0);
     const playerRef = useRef(null);
     const { chapters } = useSelector(state => state.chapterDetail);
@@ -88,10 +88,12 @@ export const LessonPage = () => {
         ratings.forEach(rating => {
             if (!userNames[rating.userId]) {
                 dispatch(fetchProfile(rating.userId)).then(profileData => {
-                    setUserNames(prevUserNames => ({
-                        ...prevUserNames,
-                        [rating.userId]: profileData.userName
-                    }));
+                    if (profileData && profileData.userName) { // Kiểm tra profileData và userName có tồn tại không
+                        setUserNames(prevUserNames => ({
+                            ...prevUserNames,
+                            [rating.userId]: profileData.userName
+                        }));
+                    }
                 });
             }
         });
@@ -396,8 +398,8 @@ export const LessonPage = () => {
                             show={showRatingModal}
                             handleClose={handleRatingModalClose}
                             handleSave={handleRatingSubmit}
-                            userId={userId} // Pass userId
-                            courseId={courseId} // Pass courseId
+                            userId={userId}
+                            courseId={courseId}
                         />
                     </div>
                 </div>

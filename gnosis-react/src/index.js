@@ -8,15 +8,21 @@ import reportWebVitals from './reportWebVitals';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import { Buffer } from 'buffer';
 import process from 'process';
+import AddUserPage from './pages/AdminPage/component/UserManagementPage/AddUserPage/AddUserPage';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 window.Buffer = Buffer;
 window.process = process;
 root.render(
   <Provider store={store}> {/* Sử dụng Provider để bao bọc App và GoogleOAuthProvider */}
     <GoogleOAuthProvider clientId="840218405895-07abtcjiasttgjuidc5rdjt5nlh667d4.apps.googleusercontent.com">
-      <App />
+
+        <App />
     </GoogleOAuthProvider>
-  </Provider>
+
+
+  </Provider >
 );
 
 // If you want to start measuring performance in your app, pass a function

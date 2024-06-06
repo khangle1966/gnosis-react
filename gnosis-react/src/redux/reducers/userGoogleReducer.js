@@ -9,6 +9,9 @@ import {
     UPDATE_USERGOOGLE_REQUEST,
     UPDATE_USERGOOGLE_SUCCESS,
     UPDATE_USERGOOGLE_FAILURE,
+    UPDATE_USERGOOGLE_PICURL_REQUEST,
+    UPDATE_USERGOOGLE_PICURL_SUCCESS,
+    UPDATE_USERGOOGLE_PICURL_FAILURE,
 } from '../types/userGoogleTypes';
 
 const initialState = {
@@ -22,6 +25,7 @@ export const userGoogleReducer = (state = initialState, action) => {
         case FETCH_USERGOOGLE_REQUEST:
         case DELETE_USERGOOGLE_REQUEST:
         case UPDATE_USERGOOGLE_REQUEST:
+        case UPDATE_USERGOOGLE_PICURL_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -46,9 +50,18 @@ export const userGoogleReducer = (state = initialState, action) => {
                     user.uid === action.payload.uid ? action.payload : user
                 ),
             };
+        case UPDATE_USERGOOGLE_PICURL_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                userGoogle: state.userGoogle.map(user =>
+                    user.uid === action.payload.uid ? action.payload : user
+                ),
+            };
         case FETCH_USERGOOGLE_FAILURE:
         case DELETE_USERGOOGLE_FAILURE:
         case UPDATE_USERGOOGLE_FAILURE:
+        case UPDATE_USERGOOGLE_PICURL_FAILURE:
             return {
                 ...state,
                 loading: false,

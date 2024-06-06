@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { fetchProfile, updateProfile2 } from '../../../redux/action/profileActions'; // Đảm bảo đã import hành động updateProfile
+import { fetchProfile, updateProfile2 } from '../../../redux/action/profileActions';
 import { logout } from '../../../redux/action/authActions';
 import { fetchUserCourses } from '../../../redux/action/courseActions';
-
+import { uploadAvatar } from '../../../redux/action/userGoogleActions';
 import styles from './ProfilePage.module.scss';
 
 const ProfilePage = () => {
@@ -18,13 +18,15 @@ const ProfilePage = () => {
     const { userCourses, loading, error } = useSelector(state => state.course);
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
 
-
     const [formData, setFormData] = useState({
         userName: '',
         gender: 'male',
         country: '',
         bio: ''
     });
+
+    const [userPicture, setUserPicture] = useState(user?.picture);
+    const fileInputRef = useRef(null);
 
     useEffect(() => {
         if (profile) {
@@ -48,20 +50,40 @@ const ProfilePage = () => {
             dispatch(fetchUserCourses(profile.courses));
         }
     }, [isLoggedIn, profile, dispatch, navigate]);
+
+    useEffect(() => {
+        setUserPicture(user?.picture);
+    }, [user]);
+
     const handleChange = (event) => {
         setFormData({
             ...formData,
             [event.target.id]: event.target.value
         });
     };
+
+    const handleAvatarClick = () => {
+        fileInputRef.current.click();
+    };
+
+    const handleAvatarChange = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setUserPicture(URL.createObjectURL(file));
+            await dispatch(uploadAvatar(file, user.uid));
+        }
+    };
+
     const truncateDescription = (description) => {
-        if (!description) return ''; // Kiểm tra nếu không tồn tại mô tả
+        if (!description) return '';
         return description.length > 50 ? description.substring(0, 50) + '...' : description;
     };
+
     const truncateNameCourse = (name) => {
-        if (!name) return ''; // Kiểm tra nếu không tồn tại mô tả
+        if (!name) return '';
         return name.length > 50 ? name.substring(0, 50) + '...' : name;
     };
+
     const handleSubmit = async (event) => {
         event.preventDefault();
         try {
@@ -74,9 +96,11 @@ const ProfilePage = () => {
             setNotification({ show: false, message: '' });
         }, 3000);
     };
+
     const handleDescriptionClick = (courseId) => {
         navigate(`/course/${courseId}`);
     };
+
     const handleLogout = () => {
         dispatch(logout());
         navigate('/login');
@@ -87,7 +111,6 @@ const ProfilePage = () => {
 
     return (
         <div className={styles.profilePage}>
-
             {notification.show && (
                 <div className={styles.notification}>
                     {notification.message}
@@ -103,7 +126,14 @@ const ProfilePage = () => {
             </header>
             <main className={styles.profileContent}>
                 <section className={styles.leftColumn}>
-                    <img src={user?.picture} alt={`Avatar of ${user?.name}`} className={styles.avatar} />
+                    <img src={userPicture} alt={`Avatar of ${user?.name}`} className={styles.avatar} onClick={handleAvatarClick} />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={fileInputRef}
+                        style={{ display: 'none' }}
+                        onChange={handleAvatarChange}
+                    />
                     <h2 className={styles.userName}>{profile.userName}</h2>
                     <p className={styles.userEmail}>{user?.email}</p>
                 </section>
@@ -158,9 +188,7 @@ const ProfilePage = () => {
                     {loading && <div>Loading courses...</div>}
                     {error && <div>Error fetching courses: {error.message}</div>}
                     {userCourses && userCourses.map(course => (
-                        <div className={styles.courseCard}>
-
-
+                        <div className={styles.courseCard} key={course._id}>
                             <div className={styles.courseImageWrapper}>
                                 <img src={course.img} alt={course.name} />
                             </div>
@@ -174,9 +202,7 @@ const ProfilePage = () => {
                             </div>
                         </div>
                     ))}
-
                 </section>
-
             </main>
         </div>
     );

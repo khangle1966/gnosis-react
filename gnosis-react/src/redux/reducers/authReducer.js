@@ -5,7 +5,7 @@ const initialState = {
     user: null,
     error: '',
     registerSuccessMessage: '',
-    role: null,  // Thêm trường này để lưu trữ vai trò của người dùng
+    role: null,
     profileComplete: false,
     profileCompleteGoogle: false,
     loginMethod: null,
@@ -25,7 +25,7 @@ const authReducer = (state = initialState, action) => {
                 loading: false,
                 user: action.payload.user,
                 role: action.payload.role,
-                profileComplete: action.payload.profileComplete, // profileComplete được cập nhật dựa trên payload
+                profileComplete: action.payload.profileComplete,
                 loginMethod: 'standard',
                 error: ''
             };
@@ -36,7 +36,7 @@ const authReducer = (state = initialState, action) => {
                 loading: false,
                 user: action.payload.user,
                 role: action.payload.role,
-                profileCompleteGoogle: action.payload.profileCompleteGoogle, // profileComplete được cập nhật dựa trên payload
+                profileCompleteGoogle: action.payload.profileCompleteGoogle,
                 loginMethod: 'google',
                 error: ''
             };
@@ -48,19 +48,14 @@ const authReducer = (state = initialState, action) => {
             };
         case 'LOGOUT':
             return {
-                ...state,
-                isLoggedIn: false,
-                loading: false,
-                user: null,
-                error: ''
+                ...initialState
             };
-        // Thêm các trường hợp xử lý cho đăng ký
         case 'REGISTER_REQUEST':
             return {
                 ...state,
                 isRegistering: true,
                 loading: true,
-                error: '' // Xóa lỗi trước khi bắt đầu yêu cầu mới
+                error: ''
             };
         case 'REGISTER_SUCCESS':
             return {
@@ -69,7 +64,7 @@ const authReducer = (state = initialState, action) => {
                 loading: false,
                 user: action.payload,
                 error: '',
-                registerSuccessMessage: 'Tạo thành công tài khoản, bạn có thể đăng nhập ngay bây giờ.' // Cập nhật thông báo ở đây
+                registerSuccessMessage: 'Tạo thành công tài khoản, bạn có thể đăng nhập ngay bây giờ.'
             };
         case 'RESET_REGISTER_SUCCESS_MESSAGE':
             return {
@@ -83,10 +78,14 @@ const authReducer = (state = initialState, action) => {
                 loading: false,
                 error: action.payload
             };
-
+        case 'AUTH_UPDATE_USER':
+            return {
+                ...state,
+                user: action.payload,
+            };
         default:
             return state;
     }
-}
+};
 
 export default authReducer;
