@@ -11,7 +11,7 @@ import {
     PROFILE_FETCH_REQUEST,
     PROFILE_FETCH_SUCCESS,
     PROFILE_FETCH_FAILURE,
- 
+
 
 } from '../types/profileActionTypes';
 
@@ -28,25 +28,31 @@ const initialState = {
 const profileReducer = (state = initialState, action) => {
     switch (action.type) {
         case PROFILE_CREATE_REQUEST:
-        case PROFILE_UPDATE_REQUEST:
-     
+
+
         case PROFILE_DELETE_REQUEST:
             return { ...state, loading: true, error: null };
         case PROFILE_CREATE_SUCCESS:
+        case PROFILE_UPDATE_REQUEST:
+            return { ...state, loading: true, error: null };
         case PROFILE_UPDATE_SUCCESS:
-      
+            return { ...state, loading: false, profile: action.payload, error: null };
         case PROFILE_DELETE_SUCCESS:
             return { ...state, loading: false, profile: null, error: null };
         case PROFILE_CREATE_FAILURE:
         case PROFILE_UPDATE_FAILURE:
-       
+            return { ...state, loading: false, error: action.payload };
+
         case PROFILE_DELETE_FAILURE:
             return { ...state, loading: false, error: action.payload };
         case PROFILE_FETCH_REQUEST:
+            console.log('PROFILE_FETCH_REQUEST'); // Log khi action bắt đầu
             return { ...state, loading: true, error: null };
         case PROFILE_FETCH_SUCCESS:
+            console.log('PROFILE_FETCH_SUCCESS', action.payload); // Log dữ liệu khi thành công
             return { ...state, loading: false, profile: action.payload, error: null };
         case PROFILE_FETCH_FAILURE:
+            console.log('PROFILE_FETCH_FAILURE', action.payload); // Log lỗi khi thất bại
             return { ...state, loading: false, error: action.payload };
         default:
             return state;
