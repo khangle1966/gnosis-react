@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers, deleteUser, updateUser } from '../../../../redux/action/userActions';
-import { fetchUserGoogle, deleteUserGoogle, updateUserGoogle } from '../../../../redux/action/userGoogleActions';
+import { fetchUsers, updateUser, banUser, unbanUser } from '../../../../redux/action/userActions';
+import { fetchUserGoogle, banUserGoogle, unbanUserGoogle, updateUserGoogle } from '../../../../redux/action/userGoogleActions';
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Typography, Tabs, Tab, Box, TablePagination, IconButton } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import DownloadIcon from '@mui/icons-material/GetApp';
@@ -28,11 +28,19 @@ const UserManagementPage = () => {
         setSearchTerm(e.target.value);
     };
 
-    const handleDelete = (id, type) => {
+    const handleBan = (id, type) => {
         if (type === 'user') {
-            dispatch(deleteUser(id));
+            dispatch(banUser(id));
         } else {
-            dispatch(deleteUserGoogle(id));
+            dispatch(banUserGoogle(id));
+        }
+    };
+
+    const handleUnban = (id, type) => {
+        if (type === 'user') {
+            dispatch(unbanUser(id));
+        } else {
+            dispatch(unbanUserGoogle(id));
         }
     };
 
@@ -114,6 +122,7 @@ const UserManagementPage = () => {
                             <TableCell>Ngày sinh</TableCell>
                             <TableCell>Giới tính</TableCell>
                             <TableCell>Quyền</TableCell>
+                            <TableCell>Trạng thái</TableCell>
                             <TableCell>Thao tác</TableCell>
                         </TableRow>
                     </TableHead>
@@ -127,9 +136,13 @@ const UserManagementPage = () => {
                                 <TableCell>{new Date(user.dateOfBirth).toLocaleDateString()}</TableCell>
                                 <TableCell>{user.gender}</TableCell>
                                 <TableCell>{user.role}</TableCell>
+                                <TableCell>{user.isBanned ? 'Bị cấm' : 'Hoạt động'}</TableCell>
                                 <TableCell>
-                                    <Button color="primary" onClick={() => handleUpdate(user.uid, { ...user }, type)} className={styles.button}>Edit</Button>
-                                    <Button color="secondary" onClick={() => handleDelete(user.uid, type)} className={styles.button}>Delete</Button>
+                                    {user.isBanned ? (
+                                        <Button color="secondary" onClick={() => handleUnban(user.uid, type)} className={styles.button}>Unban</Button>
+                                    ) : (
+                                        <Button color="secondary" onClick={() => handleBan(user.uid, type)} className={styles.button}>Ban</Button>
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}

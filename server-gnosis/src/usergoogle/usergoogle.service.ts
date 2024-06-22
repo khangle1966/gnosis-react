@@ -152,23 +152,48 @@ export class UsergoogleService {
   async getInstructorLevel(uid: string): Promise<string> {
     const user = await this.usergoogleModel.findOne({ uid }).exec();
     if (!user) {
-        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
-    }
-    return user.instructorLevel;
-}
-async updatePicUrl(userId: string, picUrl: string): Promise<Usergoogle> {
-  try {
-    const user = await this.usergoogleModel.findOneAndUpdate(
-      { uid: userId },
-      { picture: picUrl },
-      { new: true }
-    );
-    if (!user) {
       throw new HttpException('User not found', HttpStatus.NOT_FOUND);
     }
-    return user;
-  } catch (error) {
-    throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    return user.instructorLevel;
   }
-}
+  async updatePicUrl(userId: string, picUrl: string): Promise<Usergoogle> {
+    try {
+      const user = await this.usergoogleModel.findOneAndUpdate(
+        { uid: userId },
+        { picture: picUrl },
+        { new: true }
+      );
+      if (!user) {
+        throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+      }
+      return user;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  async banUser(id: string) {
+    try {
+      const bannedUser = await this.usergoogleModel.findOneAndUpdate(
+        { uid: id },
+        { isBanned: true },
+        { new: true },
+      );
+      return bannedUser;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  async unbanUser(id: string) {
+    try {
+      const unbannedUser = await this.usergoogleModel.findOneAndUpdate(
+        { uid: id },
+        { isBanned: false },
+        { new: true },
+      );
+      return unbannedUser;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
 }

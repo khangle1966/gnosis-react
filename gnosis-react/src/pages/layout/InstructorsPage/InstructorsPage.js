@@ -142,7 +142,7 @@ const InstructorsPage = () => {
                         </div>
                         <div className={styles.price}>
                             <label htmlFor="price">Price</label>
-                            <input type="text" id="price" value={course.price} onChange={handleChange} placeholder="USD, per course" />
+                            <input type="text" id="price" value={course.price} onChange={handleChange} placeholder="VNĐ, per course" />
                         </div>
                     </div>
                 </div>

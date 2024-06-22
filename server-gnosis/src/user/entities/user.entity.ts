@@ -30,8 +30,11 @@ export class User {
     @Prop({ default: 'user' })
     role: string;
 
-    @Prop() // Khai báo trường createdAt
+    @Prop()
     createdAt: Date;
+
+    @Prop({ default: false })
+    isBanned: boolean;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

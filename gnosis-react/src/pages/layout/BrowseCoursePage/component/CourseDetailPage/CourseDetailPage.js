@@ -10,8 +10,9 @@ import { addToCart } from '../../../../../redux/action/cartActions';  // Import 
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { updateChapterOrder } from '../../../../../redux/action/chapterActions';
 import { ObjectId } from 'bson';
-import {  faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Link } from 'react-router-dom';
 
 import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn đã import LessonModal đúng
 import ReactQuill from 'react-quill';
@@ -28,6 +29,7 @@ export const CourseDetailPage = () => {
 
     const dispatch = useDispatch();
     const { courseDetail, loading: loadingCourse } = useSelector(state => state.courseDetail);
+    console.log(courseDetail.authorId);
     const { lessons, loading: loadingLessons } = useSelector(state => state.lessonDetail);
     const { chapters, loadingChapters } = useSelector(state => state.chapterDetail || { chapters: [] });
 
@@ -323,13 +325,14 @@ export const CourseDetailPage = () => {
                     />
                     <p className={styles.courseSubtitle}>{courseDetail.subTitle}</p>
                     <div className={styles.courseRating}>
-                        <span className={styles.rating}>({courseDetail.rating.toFixed(1)})</span>
-                        {renderStars(courseDetail.rating)}
+                        <span className={styles.rating}>({courseDetail.rating ? courseDetail.rating.toFixed(1) : 'N/A'})</span>
+                        {courseDetail.rating && renderStars(courseDetail.rating)}
                         <span>({courseDetail.numberOfReviews} xếp hạng)</span>
                         <span className={styles.enrollment}>{courseDetail.numberOfStudents} học viên</span>
                     </div>
                     <div className={styles.instructorInfo}>
-                        Được tạo bởi <a href='/default' > {courseDetail.author} </a>
+                        Được tạo bởi <Link to={`/profileinstructor/${courseDetail.authorId}`}>{courseDetail?.author || 'Giảng viên'}</Link>
+
                         <span className={styles.updateDate}>Lần cập nhật gần đây nhất {formatDate(courseDetail.updatedAt)}</span>
                         <span
                             className={`${styles.language} ${editMode ? styles.editable : ''}`}

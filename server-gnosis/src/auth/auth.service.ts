@@ -23,6 +23,7 @@ export class AuthService {
         private usersService: UserService,
         private jwtService: JwtService
     ) { }
+
     async register(createUserDto: CreateUserDto): Promise<any> {
         let user = await this.usersService.findOne(createUserDto.email);
         if (user) {
@@ -52,6 +53,9 @@ export class AuthService {
 
     async findOrCreateUser(googleUser: any): Promise<any> {
         let user = await this.usergoogleModel.findOne({ email: googleUser.email });
+        if (user && user.isBanned) {
+            throw new UnauthorizedException('Tài khoản Google của bạn đã bị cấm.');
+        }
         if (!user) {
             user = new this.usergoogleModel({
                 uid: googleUser.sub,
@@ -67,6 +71,10 @@ export class AuthService {
     async validateUser(email: string, plainTextPassword: string): Promise<any> {
         const user = await this.usersService.findOneByEmail(email);
         if (!user) return null;
+
+        if (user.isBanned) {
+            throw new UnauthorizedException('Tài khoản của bạn đã bị cấm.');
+        }
 
         const passwordsMatch = await bcrypt.compare(plainTextPassword, user.password);
         if (passwordsMatch) {

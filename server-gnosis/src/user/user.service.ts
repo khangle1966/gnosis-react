@@ -14,7 +14,7 @@ export class UserService {
   ) { }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
-    console.log('hashedPassword khi tạo người dùng:', createUserDto.password); 
+    console.log('hashedPassword khi tạo người dùng:', createUserDto.password);
 
     const createdUser = new this.userModel({
       ...createUserDto,
@@ -80,6 +80,31 @@ export class UserService {
     const result = await this.userModel.findOneAndDelete({ uid }).exec();
     if (!result) {
       throw new NotFoundException(`User with UID "${uid}" not found`);
+    }
+  }
+  async banUser(uid: string): Promise<User> {
+    try {
+      const bannedUser = await this.userModel.findOneAndUpdate(
+        { uid },
+        { isBanned: true },
+        { new: true },
+      );
+      return bannedUser;
+    } catch (error) {
+      throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async unbanUser(uid: string): Promise<User> {
+    try {
+      const unbannedUser = await this.userModel.findOneAndUpdate(
+        { uid },
+        { isBanned: false },
+        { new: true },
+      );
+      return unbannedUser;
+    } catch (error) {
+      throw new HttpException(error.message, error.status || HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

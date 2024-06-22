@@ -74,13 +74,16 @@ export const loginWithGoogleAction = (access_token) => async (dispatch) => {
             }
         });
 
-        const profileCompleteGoogle = res.data.user && res.data.user.profile && res.data.user.profile.trim() !== '';
-
-        dispatch(loginWithGoogleSuccess(res.data.user, res.data.user.role, profileCompleteGoogle));
-
-        localStorage.setItem('token', JSON.stringify(res.data.token)); // Lưu token vào localStorage
+        if (res.data && res.data.user && res.data.token) {
+            const profileCompleteGoogle = res.data.user && res.data.user.profile && res.data.user.profile.trim() !== '';
+            dispatch(loginWithGoogleSuccess(res.data.user, res.data.user.role, profileCompleteGoogle));
+            localStorage.setItem('token', JSON.stringify(res.data.token)); // Lưu token vào localStorage
+        } else {
+            throw new Error('Invalid response from server');
+        }
     } catch (error) {
-        console.log('Google login error:', error);
+        console.log('Google login error:', error.response ? error.response.data : error.message);
+        dispatch(loginFailure(error.response ? error.response.data.message : 'Something went wrong'));
     }
 };
 

@@ -110,17 +110,27 @@ export class UsergoogleController {
     return this.usergoogleService.getMonthlyData(uid);
   }
   @Get('instructor-level/:uid')
-async getInstructorLevel(@Param('uid') uid: string) {
+  async getInstructorLevel(@Param('uid') uid: string) {
     return this.usergoogleService.getInstructorLevel(uid);
-}
-@Put('update-picurl/:id')
-async updatePicUrl(
-  @Param('id') id: string,
-  @Body('picUrl') picUrl: string
-) {
-  if (!picUrl) {
-    throw new HttpException('picUrl is required', HttpStatus.BAD_REQUEST);
   }
-  return this.usergoogleService.updatePicUrl(id, picUrl);
-}
+  @Put('update-picurl/:id')
+  async updatePicUrl(
+    @Param('id') id: string,
+    @Body('picUrl') picUrl: string
+  ) {
+    if (!picUrl) {
+      throw new HttpException('picUrl is required', HttpStatus.BAD_REQUEST);
+    }
+    return this.usergoogleService.updatePicUrl(id, picUrl);
+  }
+
+  @Put('ban/:id')
+  async banUser(@Param('id') id: string) {
+    return this.usergoogleService.banUser(id);
+  }
+
+  @Put('unban/:id')
+  async unbanUser(@Param('id') id: string) {
+    return this.usergoogleService.unbanUser(id);
+  }
 }

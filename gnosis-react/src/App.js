@@ -26,7 +26,7 @@ import UserManagementPage from './pages/AdminPage/component/UserManagementPage/U
 import AddUserPage from './pages/AdminPage/component/UserManagementPage/AddUserPage/AddUserPage';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-
+import ProfileInstructorPage from './pages/layout/ProfileInstructorPage/ProfileInstructorPage'
 function App() {
   return (
     <Provider store={store}>
@@ -39,6 +39,7 @@ function App() {
               <Route path="/home" element={<HomePage />} />
               <Route path="course/:courseId" element={<CourseDetailPage />} />
               <Route path="/profile" element={< ProfilePage />} />
+              <Route path='/profileinstructor/:id' element={<ProfileInstructorPage />} />
               <Route path="/cart" element={<CartPage />} />
               <Route path="/instructor" element={<InstructorsPage />} />
             </Route>

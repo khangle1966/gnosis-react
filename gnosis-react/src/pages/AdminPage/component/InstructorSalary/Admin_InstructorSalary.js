@@ -243,7 +243,7 @@ const Admin_InstructorSalary = () => {
                                     Lương giảng viên
                                 </Typography>
                                 <Typography variant="h4" className={styles.cardValue}>
-                                    {loading ? 'Loading...' : formatCurrency(instructorsSalary.reduce((acc, curr) => acc + curr.total, 0))}
+                                    {loading || !instructorsSalary ? 'Loading...' : formatCurrency(instructorsSalary.reduce((acc, curr) => acc + curr.total, 0))}
                                 </Typography>
                             </CardContent>
                         </Card>
@@ -256,7 +256,7 @@ const Admin_InstructorSalary = () => {
                                     Lợi nhuận của Gnosis
                                 </Typography>
                                 <Typography variant="h4" className={styles.cardValue}>
-                                    {loading ? 'Loading...' : formatCurrency(adminSalary.reduce((acc, curr) => acc + curr.total, 0))}
+                                    {loading || !adminSalary ? 'Loading...' : formatCurrency(adminSalary.reduce((acc, curr) => acc + curr.total, 0))}
                                 </Typography>
                             </CardContent>
                         </Card>

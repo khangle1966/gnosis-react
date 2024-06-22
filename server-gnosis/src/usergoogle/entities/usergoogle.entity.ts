@@ -29,6 +29,9 @@ export class Usergoogle {
     instructorLevel: string;
     @Prop() // Khai báo trường createdAt
     createdAt: Date;
+
+    @Prop({ default: false })
+    isBanned: boolean;
 }
 
 export const UsergoogleSchema = SchemaFactory.createForClass(Usergoogle);

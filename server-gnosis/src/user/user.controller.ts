@@ -54,7 +54,15 @@ export class UserController {
       throw error;
     }
   }
+  @Put('ban/:uid')
+  async banUser(@Param('uid') uid: string): Promise<User> {
+    return this.userService.banUser(uid);
+  }
 
+  @Put('unban/:uid')
+  async unbanUser(@Param('uid') uid: string): Promise<User> {
+    return this.userService.unbanUser(uid);
+  }
   @Put(':id')
   async update(
     @Param('id') id: string,

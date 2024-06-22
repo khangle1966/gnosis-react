@@ -3,9 +3,12 @@ import {
     FETCH_USERGOOGLE_REQUEST,
     FETCH_USERGOOGLE_SUCCESS,
     FETCH_USERGOOGLE_FAILURE,
-    DELETE_USERGOOGLE_REQUEST,
-    DELETE_USERGOOGLE_SUCCESS,
-    DELETE_USERGOOGLE_FAILURE,
+    BAN_USERGOOGLE_REQUEST,
+    BAN_USERGOOGLE_SUCCESS,
+    BAN_USERGOOGLE_FAILURE,
+    UNBAN_USERGOOGLE_REQUEST,
+    UNBAN_USERGOOGLE_SUCCESS,
+    UNBAN_USERGOOGLE_FAILURE,
     UPDATE_USERGOOGLE_REQUEST,
     UPDATE_USERGOOGLE_SUCCESS,
     UPDATE_USERGOOGLE_FAILURE,
@@ -23,7 +26,12 @@ const initialState = {
 export const userGoogleReducer = (state = initialState, action) => {
     switch (action.type) {
         case FETCH_USERGOOGLE_REQUEST:
-        case DELETE_USERGOOGLE_REQUEST:
+        case BAN_USERGOOGLE_REQUEST:
+        case UNBAN_USERGOOGLE_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            };
         case UPDATE_USERGOOGLE_REQUEST:
         case UPDATE_USERGOOGLE_PICURL_REQUEST:
             return {
@@ -36,11 +44,14 @@ export const userGoogleReducer = (state = initialState, action) => {
                 loading: false,
                 userGoogle: action.payload,
             };
-        case DELETE_USERGOOGLE_SUCCESS:
+        case BAN_USERGOOGLE_SUCCESS:
+        case UNBAN_USERGOOGLE_SUCCESS:
             return {
                 ...state,
                 loading: false,
-                userGoogle: state.userGoogle.filter(user => user.uid !== action.payload),
+                userGoogle: state.userGoogle.map(user =>
+                    user.uid === action.payload.uid ? action.payload : user
+                ),
             };
         case UPDATE_USERGOOGLE_SUCCESS:
             return {
@@ -59,7 +70,13 @@ export const userGoogleReducer = (state = initialState, action) => {
                 ),
             };
         case FETCH_USERGOOGLE_FAILURE:
-        case DELETE_USERGOOGLE_FAILURE:
+        case BAN_USERGOOGLE_FAILURE:
+        case UNBAN_USERGOOGLE_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+            };
         case UPDATE_USERGOOGLE_FAILURE:
         case UPDATE_USERGOOGLE_PICURL_FAILURE:
             return {

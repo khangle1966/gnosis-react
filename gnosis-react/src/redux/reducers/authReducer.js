@@ -16,7 +16,8 @@ const authReducer = (state = initialState, action) => {
         case 'LOGIN_REQUEST':
             return {
                 ...state,
-                loading: true
+                loading: true,
+                error: '',
             };
         case 'LOGIN_SUCCESS':
             return {
@@ -27,7 +28,7 @@ const authReducer = (state = initialState, action) => {
                 role: action.payload.role,
                 profileComplete: action.payload.profileComplete,
                 loginMethod: 'standard',
-                error: ''
+                error: '',
             };
         case 'LOGIN_GOOGLE_SUCCESS':
             return {
@@ -38,24 +39,24 @@ const authReducer = (state = initialState, action) => {
                 role: action.payload.role,
                 profileCompleteGoogle: action.payload.profileCompleteGoogle,
                 loginMethod: 'google',
-                error: ''
+                error: '',
             };
         case 'LOGIN_FAILURE':
             return {
                 ...state,
                 loading: false,
-                error: action.payload
+                error: action.payload,
             };
         case 'LOGOUT':
             return {
-                ...initialState
+                ...initialState,
             };
         case 'REGISTER_REQUEST':
             return {
                 ...state,
                 isRegistering: true,
                 loading: true,
-                error: ''
+                error: '',
             };
         case 'REGISTER_SUCCESS':
             return {
@@ -64,19 +65,19 @@ const authReducer = (state = initialState, action) => {
                 loading: false,
                 user: action.payload,
                 error: '',
-                registerSuccessMessage: 'Tạo thành công tài khoản, bạn có thể đăng nhập ngay bây giờ.'
+                registerSuccessMessage: 'Tạo thành công tài khoản, bạn có thể đăng nhập ngay bây giờ.',
             };
         case 'RESET_REGISTER_SUCCESS_MESSAGE':
             return {
                 ...state,
-                registerSuccessMessage: ''
+                registerSuccessMessage: '',
             };
         case 'REGISTER_FAILURE':
             return {
                 ...state,
                 isRegistering: false,
                 loading: false,
-                error: action.payload
+                error: action.payload,
             };
         case 'AUTH_UPDATE_USER':
             return {

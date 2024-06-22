@@ -3,9 +3,12 @@ import {
     FETCH_USERGOOGLE_REQUEST,
     FETCH_USERGOOGLE_SUCCESS,
     FETCH_USERGOOGLE_FAILURE,
-    DELETE_USERGOOGLE_REQUEST,
-    DELETE_USERGOOGLE_SUCCESS,
-    DELETE_USERGOOGLE_FAILURE,
+    BAN_USERGOOGLE_REQUEST,
+    BAN_USERGOOGLE_SUCCESS,
+    BAN_USERGOOGLE_FAILURE,
+    UNBAN_USERGOOGLE_REQUEST,
+    UNBAN_USERGOOGLE_SUCCESS,
+    UNBAN_USERGOOGLE_FAILURE,
     UPDATE_USERGOOGLE_REQUEST,
     UPDATE_USERGOOGLE_SUCCESS,
     UPDATE_USERGOOGLE_FAILURE,
@@ -25,13 +28,23 @@ export const fetchUserGoogle = () => async (dispatch) => {
     }
 };
 
-export const deleteUserGoogle = (id) => async (dispatch) => {
-    dispatch({ type: DELETE_USERGOOGLE_REQUEST });
+export const banUserGoogle = (id) => async (dispatch) => {
+    dispatch({ type: BAN_USERGOOGLE_REQUEST });
     try {
-        await axios.delete(`http://localhost:3000/v1/usergoogle/${id}`);
-        dispatch({ type: DELETE_USERGOOGLE_SUCCESS, payload: id });
+        const { data } = await axios.put(`http://localhost:3000/v1/usergoogle/ban/${id}`);
+        dispatch({ type: BAN_USERGOOGLE_SUCCESS, payload: data });
     } catch (error) {
-        dispatch({ type: DELETE_USERGOOGLE_FAILURE, payload: error.message });
+        dispatch({ type: BAN_USERGOOGLE_FAILURE, payload: error.message });
+    }
+};
+
+export const unbanUserGoogle = (id) => async (dispatch) => {
+    dispatch({ type: UNBAN_USERGOOGLE_REQUEST });
+    try {
+        const { data } = await axios.put(`http://localhost:3000/v1/usergoogle/unban/${id}`);
+        dispatch({ type: UNBAN_USERGOOGLE_SUCCESS, payload: data });
+    } catch (error) {
+        dispatch({ type: UNBAN_USERGOOGLE_FAILURE, payload: error.message });
     }
 };
 

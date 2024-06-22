@@ -17,12 +17,10 @@ import { CategoryModule } from './category/category.module';
 import { ChapterModule } from './chapter/chapter.module';
 import { UploadModule } from './upload/upload.module';
 import { CartModule } from './cart/cart.module';
-import { MomoModule } from './momo/momo.module';
 import { LessonCompletionModule } from './lesson-completion/lesson-completion.module';
 import { NoteModule } from './note/note.module';
 import { RatingModule } from './rating/rating.module';
 import { VnpayModule } from './vnpay/vnpay.module';
-import { ZaloPayModule } from './zalopay/zalopay.module';
 
 import { LoggerModule } from './logger/logger.module';
 import { FavoritesModule } from './favorites/favorites.module';
@@ -54,12 +52,11 @@ import { PaymentModule } from './payment/payment.module';
     ChapterModule,
     UploadModule,
     CartModule,
-    MomoModule,
+
     LessonCompletionModule,
     NoteModule,
     RatingModule,
     VnpayModule,
-    ZaloPayModule,
 
     LoggerModule,
     FavoritesModule,
@@ -70,6 +67,6 @@ import { PaymentModule } from './payment/payment.module';
   ],
   controllers: [AppController],
   providers: [AppService],
- 
+
 })
 export class AppModule { }

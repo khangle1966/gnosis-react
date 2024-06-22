@@ -1,4 +1,3 @@
-// userReducer.js
 import {
     FETCH_USERS_REQUEST,
     FETCH_USERS_SUCCESS,
@@ -12,6 +11,12 @@ import {
     CREATE_USER_REQUEST,
     CREATE_USER_SUCCESS,
     CREATE_USER_FAILURE,
+    BAN_USER_REQUEST,
+    BAN_USER_SUCCESS,
+    BAN_USER_FAILURE,
+    UNBAN_USER_REQUEST,
+    UNBAN_USER_SUCCESS,
+    UNBAN_USER_FAILURE,
 } from '../types/userTypes';
 
 const initialState = {
@@ -26,6 +31,8 @@ export const userReducer = (state = initialState, action) => {
         case UPDATE_USER_REQUEST:
         case CREATE_USER_REQUEST:
         case DELETE_USER_REQUEST:
+        case BAN_USER_REQUEST:
+        case UNBAN_USER_REQUEST:
             return {
                 ...state,
                 loading: true,
@@ -38,6 +45,8 @@ export const userReducer = (state = initialState, action) => {
             };
 
         case UPDATE_USER_SUCCESS:
+        case BAN_USER_SUCCESS:
+        case UNBAN_USER_SUCCESS:
             return {
                 ...state,
                 loading: false,
@@ -61,6 +70,8 @@ export const userReducer = (state = initialState, action) => {
         case CREATE_USER_FAILURE:
         case UPDATE_USER_FAILURE:
         case DELETE_USER_FAILURE:
+        case BAN_USER_FAILURE:
+        case UNBAN_USER_FAILURE:
             return {
                 ...state,
                 loading: false,
