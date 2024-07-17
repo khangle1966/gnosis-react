@@ -42,6 +42,7 @@ export const CourseDetailPage = () => {
     const dispatch = useDispatch(); // Khởi tạo hook dispatch để gửi hành động
 
     const { courseDetail, loading: loadingCourse } = useSelector(state => state.courseDetail); // Lấy thông tin chi tiết khóa học từ Redux store
+    console.log(courseDetail.isReleased)
     const { lessons, loading: loadingLessons } = useSelector(state => state.lessonDetail); // Lấy danh sách bài học từ Redux store
     const { chapters, loadingChapters } = useSelector(state => state.chapterDetail || { chapters: [] }); // Lấy danh sách chương từ Redux store
     const { user } = useSelector(state => state.auth); // Lấy thông tin người dùng từ Redux store
@@ -252,6 +253,11 @@ export const CourseDetailPage = () => {
     if (loadingCourse || loadingLessons || loadingChapters) {
         return <div>Đang tải...</div>;
     }
+
+    if (!courseDetail.isReleased && user.uid !== courseDetail.authorId && user.role !== 'admin') {
+        return <div>Khóa học này chưa được công bố.</div>; // Hoặc điều hướng về trang khác
+    }
+
 
     const handleToggleChapter = (chapterId) => {
         setOpenChapters(prev => {

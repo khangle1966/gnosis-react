@@ -140,6 +140,9 @@ const ProfilePage = () => {
         dispatch(logout());
         navigate('/login');
     };
+    const NavigateProfileInstructor = () => {
+        navigate(`/profileinstructor/${user.uid}`);
+    };
 
     // Hàm xử lý khi người dùng nhấp vào nút "Load More"
     const handleLoadMore = () => {
@@ -161,6 +164,9 @@ const ProfilePage = () => {
             <div className={styles.breadcrumbs}>Home &gt;&gt; Profile</div>
             <header className={styles.profileHeader}>
                 <h1>Profile</h1>
+                <button onClick={NavigateProfileInstructor} className={styles.logoutButton}>
+                    Instructor Profile
+                </button>
                 <button onClick={handleLogout} className={styles.logoutButton}>
                     <FontAwesomeIcon icon={faSignOutAlt} className={styles.icon} />
                     Log out
