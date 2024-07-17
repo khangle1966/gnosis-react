@@ -1,10 +1,9 @@
-/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
   Post,
   Body,
-  Patch, // Sử dụng Patch thay vì Put nếu bạn muốn giữ nguyên phương thức HTTP trong controller gốc
+  Patch,
   Param,
   Delete,
   HttpException,
@@ -17,8 +16,9 @@ import { Category } from './entities/category.entity'; // Giả sử bạn có e
 
 @Controller('v1/category') // Cập nhật đường dẫn để phản ánh phiên bản API
 export class CategoryController {
-  constructor(private readonly categoryService: CategoryService) {}
+  constructor(private readonly categoryService: CategoryService) { }
 
+  // Tạo một danh mục mới
   @Post('post/')
   async create(@Body() createCategoryDto: CreateCategoryDto): Promise<Category> {
     const requiredFields = ['name']; // Giả sử 'name' là trường bắt buộc
@@ -37,6 +37,7 @@ export class CategoryController {
     }
   }
 
+  // Lấy tất cả danh mục
   @Get('get/')
   async findAll(): Promise<Category[]> {
     try {
@@ -47,6 +48,7 @@ export class CategoryController {
     }
   }
 
+  // Lấy danh mục theo ID
   @Get('get/:id')
   async findOne(@Param('id') id: string): Promise<Category> {
     try {
@@ -57,6 +59,7 @@ export class CategoryController {
     }
   }
 
+  // Cập nhật danh mục theo ID
   @Patch('patch/:id') // Sử dụng Patch thay vì Put
   async update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     try {
@@ -67,6 +70,7 @@ export class CategoryController {
     }
   }
 
+  // Xóa danh mục theo ID
   @Delete('delete/:id')
   async remove(@Param('id') id: string): Promise<void> {
     try {

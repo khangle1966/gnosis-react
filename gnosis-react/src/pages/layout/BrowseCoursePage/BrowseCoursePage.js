@@ -1,3 +1,4 @@
+// Import các thư viện và hành động cần thiết
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,90 +7,101 @@ import { fetchProfile } from '../../../redux/action/profileActions'; // Import f
 import { addToCart } from '../../../redux/action/cartActions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
-
-import styles from './BrowseCoursePage.module.scss';
+import styles from './BrowseCoursePage.module.scss'; // Import các lớp CSS từ file SCSS
 
 const BrowseCoursePage = () => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const { courses, loading, error } = useSelector(state => state.course);
-    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-    const { profile, loading: profileLoading } = useSelector(state => state.profile); // Thêm profileLoading để theo dõi trạng thái tải profile
-    const [notification, setNotification] = useState({ show: false, message: '' });
-    const [activeCategory, setActiveCategory] = useState('All');
-    const [currentPage, setCurrentPage] = useState(1);
-    const coursesPerPage = 9;
-    const [searchTerm, setSearchTerm] = useState(''); // Thêm state cho từ khóa tìm kiếm
-    const [filteredCourses, setFilteredCourses] = useState([]); // Thêm state cho các khóa học đã lọc
-    const [ownedCourses, setOwnedCourses] = useState([]); // Thêm state cho các khóa học đã sở hữu
+    const navigate = useNavigate(); // Khởi tạo hook navigate để điều hướng
+    const dispatch = useDispatch(); // Khởi tạo hook dispatch để gửi hành động đến Redux store
+    const { courses, loading, error } = useSelector(state => state.course); // Lấy trạng thái courses, loading và error từ Redux store
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn); // Kiểm tra trạng thái đăng nhập từ Redux store
+    const { profile, loading: profileLoading } = useSelector(state => state.profile); // Lấy trạng thái profile và profileLoading từ Redux store
 
+    const [notification, setNotification] = useState({ show: false, message: '' }); // State thông báo khi thêm khóa học vào giỏ hàng
+    const [activeCategory, setActiveCategory] = useState('All'); // State cho danh mục hiện tại
+    const [currentPage, setCurrentPage] = useState(1); // State cho trang hiện tại
+    const coursesPerPage = 9; // Số khóa học trên mỗi trang
+    const [searchTerm, setSearchTerm] = useState(''); // State cho từ khóa tìm kiếm
+    const [filteredCourses, setFilteredCourses] = useState([]); // State cho các khóa học đã lọc
+    const [ownedCourses, setOwnedCourses] = useState([]); // State cho các khóa học đã sở hữu
 
+    // useEffect kiểm tra đăng nhập và lấy danh sách khóa học, profile
     useEffect(() => {
         if (!isLoggedIn) {
-            navigate('/login');
+            navigate('/login'); // Điều hướng đến trang đăng nhập nếu chưa đăng nhập
         } else {
-            dispatch(fetchCourses());
+            dispatch(fetchCourses()); // Gửi hành động lấy danh sách khóa học
             if (profile && profile.courses) {
-                const ownedCourseIds = profile.courses.map(course => course._id);
-                setOwnedCourses(ownedCourseIds);
+                const ownedCourseIds = profile.courses.map(course => course._id); // Lấy danh sách khóa học đã sở hữu từ profile
+                setOwnedCourses(ownedCourseIds); // Cập nhật state ownedCourses
             }
         }
-    }, [isLoggedIn, navigate, dispatch, profile]); // Thêm profile vào dependency array
+    }, [isLoggedIn, navigate, dispatch, profile]); // Thêm profile vào dependency array để cập nhật khi profile thay đổi
 
+    // useEffect để lấy thông tin profile khi đăng nhập
     useEffect(() => {
         if (isLoggedIn) {
-            dispatch(fetchProfile(profile.id)); // Thêm fetchProfile vào useEffect để đảm bảo profile luôn được cập nhật
+            dispatch(fetchProfile(profile.id)); // Gửi hành động lấy thông tin profile
         }
     }, [dispatch, isLoggedIn]);
 
+    // useEffect để lọc các khóa học theo từ khóa tìm kiếm và danh mục
     useEffect(() => {
         const filtered = courses.filter(course =>
-            course.isReleased && // Lọc theo isReleased
-            (activeCategory === 'All' || course.category === activeCategory) &&
-            ((course.name && course.name.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            course.isReleased && // Chỉ lấy các khóa học đã phát hành
+            (activeCategory === 'All' || course.category === activeCategory) && // Lọc theo danh mục
+            ((course.name && course.name.toLowerCase().includes(searchTerm.toLowerCase())) || // Lọc theo từ khóa tìm kiếm
                 (course.description && course.description.toLowerCase().includes(searchTerm.toLowerCase())))
         );
-        setFilteredCourses(filtered);
+        setFilteredCourses(filtered); // Cập nhật state filteredCourses
     }, [courses, activeCategory, searchTerm]);
 
+    // Hàm xử lý thêm khóa học vào giỏ hàng
     const handleAddToCart = (course) => {
-        dispatch(addToCart(course));
-        setNotification({ show: true, message: `Added "${course.name}" to cart.` });
+        dispatch(addToCart(course)); // Gửi hành động thêm khóa học vào giỏ hàng
+        setNotification({ show: true, message: `Added "${course.name}" to cart.` }); // Hiển thị thông báo
         setTimeout(() => {
-            setNotification({ show: false, message: '' });
+            setNotification({ show: false, message: '' }); // Tắt thông báo sau 3 giây
         }, 3000);
     };
 
+    // Hàm xử lý khi nhấp vào mô tả khóa học
     const handleDescriptionClick = (courseId) => {
-        navigate(`/course/${courseId}`);
+        navigate(`/course/${courseId}`); // Điều hướng đến trang chi tiết khóa học
     };
 
+    // Hàm rút ngắn mô tả khóa học
     const truncateDescription = (description) => {
         if (!description) return '';
         return description.length > 50 ? description.substring(0, 50) + '...' : description;
     };
 
+    // Hàm rút ngắn tên khóa học
     const truncateNameCourse = (name) => {
         if (!name) return '';
         return name.length > 50 ? name.substring(0, 50) + '...' : name;
     };
 
+    // Hàm xử lý khi chọn danh mục
     const handleCategoryClick = (category) => {
-        setActiveCategory(category);
-        setCurrentPage(1);
+        setActiveCategory(category); // Cập nhật danh mục hiện tại
+        setCurrentPage(1); // Đặt lại trang hiện tại về trang 1
     };
 
+    // Tính toán chỉ số của khóa học đầu tiên và cuối cùng trên mỗi trang
     const indexOfLastCourse = currentPage * coursesPerPage;
     const indexOfFirstCourse = indexOfLastCourse - coursesPerPage;
-    const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse);
+    const currentCourses = filteredCourses.slice(indexOfFirstCourse, indexOfLastCourse); // Lấy danh sách khóa học trên trang hiện tại
 
+    // Hàm xử lý khi chuyển trang
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+    // Tạo danh sách số trang
     const pageNumbers = [];
     for (let i = 1; i <= Math.ceil(filteredCourses.length / coursesPerPage); i++) {
         pageNumbers.push(i);
     }
 
+    // Hàm render số trang
     const renderPageNumbers = () => {
         const totalPages = pageNumbers.length;
         const maxPagesToShow = 5; // Số lượng trang tối đa để hiển thị
@@ -143,10 +155,12 @@ const BrowseCoursePage = () => {
         );
     };
 
+    // Kiểm tra xem khóa học đã sở hữu chưa
     const isCourseOwned = (courseId) => {
         return ownedCourses.includes(courseId);
     };
 
+    // Hiển thị khi dữ liệu đang tải
     if (loading || profileLoading) {
         return <div>Loading...</div>;
     }

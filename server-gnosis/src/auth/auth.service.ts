@@ -14,7 +14,7 @@ import axios from 'axios';
 @Injectable()
 export class AuthService {
     private jwksClient = jwksClient({
-        jwksUri: 'https://www.googleapis.com/oauth2/v3/certs',
+        jwksUri: 'https://www.googleapis.com/oauth2/v3/certs', // URL để lấy khóa công khai từ Google
     });
 
     constructor(
@@ -24,10 +24,11 @@ export class AuthService {
         private jwtService: JwtService
     ) { }
 
+    // Đăng ký người dùng mới
     async register(createUserDto: CreateUserDto): Promise<any> {
         let user = await this.usersService.findOne(createUserDto.email);
         if (user) {
-            throw new ConflictException('Người dùng đã tồn tại');
+            throw new ConflictException('Người dùng đã tồn tại'); // Ném ngoại lệ nếu người dùng đã tồn tại
         }
 
         const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
@@ -42,6 +43,7 @@ export class AuthService {
         return { user, token };
     }
 
+    // Xác thực token Google
     async verifyGoogleToken(idToken: string): Promise<any> {
         const userInfo = await axios.get('https://www.googleapis.com/oauth2/v3/userinfo', {
             headers: {
@@ -51,6 +53,7 @@ export class AuthService {
         return userInfo.data;
     }
 
+    // Tìm hoặc tạo người dùng từ thông tin Google
     async findOrCreateUser(googleUser: any): Promise<any> {
         let user = await this.usergoogleModel.findOne({ email: googleUser.email });
         if (user && user.isBanned) {
@@ -68,6 +71,7 @@ export class AuthService {
         return user;
     }
 
+    // Xác thực người dùng bằng email và mật khẩu
     async validateUser(email: string, plainTextPassword: string): Promise<any> {
         const user = await this.usersService.findOneByEmail(email);
         if (!user) return null;
@@ -85,6 +89,7 @@ export class AuthService {
         return null;
     }
 
+    // Tạo token đăng nhập cho người dùng
     async login(user: any) {
         const payload = { email: user.email, sub: user._id };
         return {
@@ -92,6 +97,7 @@ export class AuthService {
         };
     }
 
+    // Tạo token cho người dùng
     async createTokenForUser(user: any): Promise<string> {
         const payload = { email: user.email, sub: user._id };
         return this.jwtService.sign(payload);

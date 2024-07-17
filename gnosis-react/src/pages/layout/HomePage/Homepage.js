@@ -13,18 +13,19 @@ import { addToFavorite, removeFromFavorite, fetchFavorites } from '../../../redu
 import { updateProfile } from '../../../redux/action/profileActions';
 
 const HomePage = () => {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const { userCourses, loading, error } = useSelector(state => state.course);
-    const { user } = useSelector(state => state.auth);
-    const { profile } = useSelector(state => state.profile);
-    const { favorites = [] } = useSelector(state => state.favorite);
-    const lessonsByCourse = useSelector(state => state.lessonDetail); // Get lessons from state
-    const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
-    const [activeTab, setActiveTab] = useState('all');
-    const [filteredCourses, setFilteredCourses] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
+    const navigate = useNavigate(); // Khởi tạo hook điều hướng
+    const dispatch = useDispatch(); // Khởi tạo hook dispatch để gửi hành động
+    const { userCourses, loading, error } = useSelector(state => state.course); // Lấy danh sách khóa học của người dùng từ Redux store
+    const { user } = useSelector(state => state.auth); // Lấy thông tin người dùng từ Redux store
+    const { profile } = useSelector(state => state.profile); // Lấy thông tin hồ sơ người dùng từ Redux store
+    const { favorites = [] } = useSelector(state => state.favorite); // Lấy danh sách yêu thích từ Redux store
+    const lessonsByCourse = useSelector(state => state.lessonDetail); // Lấy thông tin bài học theo khóa học từ Redux store
+    const isLoggedIn = useSelector(state => state.auth.isLoggedIn); // Kiểm tra trạng thái đăng nhập từ Redux store
+    const [activeTab, setActiveTab] = useState('all'); // Trạng thái để lưu tab đang hoạt động (all, ongoing, completed, favorites)
+    const [filteredCourses, setFilteredCourses] = useState([]); // Trạng thái để lưu danh sách khóa học đã lọc
+    const [searchTerm, setSearchTerm] = useState(''); // Trạng thái để lưu từ khóa tìm kiếm
 
+    // useEffect để lấy thông tin hồ sơ và danh sách yêu thích của người dùng khi user thay đổi
     useEffect(() => {
         if (user && user.uid) {
             dispatch(fetchProfile(user.uid));
@@ -34,6 +35,7 @@ const HomePage = () => {
         }
     }, [dispatch, user]);
 
+    // useEffect để kiểm tra trạng thái đăng nhập và lấy danh sách khóa học của người dùng khi profile thay đổi
     useEffect(() => {
         if (!isLoggedIn) {
             navigate('/login');
@@ -44,6 +46,7 @@ const HomePage = () => {
         }
     }, [isLoggedIn, profile, dispatch, navigate]);
 
+    // useEffect để lọc danh sách khóa học dựa trên tab đang hoạt động và từ khóa tìm kiếm
     useEffect(() => {
         let filtered = userCourses;
 
@@ -68,6 +71,7 @@ const HomePage = () => {
         setFilteredCourses(filtered);
     }, [activeTab, userCourses, profile, favorites, searchTerm]);
 
+    // Hàm để bắt đầu khóa học, điều hướng đến bài học đầu tiên của khóa học
     const handleStartCourse = async (courseId) => {
         if (user && user.uid) {
             await dispatch(fetchLessonsByCourseId(courseId));
@@ -91,6 +95,7 @@ const HomePage = () => {
         }
     };
 
+    // Hàm để thêm hoặc xóa khóa học khỏi danh sách yêu thích
     const handleFavoriteCourse = (courseId) => {
         if (user && user.uid) {
             if (isCourseFavorited(courseId)) {
@@ -101,31 +106,37 @@ const HomePage = () => {
         }
     };
 
+    // Hàm để kiểm tra xem khóa học có trong danh sách yêu thích hay không
     const isCourseFavorited = (courseId) => {
         return favorites.some(fav => fav === courseId);
     };
 
+    // Hàm để rút ngắn mô tả khóa học
     const truncateDescription = (description) => {
         if (!description) return '';
         return description.length > 50 ? description.substring(0, 50) + '...' : description;
     };
 
+    // Hàm để rút ngắn tên khóa học
     const truncateNameCourse = (name) => {
         if (!name) return '';
         return name.length > 50 ? name.substring(0, 50) + '...' : name;
     };
 
+    // Hàm để điều hướng đến trang chỉnh sửa hồ sơ người dùng
     const handleEditClick = () => {
         navigate(`/profile`);
     };
 
+    // Hàm để lấy ngày hiện tại dưới dạng định dạng đọc được
     const getCurrentDate = () => {
         const currentDate = new Date();
         const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
         return currentDate.toLocaleDateString('en-US', options);
     };
 
-    const currentDate = getCurrentDate();
+    const currentDate = getCurrentDate(); // Lấy ngày hiện tại
+
 
     return (
         <main className={styles.HomeContent}>
@@ -160,7 +171,7 @@ const HomePage = () => {
                 </nav>
                 <div className={styles.courseGrid}>
                     {loading && <div>Loading courses...</div>}
-                    {error && <div>Error fetching courses: {error.message}</div>}
+
                     {filteredCourses.map(course => (
                         <div key={course._id} className={styles.courseCard}>
                             <div className={styles.courseImageWrapper}>

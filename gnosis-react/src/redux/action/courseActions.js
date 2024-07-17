@@ -1,4 +1,3 @@
-// courseActions.js
 import axios from 'axios';
 import {
     UPDATE_COURSE,
@@ -13,10 +12,13 @@ import {
     FETCH_COURSE_DETAIL_SUCCESS,
     FETCH_COURSE_DETAIL_FAILURE,
     UPDATE_COURSE_FAILURE,
-    APPROVE_COURSE_SUCCESS
+    APPROVE_COURSE_SUCCESS,
+    FETCH_COURSES_BY_AUTHOR_REQUEST,
+    FETCH_COURSES_BY_AUTHOR_SUCCESS,
+    FETCH_COURSES_BY_AUTHOR_FAILURE,
 } from '../types/courseType';
 
-
+// Hàm hành động để lấy tất cả các khóa học
 export const fetchCourses = () => async (dispatch) => {
     try {
         const response = await axios.get('http://localhost:3000/v1/course');
@@ -33,6 +35,24 @@ export const fetchCourses = () => async (dispatch) => {
     }
 };
 
+// Hàm hành động để lấy các khóa học của một tác giả cụ thể
+export const fetchCoursesByAuthor = (authorId) => async (dispatch) => {
+    dispatch({ type: FETCH_COURSES_BY_AUTHOR_REQUEST });
+    try {
+        const response = await axios.get(`http://localhost:3000/v1/course/author/${authorId}`);
+        dispatch({
+            type: FETCH_COURSES_BY_AUTHOR_SUCCESS,
+            payload: response.data
+        });
+    } catch (error) {
+        dispatch({
+            type: FETCH_COURSES_BY_AUTHOR_FAILURE,
+            payload: error.response && error.response.data.message ? error.response.data.message : error.message
+        });
+    }
+};
+
+// Hàm hành động để lấy các khóa học của người dùng
 export const fetchUserCourses = (courseIds) => async (dispatch) => {
     dispatch({ type: FETCH_USER_COURSES_REQUEST });
     try {
@@ -48,6 +68,7 @@ export const fetchUserCourses = (courseIds) => async (dispatch) => {
     }
 };
 
+// Hàm hành động để lấy chi tiết một khóa học
 export const fetchCourseDetail = (courseId) => async (dispatch) => {
     try {
         dispatch({ type: FETCH_COURSE_DETAIL });
@@ -64,6 +85,7 @@ export const fetchCourseDetail = (courseId) => async (dispatch) => {
     }
 };
 
+// Hàm hành động để cập nhật xếp hạng của một khóa học
 export const updateCourseRating = (courseId, rating) => async (dispatch) => {
     try {
         const response = await axios.patch(`http://localhost:3000/v1/course/${courseId}/rating`, { rating });
@@ -79,6 +101,7 @@ export const updateCourseRating = (courseId, rating) => async (dispatch) => {
     }
 };
 
+// Hàm hành động để cập nhật một khóa học
 export const updateCourse = (courseId, updates) => async (dispatch) => {
     try {
         const response = await axios.patch(`http://localhost:3000/v1/course/${courseId}`, updates);
@@ -93,6 +116,8 @@ export const updateCourse = (courseId, updates) => async (dispatch) => {
         });
     }
 };
+
+// Hàm hành động để cập nhật chi tiết khóa học
 export const updateCourseDetails = (courseData) => async (dispatch) => {
     try {
         const response = await axios.put(`http://localhost:3000/v1/course/${courseData._id}`, courseData);
@@ -109,10 +134,12 @@ export const updateCourseDetails = (courseData) => async (dispatch) => {
     }
 };
 
+// Hàm hành động để đặt lại trạng thái khóa học
 export function resetCourse() {
     return { type: RESET_COURSE };
 }
 
+// Hàm hành động để nộp khóa học
 export function submitCourse(courseData) {
     return async (dispatch) => {
         dispatch({ type: SUBMIT_COURSE });
@@ -130,20 +157,23 @@ export function submitCourse(courseData) {
         }
     };
 }
+
+// Hàm hành động để phê duyệt một khóa học
 export const approveCourse = (courseId) => async (dispatch) => {
     try {
-      const response = await axios.put(`http://localhost:3000/v1/course/${courseId}/approve`);
-      dispatch({
-        type: APPROVE_COURSE_SUCCESS,
-        payload: response.data,
-      });
-      dispatch(fetchCourses()); // Fetch lại danh sách courses sau khi duyệt
+        const response = await axios.put(`http://localhost:3000/v1/course/${courseId}/approve`);
+        dispatch({
+            type: APPROVE_COURSE_SUCCESS,
+            payload: response.data,
+        });
+        dispatch(fetchCourses()); // Fetch lại danh sách courses sau khi duyệt
     } catch (error) {
-      console.error('Failed to approve course:', error);
+        console.error('Failed to approve course:', error);
     }
-  };
+};
 
-  export const deleteCourse = (courseId) => async (dispatch) => {
+// Hàm hành động để xóa một khóa học
+export const deleteCourse = (courseId) => async (dispatch) => {
     try {
         await axios.delete(`http://localhost:3000/v1/course/${courseId}`);
         dispatch(fetchCourses()); // Fetch lại danh sách courses sau khi xóa

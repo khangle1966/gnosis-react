@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+// Khai báo các hành động
 export const loginRequest = () => {
     return { type: 'LOGIN_REQUEST' };
 }
@@ -44,6 +45,7 @@ export const registerFailure = (error) => {
     return { type: 'REGISTER_FAILURE', payload: error };
 }
 
+// Hàm hành động để đăng nhập với email và password
 export const login = (email, password) => {
     return async dispatch => {
         dispatch(loginRequest());
@@ -65,6 +67,7 @@ export const login = (email, password) => {
     };
 };
 
+// Hàm hành động để đăng nhập với Google
 export const loginWithGoogleAction = (access_token) => async (dispatch) => {
     try {
         dispatch(loginRequest());
@@ -87,6 +90,7 @@ export const loginWithGoogleAction = (access_token) => async (dispatch) => {
     }
 };
 
+// Hàm hành động để đăng ký tài khoản mới
 export const register = (email, password) => {
     return async dispatch => {
         dispatch(registerRequest());
@@ -100,6 +104,7 @@ export const register = (email, password) => {
     };
 }
 
+// Hàm hành động để đăng xuất
 export const logout = () => {
     return dispatch => {
         localStorage.removeItem('token'); // Xóa token từ localStorage

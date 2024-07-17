@@ -9,75 +9,77 @@ import { useNavigate } from 'react-router-dom';
 
 const InstructorsPage = () => {
 
+    // Lấy thông tin người dùng từ Redux store
     const { user } = useSelector(state => state.auth);
 
+    // Khởi tạo hàm dispatch để gửi các action lên Redux store
     const dispatch = useDispatch();
+
+    // Khởi tạo state để theo dõi trạng thái của việc submit khóa học
     const [courseSubmitted, setCourseSubmitted] = useState(false);
-    // const [img, setImg] = useState(null);
-    // const [isImageUploaded, setIsImageUploaded] = useState(false);
+
+    // Sử dụng hook useNavigate để điều hướng trang
     const navigate = useNavigate();
 
+    // Khởi tạo state để lưu thông tin khóa học
     const [course, setCourse] = useState({
-
         name: "",
         description: "",
         duration: "0",
         category: "",
         language: "",
         price: "",
-        author: user.name,
-        authorId: user.uid,
+        author: user.name, // Lấy tên tác giả từ thông tin người dùng
+        authorId: user.uid, // Lấy ID tác giả từ thông tin người dùng
         describe: "test",
         request: "test",
         rating: "0",
         img: "",
         isReleased: false,
     });
-    // get user info from reducer 
-    console.log('Course Data:', course); // Kiểm tra toàn bộ object course
 
+    // In ra thông tin khóa học để kiểm tra
+    console.log('Course Data:', course);
 
+    // Sử dụng hook useEffect để kiểm tra vai trò người dùng và điều hướng nếu không phải là instructor
     useEffect(() => {
         if (user.role !== 'instructor') {
-            navigate('/login'); // Chuyển hướng nếu không phải là instructor
+            navigate('/login'); // Điều hướng về trang đăng nhập nếu không phải instructor
         }
     }, [user, navigate]);
+
+    // Hàm xử lý khi có thay đổi trong các input field
     const handleChange = (event) => {
         const { id, value } = event.target;
         setCourse(prevCourse => ({ ...prevCourse, [id]: value }));
     };
+
+    // Hàm xử lý khi có thay đổi trong input hình ảnh
     const handleImageChange = async (event) => {
         const imageFile = event.target.files[0];
         if (imageFile) {
             try {
-                const imageUrl = await dispatch(uploadImage(imageFile)); // Upload image and get back the URL
-                // setIsImageUploaded(true);
-                // setImg(imageUrl);  // Cập nhật state img để kiểm tra điều kiện render hình ảnh
+                const imageUrl = await dispatch(uploadImage(imageFile)); // Upload hình ảnh và nhận lại URL
                 setCourse(prevCourse => ({
                     ...prevCourse,
-                    img: imageUrl // Store image URL in the course state
+                    img: imageUrl // Lưu URL hình ảnh vào state của khóa học
                 }));
-                console.log('Image URL:', imageUrl);  // Log URL mới để kiểm tra
-
+                console.log('Image URL:', imageUrl);  // In ra URL hình ảnh mới để kiểm tra
             } catch (error) {
                 console.error('Error uploading image:', error);
-                alert("Lỗi tải ảnh lên. Vui lòng thử lại."); // Thông báo lỗi trực quan
+                alert("Lỗi tải ảnh lên. Vui lòng thử lại."); // Thông báo lỗi cho người dùng
             }
         }
     };
 
-
-
-
-
+    // Hàm xử lý khi submit form
     const handleSubmit = async (event) => {
         event.preventDefault();
-
-        dispatch(submitCourse(course));
+        dispatch(submitCourse(course)); // Gửi thông tin khóa học lên store
         setCourseSubmitted(true);
     };
 
-
+    // Hàm xử lý khi reset form
     const handleReset = () => {
         setCourse({
             name: "",

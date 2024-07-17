@@ -20,6 +20,8 @@ import { UsergoogleService } from '../usergoogle/usergoogle.service'
 export class ProfileService {
   constructor(
     @InjectModel(Profile.name) private profileModel: Model<Profile>,
+    @InjectModel(Course.name) private courseModel: Model<Course>, // Inject Course model
+
 
   ) { }
 
@@ -48,6 +50,26 @@ export class ProfileService {
     }
   }
 
+  async getProfileStats(id: string): Promise<any> {
+    try {
+      const profile = await this.profileModel.findOne({ id }).exec();
+      if (!profile) {
+        throw new NotFoundException(`Profile with id ${id} not found.`);
+      }
+
+      const courses = await this.courseModel.find({ authorId: profile.id }).exec();
+      const totalStudents = courses.reduce((sum, course) => sum + course.numberOfStudents, 0);
+      const totalRating = courses.reduce((sum, course) => sum + course.rating, 0);
+
+      return {
+        totalStudents,
+        totalRating,
+        totalCourses: courses.length,
+      };
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
   async findOne(id: string): Promise<Profile> {
     try {
       const profile = await this.profileModel

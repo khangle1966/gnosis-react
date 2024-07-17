@@ -16,12 +16,16 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 
 const Admin_InstructorSalary = () => {
     const dispatch = useDispatch();
+
+    // Lấy dữ liệu từ Redux state
     const instructors = useSelector(state => state.admin.instructors);
     const adminSalary = useSelector(state => state.salary.adminSalary);
     const instructorsSalary = useSelector(state => state.salary.instructorsSalary);
     const payments = useSelector(state => state.salary.payments || []);
     const loading = useSelector(state => state.salary.loading);
     const error = useSelector(state => state.salary.error);
+
+    // State cục bộ của component
     const [selectedInstructor, setSelectedInstructor] = useState(null);
     const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
     const [salaries, setSalaries] = useState([]);
@@ -30,22 +34,26 @@ const Admin_InstructorSalary = () => {
     const [autoPaymentEnabled, setAutoPaymentEnabled] = useState(false);
     const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
+    // Tạo danh sách các năm từ 2020 đến năm hiện tại
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
     const years = Array.from({ length: currentYear - 2019 }, (_, index) => 2020 + index);
 
+    // Lấy danh sách giảng viên, lương giảng viên và lương admin khi component được render
     useEffect(() => {
         dispatch(fetchInstructors());
         dispatch(fetchInstructorsSalary());
         dispatch(fetchAdminSalary());
     }, [dispatch]);
 
+    // Lấy danh sách các khoản thanh toán khi giảng viên hoặc năm được chọn thay đổi
     useEffect(() => {
         if (selectedInstructor) {
             dispatch(fetchPayments(selectedInstructor.uid, selectedYear));
         }
     }, [selectedInstructor, selectedYear, dispatch]);
 
+    // Thiết lập thanh toán tự động khi được kích hoạt
     useEffect(() => {
         if (autoPaymentEnabled) {
             const now = new Date();
@@ -61,6 +69,7 @@ const Admin_InstructorSalary = () => {
         }
     }, [autoPaymentEnabled, paymentDateTime]);
 
+    // Thiết lập đồng hồ đếm ngược cho thanh toán tự động
     useEffect(() => {
         if (autoPaymentEnabled) {
             const intervalId = setInterval(() => {
@@ -84,6 +93,7 @@ const Admin_InstructorSalary = () => {
         }
     }, [autoPaymentEnabled, paymentDateTime]);
 
+    // Xử lý khi thay đổi giảng viên được chọn
     const handleInstructorChange = (event, newValue) => {
         console.log("Selected Instructor:", newValue);
         setSelectedInstructor(newValue);
@@ -99,6 +109,7 @@ const Admin_InstructorSalary = () => {
         }
     };
 
+    // Xử lý khi thay đổi năm được chọn
     const handleYearChange = (event, newValue) => {
         console.log("Selected Year:", newValue);
         setSelectedYear(newValue);
@@ -114,6 +125,7 @@ const Admin_InstructorSalary = () => {
         }
     };
 
+    // Lấy thông tin giảng viên từ danh sách giảng viên
     const getInstructorInfo = (instructorId) => {
         const instructor = instructors.find(inst => inst.uid === instructorId);
         return instructor ? {
@@ -123,6 +135,7 @@ const Admin_InstructorSalary = () => {
         } : { name: '', email: '', level: '' };
     };
 
+    // Xử lý khi chọn hoặc bỏ chọn tháng để thanh toán
     const handleMonthSelect = (event, month) => {
         if (event.target.checked) {
             setSelectedMonths([...selectedMonths, month]);
@@ -131,6 +144,7 @@ const Admin_InstructorSalary = () => {
         }
     };
 
+    // Xử lý khi gửi yêu cầu thanh toán
     const handlePaymentSubmit = () => {
         selectedMonths.forEach(month => {
             const paymentData = {
@@ -147,6 +161,7 @@ const Admin_InstructorSalary = () => {
         });
     };
 
+    // Xử lý thanh toán tự động cho tất cả giảng viên
     const handleAutoPayment = () => {
         instructors.forEach(instructor => {
             dispatch(fetchInstructorSalaryById(instructor.uid)).then(data => {
@@ -168,6 +183,7 @@ const Admin_InstructorSalary = () => {
         });
     };
 
+    // Định dạng dữ liệu để hiển thị trên biểu đồ
     const getFormattedData = () => {
         const data = Array.from({ length: 12 }, (_, index) => ({ month: index + 1, total: 0 }));
         salaries.forEach(salary => {
@@ -176,22 +192,27 @@ const Admin_InstructorSalary = () => {
         return data;
     };
 
+    // Định dạng tiền tệ
     const formatCurrency = (value) => {
         return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     };
 
+    // Lấy giá trị tối đa cho trục Y của biểu đồ
     const getMaxYAxis = (data) => {
         const maxValue = Math.max(...data.map(item => item.total));
         return maxValue + maxValue * 0.1;
     };
 
+    // Lấy thông tin giảng viên được chọn
     const instructorInfo = selectedInstructor ? getInstructorInfo(selectedInstructor.uid) : { name: '', email: '', level: '' };
 
+    // Kiểm tra xem tháng đã được thanh toán chưa
     const isMonthPaid = (month) => {
         const payment = payments.find(p => p.month === month);
         return payment ? payment.isPayment : false;
     };
 
+    // Xuất dữ liệu lương ra file Excel
     const handleExportToExcel = async () => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('Salary Data');
@@ -219,6 +240,7 @@ const Admin_InstructorSalary = () => {
         saveAs(blob, `SalaryData_${selectedInstructor ? selectedInstructor.name : 'Instructor'}_${selectedYear}.xlsx`);
     };
 
+    // Bật hoặc tắt thanh toán tự động
     const handleAutoPaymentToggle = (event) => {
         setAutoPaymentEnabled(event.target.checked);
     };

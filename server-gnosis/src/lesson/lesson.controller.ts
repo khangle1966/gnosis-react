@@ -19,6 +19,7 @@ import { LessonService } from './lesson.service';
 export class LessonController {
   constructor(private lessonsService: LessonService) { }
 
+  // Lấy bài học theo ID
   @Get(':id')
   async getById(@Param('id') id: string): Promise<Lesson> {
     try {
@@ -28,7 +29,9 @@ export class LessonController {
       throw new HttpException(error.message, error.status);
     }
   }
-  @Get(':lessonId/videoUrl') // Corrected the route
+
+  // Lấy URL video của bài học theo lessonId
+  @Get(':lessonId/videoUrl')
   async getVideoUrl(@Param('lessonId') lessonId: string): Promise<{ url: string }> {
     try {
       const videoUrl = await this.lessonsService.getVideoUrl(lessonId);
@@ -38,7 +41,7 @@ export class LessonController {
     }
   }
 
-
+  // Tạo bài học mới
   @Post()
   async create(@Body() createLessonDto: CreateLessonDto): Promise<Lesson> {
     try {
@@ -48,7 +51,7 @@ export class LessonController {
     }
   }
 
-
+  // Lấy tất cả các bài học
   @Get()
   async getAll(): Promise<Lesson[]> {
     try {
@@ -59,22 +62,21 @@ export class LessonController {
     }
   }
 
+  // Cập nhật bài học theo ID
   @Put(':id')
   async update(
     @Param('id') id: string,
     @Body() updateLessonDto: UpdateLessonDto,
   ): Promise<Lesson> {
     try {
-      const updatedLesson = await this.lessonsService.update(
-        id,
-        updateLessonDto,
-      );
+      const updatedLesson = await this.lessonsService.update(id, updateLessonDto);
       return updatedLesson;
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
+  // Xóa bài học theo ID
   @Delete(':id')
   async delete(@Param('id') id: string): Promise<Lesson> {
     try {
@@ -85,10 +87,9 @@ export class LessonController {
     }
   }
 
+  // Lấy các bài học theo courseId
   @Get('course/:courseId')
-  async getLessonsByCourseId(
-    @Param('courseId') courseId: string,
-  ): Promise<Lesson[]> {
+  async getLessonsByCourseId(@Param('courseId') courseId: string): Promise<Lesson[]> {
     try {
       const lessons = await this.lessonsService.getLessonsByCourseId(courseId);
       return lessons;
@@ -96,10 +97,10 @@ export class LessonController {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  // Lấy các bài học theo chapterId
   @Get('chapter/:chapterId')
-  async getLessonsByChapterId(
-    @Param('chapterId') chapterId: string,
-  ): Promise<Lesson[]> {
+  async getLessonsByChapterId(@Param('chapterId') chapterId: string): Promise<Lesson[]> {
     try {
       const lessons = await this.lessonsService.getLessonsByChapterId(chapterId);
       return lessons;
@@ -107,5 +108,4 @@ export class LessonController {
       throw new HttpException(error.message, error.status);
     }
   }
-
 }

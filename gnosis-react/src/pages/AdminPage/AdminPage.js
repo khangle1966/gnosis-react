@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers, fetchOrders, fetchInstructors, fetchMonthlyUserData, fetchMonthlyUsergoogleData, fetchMonthlyCourseData } from '../../redux/action/adminActions';
-import { fetchCourses, approveCourse, deleteCourse } from '../../redux/action/courseActions';
-import { Card, CardContent, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Tabs, Tab, TablePagination, TextField } from '@mui/material';
-import PeopleIcon from '@mui/icons-material/People';
+import React, { useEffect, useState } from 'react'; // Import React và các hook useEffect, useState
+import { useDispatch, useSelector } from 'react-redux'; // Import các hook của react-redux để kết nối với Redux store
+import { fetchUsers, fetchOrders, fetchInstructors, fetchMonthlyUserData, fetchMonthlyUsergoogleData, fetchMonthlyCourseData } from '../../redux/action/adminActions'; // Import các hành động từ adminActions
+import { fetchCourses, approveCourse, deleteCourse } from '../../redux/action/courseActions'; // Import các hành động từ courseActions
+import { Card, CardContent, Typography, Grid, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, Tabs, Tab, TablePagination, TextField } from '@mui/material'; // Import các component từ MUI
+import PeopleIcon from '@mui/icons-material/People'; // Import biểu tượng từ MUI
 import BookIcon from '@mui/icons-material/Book';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import SchoolIcon from '@mui/icons-material/School';
-import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts';
-import { useNavigate } from 'react-router-dom';
-import styles from './AdminPage.module.scss';
-import RevenueChart from './component/RevenueChart/RevenueChart';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer } from 'recharts'; // Import các thành phần của recharts để vẽ biểu đồ
+import { useNavigate } from 'react-router-dom'; // Import hook useNavigate từ react-router-dom để điều hướng
+import styles from './AdminPage.module.scss'; // Import các lớp CSS từ file SCSS
+import RevenueChart from './component/RevenueChart/RevenueChart'; // Import component RevenueChart
 
 const AdminPage = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+    const dispatch = useDispatch(); // Khởi tạo dispatch để gửi hành động
+    const navigate = useNavigate(); // Khởi tạo navigate để điều hướng
 
+    // Lấy dữ liệu từ Redux store
     const totalUsers = useSelector(state => state.admin.users ? state.admin.users : 0);
     const totalCourses = useSelector(state => state.course.courses.length);
     const totalOrders = useSelector(state => state.admin.orders ? state.admin.orders.length : 0);
@@ -25,15 +26,19 @@ const AdminPage = () => {
     const courses = useSelector(state => state.course.courses || []);
     const { user } = useSelector(state => state.auth);
     console.log("auth", user)
+
+    // Khai báo state cho tab, trang, số dòng trên mỗi trang và từ khóa tìm kiếm
     const [tabIndex, setTabIndex] = useState(0);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
+        // Kiểm tra nếu người dùng không phải là admin, điều hướng đến trang browsecourse
         if (user?.role !== 'admin') {
             navigate('/browsecourse');
         } else {
+            // Nếu là admin, gửi các hành động để lấy dữ liệu
             dispatch(fetchUsers());
             dispatch(fetchCourses());
             dispatch(fetchOrders());
@@ -44,14 +49,17 @@ const AdminPage = () => {
         }
     }, [dispatch]);
 
+    // Hàm xử lý duyệt khóa học
     const handleApproveCourse = (courseId) => {
         dispatch(approveCourse(courseId));
     };
 
+    // Hàm xử lý xóa khóa học
     const handleDeleteCourse = (courseId) => {
         dispatch(deleteCourse(courseId));
     };
 
+    // Lọc khóa học dựa trên trạng thái duyệt và từ khóa tìm kiếm
     const filteredCourses = (isReleased) => {
         return courses.filter(course =>
             course.isReleased === isReleased &&
@@ -60,27 +68,34 @@ const AdminPage = () => {
         );
     };
 
+    // Hàm xử lý thay đổi tab
     const handleTabChange = (event, newValue) => {
         setTabIndex(newValue);
     };
 
+    // Hàm xử lý thay đổi trang
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
 
+    // Hàm xử lý thay đổi số dòng trên mỗi trang
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
 
+    // Định dạng dữ liệu đăng ký người dùng cho biểu đồ
     const formattedUserRegistrationData = userRegistrationData.map(data => ({
         month: data.month,
         count: data.userCount,
     }));
+
+    // Hàm rút ngắn mô tả khóa học
     const truncateDescription = (description) => {
         if (!description) return '';
         return description.length > 50 ? description.substring(0, 50) + '...' : description;
     };
+
     return (
         <div className={styles.adminPage}>
             <Typography variant="h4" gutterBottom>
@@ -221,13 +236,13 @@ const AdminPage = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>ID</TableCell>
-                            <TableCell>Name</TableCell>
-                            <TableCell>Description</TableCell>
-                            <TableCell>Category</TableCell>
-                            <TableCell>Price</TableCell>
-                            <TableCell>Author</TableCell>
+                            <TableCell>Tên</TableCell>
+                            <TableCell>Mô tả</TableCell>
+                            <TableCell>Danh mục</TableCell>
+                            <TableCell>Giá</TableCell>
+                            <TableCell>Tác giả</TableCell>
                             <TableCell>Url</TableCell>
-                            <TableCell>Action</TableCell>
+                            <TableCell>Hành động</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

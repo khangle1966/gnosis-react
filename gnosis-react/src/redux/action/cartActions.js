@@ -8,17 +8,21 @@ import {
     PAYMENT_FAIL
 } from '../types/cartTypes';
 
+// Hàm hành động để thêm một mục vào giỏ hàng
 export const addToCart = (item) => ({
     type: ADD_TO_CART,
     payload: item
 });
 
+// Hàm hành động để xóa một mục khỏi giỏ hàng
 export const removeFromCart = (id) => (dispatch) => {
     dispatch({
         type: REMOVE_FROM_CART,
         payload: id
     });
 };
+
+// Hàm hành động để mua các khóa học
 export const buyCourses = (userId, courses) => async (dispatch) => {
     try {
         const res = await axios.put(`http://localhost:3000/v1/profile/${userId}`, {
@@ -26,7 +30,7 @@ export const buyCourses = (userId, courses) => async (dispatch) => {
         });
         dispatch({
             type: BUY_COURSES_SUCCESS,
-            payload: res.data // Assuming the response contains the updated user data
+            payload: res.data // Giả định rằng phản hồi chứa dữ liệu người dùng được cập nhật
         });
     } catch (error) {
         dispatch({
@@ -38,8 +42,7 @@ export const buyCourses = (userId, courses) => async (dispatch) => {
     }
 };
 
-
-
+// Hàm hành động để tạo URL thanh toán VNPay
 export const createVNPayPayment = (amount, orderId, orderInfo, returnUrl, userId, cartItems) => async (dispatch) => {
     try {
         const courseIds = cartItems.map(item => item._id);
@@ -49,11 +52,11 @@ export const createVNPayPayment = (amount, orderId, orderInfo, returnUrl, userId
             bankCode: '',
             returnUrl,
             userId,
-            courseIds: courseIds.join(',') 
+            courseIds: courseIds.join(',')
         }).toString();
 
         const { data } = await axios.get(`http://localhost:3000/vnpay/create-payment-url?${params}`);
-        console.log('Payment URL received from server:', data.paymentUrl); 
+        console.log('Payment URL received from server:', data.paymentUrl);
         window.location.href = data.paymentUrl;
     } catch (error) {
         console.error('Error creating VNPay payment URL:', error);
@@ -61,12 +64,12 @@ export const createVNPayPayment = (amount, orderId, orderInfo, returnUrl, userId
     }
 };
 
-
-
+// Hành động thành công khi thanh toán
 export const paymentSuccess = () => ({
     type: PAYMENT_SUCCESS
 });
 
+// Hành động thất bại khi thanh toán
 export const paymentFail = (error) => ({
     type: PAYMENT_FAIL,
     payload: error

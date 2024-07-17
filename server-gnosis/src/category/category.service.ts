@@ -3,15 +3,16 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { Model } from 'mongoose';
 import { Category } from './entities/category.entity'; // Giả sử bạn có một entity tương tự như Course
-import {  HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class CategoryService {
   constructor(
     @InjectModel(Category.name) private categoryModel: Model<Category>,
-  ) {}
+  ) { }
 
+  // Tạo một danh mục mới
   async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
     try {
       const newCategory = new this.categoryModel(createCategoryDto);
@@ -21,6 +22,7 @@ export class CategoryService {
     }
   }
 
+  // Lấy tất cả danh mục
   async findAll(): Promise<Category[]> {
     try {
       return await this.categoryModel.find({}).exec();
@@ -29,6 +31,7 @@ export class CategoryService {
     }
   }
 
+  // Lấy danh mục theo ID
   async findOne(id: string): Promise<Category> {
     try {
       const category = await this.categoryModel.findById(id).exec();
@@ -41,6 +44,7 @@ export class CategoryService {
     }
   }
 
+  // Cập nhật danh mục theo ID
   async update(id: string, updateCategoryDto: UpdateCategoryDto): Promise<Category> {
     try {
       const updatedCategory = await this.categoryModel.findOneAndUpdate(
@@ -57,6 +61,7 @@ export class CategoryService {
     }
   }
 
+  // Xóa danh mục theo ID
   async remove(id: string): Promise<Category> {
     try {
       const category = await this.categoryModel.findById(id);

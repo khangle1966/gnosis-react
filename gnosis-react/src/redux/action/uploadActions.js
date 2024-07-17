@@ -1,5 +1,5 @@
+// src/redux/actions/uploadActions.js
 import axios from 'axios';
-
 import {
     UPLOAD_IMAGE_REQUEST,
     UPLOAD_IMAGE_SUCCESS,
@@ -12,6 +12,8 @@ import {
     FETCH_VIDEO_SUCCESS,
     FETCH_VIDEO_FAILURE
 } from '../types/uploadtypes';
+
+// Tải lên hình ảnh
 export const uploadImage = (fileData) => {
     return async (dispatch) => {
         dispatch({ type: UPLOAD_IMAGE_REQUEST });
@@ -23,15 +25,13 @@ export const uploadImage = (fileData) => {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-
-            console.log("Response data:", response.data);  // Kiểm tra dữ liệu trả về từ server
-
+            console.log("Response data:", response.data);
             if (response.data && response.data.url) {
                 dispatch({
                     type: UPLOAD_IMAGE_SUCCESS,
                     payload: response.data.url
                 });
-                return response.data.url;  // Đảm bảo trả về URL
+                return response.data.url;
             } else {
                 throw new Error("No URL returned from server");
             }
@@ -44,6 +44,8 @@ export const uploadImage = (fileData) => {
         }
     };
 };
+
+// Tải lên video
 export const uploadVideo = (fileData) => async (dispatch) => {
     dispatch({ type: UPLOAD_VIDEO_REQUEST });
     try {
@@ -61,15 +63,13 @@ export const uploadVideo = (fileData) => async (dispatch) => {
                 });
             }
         });
-
-        console.log("Response data:", response.data); // Kiểm tra dữ liệu trả về từ server
-
+        console.log("Response data:", response.data);
         if (response.data && response.data.url) {
             dispatch({
                 type: UPLOAD_VIDEO_SUCCESS,
                 payload: response.data.url
             });
-            return response.data.url; // Đảm bảo trả về URL
+            return response.data.url;
         } else {
             throw new Error("No URL returned from server");
         }
@@ -82,11 +82,12 @@ export const uploadVideo = (fileData) => async (dispatch) => {
     }
 };
 
+// Lấy URL video theo ID bài học
 export const fetchVideoUrl = (lessonId) => {
     return async (dispatch) => {
         dispatch({ type: FETCH_VIDEO_REQUEST });
         try {
-            const response = await axios.get(`http://localhost:3000/v1/lesson/${lessonId}/videoUrl`); // Replace with your actual API endpoint
+            const response = await axios.get(`http://localhost:3000/v1/lesson/${lessonId}/videoUrl`);
             if (response.data && response.data.url) {
                 dispatch({
                     type: FETCH_VIDEO_SUCCESS,

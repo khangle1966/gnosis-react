@@ -14,6 +14,7 @@ export class UsergoogleService {
     @InjectModel(Course.name) private readonly courseModel: Model<CourseDocument>,
   ) { }
 
+  // Tạo một người dùng mới
   async create(createUserDto: CreateUsergoogleDto): Promise<Usergoogle> {
     try {
       const newUser = new this.usergoogleModel(createUserDto);
@@ -23,6 +24,7 @@ export class UsergoogleService {
     }
   }
 
+  // Cập nhật cấp độ giảng viên của người dùng
   async updateInstructorLevel(uid: string): Promise<void> {
     const user = await this.usergoogleModel.findOne({ uid }).exec();
     if (!user) {
@@ -51,7 +53,7 @@ export class UsergoogleService {
     await this.usergoogleModel.findByIdAndUpdate(user._id, { instructorLevel: newLevel }).exec();
   }
 
-
+  // Tìm người dùng theo UID
   async findByUid(uid: string): Promise<Usergoogle> {
     try {
       const userData = await this.usergoogleModel.findOne({ uid }).exec();
@@ -61,6 +63,7 @@ export class UsergoogleService {
     }
   }
 
+  // Tìm người dùng theo ID
   async findOne(id: string): Promise<Usergoogle> {
     try {
       const userData = await this.usergoogleModel.findOne({ uid: id });
@@ -70,6 +73,7 @@ export class UsergoogleService {
     }
   }
 
+  // Cập nhật thông tin người dùng
   async update(id: string, updateUserDto: UpdateUsergoogleDto): Promise<Usergoogle> {
     try {
       const updatedUser = await this.usergoogleModel.findOneAndUpdate(
@@ -83,6 +87,7 @@ export class UsergoogleService {
     }
   }
 
+  // Xóa người dùng
   async remove(id: string) {
     try {
       const deletedUser = await this.usergoogleModel.findOneAndRemove({ uid: id });
@@ -92,6 +97,7 @@ export class UsergoogleService {
     }
   }
 
+  // Lấy tất cả người dùng
   findAll() {
     try {
       const users = this.usergoogleModel.find();
@@ -100,6 +106,8 @@ export class UsergoogleService {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  // Lấy dữ liệu người dùng theo tháng
   async getMonthlyDataUser(): Promise<any[]> {
     const users = await this.usergoogleModel.find().exec();
     const monthlyData = {};
@@ -114,6 +122,8 @@ export class UsergoogleService {
 
     return Object.values(monthlyData);
   }
+
+  // Lấy dữ liệu khóa học theo tháng của người dùng
   async getMonthlyData(uid: string): Promise<any[]> {
     const courses = await this.courseModel.find({ authorId: uid }).exec();
     const monthlyData = {};
@@ -135,6 +145,7 @@ export class UsergoogleService {
     return result;
   }
 
+  // Lấy tất cả giảng viên
   async findAllInstructors(): Promise<Usergoogle[]> {
     const instructors = await this.usergoogleModel.find({ role: 'instructor' }).exec();
     const instructorData = await Promise.all(
@@ -149,6 +160,8 @@ export class UsergoogleService {
     );
     return instructorData;
   }
+
+  // Lấy cấp độ giảng viên của người dùng
   async getInstructorLevel(uid: string): Promise<string> {
     const user = await this.usergoogleModel.findOne({ uid }).exec();
     if (!user) {
@@ -156,6 +169,8 @@ export class UsergoogleService {
     }
     return user.instructorLevel;
   }
+
+  // Cập nhật URL ảnh của người dùng
   async updatePicUrl(userId: string, picUrl: string): Promise<Usergoogle> {
     try {
       const user = await this.usergoogleModel.findOneAndUpdate(
@@ -171,6 +186,8 @@ export class UsergoogleService {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  // Cấm người dùng
   async banUser(id: string) {
     try {
       const bannedUser = await this.usergoogleModel.findOneAndUpdate(
@@ -184,6 +201,7 @@ export class UsergoogleService {
     }
   }
 
+  // Hủy cấm người dùng
   async unbanUser(id: string) {
     try {
       const unbannedUser = await this.usergoogleModel.findOneAndUpdate(

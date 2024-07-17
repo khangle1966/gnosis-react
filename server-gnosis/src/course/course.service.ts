@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
@@ -15,6 +14,7 @@ export class CourseService {
     @InjectModel(Profile.name) private profileModel: Model<Profile>,
   ) { }
 
+  // Tạo khóa học mới
   async create(createCourseDto: CreateCourseDto): Promise<Course> {
     try {
       const newCourse = new this.courseModel(createCourseDto);
@@ -23,9 +23,13 @@ export class CourseService {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  // Lấy các khóa học theo danh sách courseIds
   async findCoursesByIds(courseIds: string[]): Promise<Course[]> {
     return await this.courseModel.find({ '_id': { $in: courseIds } });
   }
+
+  // Lấy tất cả các khóa học
   async findAll(): Promise<Course[]> {
     try {
       return await this.courseModel.find({}).exec();
@@ -34,6 +38,7 @@ export class CourseService {
     }
   }
 
+  // Tăng số lượng học viên của các khóa học
   async increaseNumberOfStudents(courseIds: string[]): Promise<void> {
     try {
       await this.courseModel.updateMany(
@@ -45,6 +50,7 @@ export class CourseService {
     }
   }
 
+  // Lấy thông tin khóa học theo ID
   async findOne(id: string): Promise<Course> {
     try {
       return await this.courseModel.findById(id).exec();
@@ -53,6 +59,7 @@ export class CourseService {
     }
   }
 
+  // Cập nhật thông tin khóa học
   async update(id: string, updateCourseDto: UpdateCourseDto): Promise<Course> {
     try {
       const updateCourse = await this.courseModel.findOneAndUpdate(
@@ -66,18 +73,30 @@ export class CourseService {
     }
   }
 
-  async remove(id: string): Promise<Course> {
+  // Lấy tất cả các khóa học của một tác giả
+  async findAllByAuthor(authorId: string): Promise<Course[]> {
     try {
-      const course = await this.courseModel.findById(id); // Tìm đối tượng trước
-      if (!course) {
-        throw new NotFoundException(`Course with ID ${id} not found`);
-      }
-      await this.courseModel.deleteOne({ _id: id }); // Sau đó xóa đối tượng
-      return course; // Trả về đối tượng đã tìm được
+      return await this.courseModel.find({ authorId }).exec();
     } catch (error) {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  // Xóa khóa học theo ID
+  async remove(id: string): Promise<Course> {
+    try {
+      const course = await this.courseModel.findById(id);
+      if (!course) {
+        throw new NotFoundException(`Course with ID ${id} not found`);
+      }
+      await this.courseModel.deleteOne({ _id: id });
+      return course;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  // Mua khóa học
   async buyCourse(courseId: string, userId: string): Promise<Profile> {
     const filter = { id: userId };
     const update = { $addToSet: { courses: courseId } };
@@ -91,6 +110,7 @@ export class CourseService {
     return profile;
   }
 
+  // Lấy các khóa học của người dùng theo ID
   async getCourseByUserId(userId: string): Promise<Course[]> {
     try {
       const profile = await this.profileModel.findOne({ id: userId });
@@ -103,6 +123,8 @@ export class CourseService {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  // Cập nhật đánh giá của khóa học
   async updateRating(courseId: string, rating: number): Promise<Course> {
     const course = await this.courseModel.findById(courseId);
     if (!course) {
@@ -115,7 +137,7 @@ export class CourseService {
     return course;
   }
 
-
+  // Lấy thông tin khóa học theo ID
   async getCourse(courseId: string): Promise<Course> {
     return this.courseModel.findById(courseId).exec();
   }

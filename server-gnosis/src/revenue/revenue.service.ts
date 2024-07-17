@@ -7,12 +7,13 @@ import { Revenue, RevenueDocument } from './entities/revenue.entity';
 export class RevenueService {
   constructor(@InjectModel(Revenue.name) private revenueModel: Model<RevenueDocument>) { }
 
+  // Lấy doanh thu hàng tháng theo năm
   async getMonthlyRevenue(year: number): Promise<any> {
-    console.log(`Fetching revenue for year: ${year}`); // Log the year
+    console.log(`Fetching revenue for year: ${year}`); // Log năm
 
     // Thêm truy vấn đơn giản để kiểm tra tất cả dữ liệu
     const allRevenues = await this.revenueModel.find({});
-    console.log(`All Revenues: ${JSON.stringify(allRevenues)}`);
+    console.log(`All Revenues: ${JSON.stringify(allRevenues)}`); // Log tất cả dữ liệu doanh thu
 
     const revenues = await this.revenueModel.aggregate([
       {
@@ -31,7 +32,7 @@ export class RevenueService {
       }
     ]);
 
-    console.log(`Fetched revenues: ${JSON.stringify(revenues)}`); // Log the result
+    console.log(`Fetched revenues: ${JSON.stringify(revenues)}`); // Log kết quả
 
     return revenues;
   }

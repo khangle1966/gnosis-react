@@ -1,5 +1,7 @@
+// src/redux/actions/ratingActions.js
 import axios from 'axios';
 
+// Gửi đánh giá
 export const submitRating = (ratingData) => async (dispatch) => {
     try {
         const response = await axios.post('http://localhost:3000/ratings', ratingData);
@@ -9,6 +11,7 @@ export const submitRating = (ratingData) => async (dispatch) => {
     }
 };
 
+// Lấy đánh giá theo ID khóa học
 export const fetchRatingsByCourseId = (courseId) => async (dispatch) => {
     try {
         const response = await axios.get(`http://localhost:3000/ratings/${courseId}`);
@@ -18,7 +21,7 @@ export const fetchRatingsByCourseId = (courseId) => async (dispatch) => {
     }
 };
 
-
+// Cập nhật xếp hạng khóa học
 export const updateCourseRating = (courseId, rating) => async (dispatch) => {
     try {
         const { data } = await axios.patch(`/v1/course/${courseId}/rating`, { rating });

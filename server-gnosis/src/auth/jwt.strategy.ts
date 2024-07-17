@@ -7,7 +7,7 @@ import { jwtConstants } from './constants'; // Import constants
 export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor() {
         super({
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // Lấy JWT từ header Authorization
             secretOrKey: jwtConstants.secret, // Sử dụng giá trị từ constants
         });
     }

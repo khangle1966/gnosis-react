@@ -1,19 +1,20 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { createUser } from '../../../../../redux/action/userActions';
-import { TextField, Button, MenuItem, Typography, Box, Paper } from '@mui/material';
-import styles from './AddUserPage.module.scss';
+import React, { useState } from 'react'; // Import React và hook useState
+import { useDispatch, useSelector } from 'react-redux'; // Import các hook từ react-redux để kết nối với Redux store
+import { createUser } from '../../../../../redux/action/userActions'; // Import hành động createUser từ userActions
+import { TextField, Button, MenuItem, Typography, Box, Paper } from '@mui/material'; // Import các component từ MUI
+import styles from './AddUserPage.module.scss'; // Import các lớp CSS module
 
 const AddUserPage = () => {
-    const dispatch = useDispatch();
-    const { loading, error } = useSelector(state => state.user);
+    const dispatch = useDispatch(); // Khởi tạo hook useDispatch để dispatch các hành động
+    const { loading, error } = useSelector(state => state.user); // Sử dụng hook useSelector để lấy trạng thái từ Redux store
 
     const [userData, setUserData] = useState({
         email: '',
         password: '',
         role: 'user',
-    });
+    }); // Khai báo state userData để lưu trữ thông tin người dùng mới
 
+    // Hàm xử lý thay đổi dữ liệu đầu vào
     const handleChange = (e) => {
         setUserData({
             ...userData,
@@ -21,9 +22,10 @@ const AddUserPage = () => {
         });
     };
 
+    // Hàm xử lý gửi form
     const handleSubmit = (e) => {
         e.preventDefault();
-        dispatch(createUser(userData));
+        dispatch(createUser(userData)); // Dispatch hành động createUser với dữ liệu người dùng
     };
 
     return (

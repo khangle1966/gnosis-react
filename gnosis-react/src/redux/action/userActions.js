@@ -1,3 +1,4 @@
+// src/redux/actions/userActions.js
 import {
     FETCH_USERS_REQUEST,
     FETCH_USERS_SUCCESS,
@@ -20,6 +21,7 @@ import {
 } from '../types/userTypes';
 import axios from 'axios';
 
+// Lấy danh sách người dùng
 export const fetchUsers = () => async (dispatch) => {
     dispatch({ type: FETCH_USERS_REQUEST });
     try {
@@ -30,6 +32,7 @@ export const fetchUsers = () => async (dispatch) => {
     }
 };
 
+// Cập nhật thông tin người dùng
 export const updateUser = (id, user) => async (dispatch) => {
     dispatch({ type: UPDATE_USER_REQUEST });
     try {
@@ -40,6 +43,7 @@ export const updateUser = (id, user) => async (dispatch) => {
     }
 };
 
+// Xóa người dùng
 export const deleteUser = (id) => async (dispatch) => {
     dispatch({ type: DELETE_USER_REQUEST });
     try {
@@ -50,6 +54,7 @@ export const deleteUser = (id) => async (dispatch) => {
     }
 };
 
+// Tạo người dùng mới
 export const createUser = (userData) => async (dispatch) => {
     dispatch({ type: CREATE_USER_REQUEST });
     try {
@@ -60,6 +65,7 @@ export const createUser = (userData) => async (dispatch) => {
     }
 };
 
+// Cấm người dùng
 export const banUser = (uid) => async (dispatch) => {
     dispatch({ type: BAN_USER_REQUEST });
     try {
@@ -70,6 +76,7 @@ export const banUser = (uid) => async (dispatch) => {
     }
 };
 
+// Hủy cấm người dùng
 export const unbanUser = (uid) => async (dispatch) => {
     dispatch({ type: UNBAN_USER_REQUEST });
     try {

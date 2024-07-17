@@ -1,5 +1,3 @@
-// src/chapter/chapter.controller.ts
-
 import { Body, Controller, Get, Post, Param, Put, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { ChapterService } from './chapter.service';
 import { CreateChapterDto } from './dto/create-chapter.dto';
@@ -9,6 +7,7 @@ import { UpdateChapterDto } from './dto/update-chapter.dto';
 export class ChapterController {
   constructor(private readonly chapterService: ChapterService) { }
 
+  // Tạo chương mới
   @Post()
   async create(@Body() createChapterDto: CreateChapterDto) {
     try {
@@ -18,6 +17,8 @@ export class ChapterController {
       throw new HttpException('Internal Server Error', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  // Lấy tất cả chương theo courseId
   @Get('course/:courseId')
   async getChaptersByCourseId(@Param('courseId') courseId: string) {
     try {
@@ -26,6 +27,8 @@ export class ChapterController {
       throw new HttpException('Chapters not found', HttpStatus.NOT_FOUND);
     }
   }
+
+  // Lấy tất cả chương
   @Get()
   async findAll() {
     try {
@@ -35,6 +38,7 @@ export class ChapterController {
     }
   }
 
+  // Lấy thông tin chương theo ID
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -44,6 +48,7 @@ export class ChapterController {
     }
   }
 
+  // Cập nhật chương theo ID
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateChapterDto: UpdateChapterDto) {
     try {
@@ -53,6 +58,7 @@ export class ChapterController {
     }
   }
 
+  // Cập nhật thứ tự các chương
   @Put('chap/order')
   async updateChapterOrder(@Body() updateOrderDto: { chapters: { id: string; chapterNumber: number }[] }) {
     if (!updateOrderDto || !updateOrderDto.chapters || updateOrderDto.chapters.length === 0) {
@@ -67,7 +73,7 @@ export class ChapterController {
     }
   }
 
-
+  // Xóa chương theo ID
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {

@@ -27,6 +27,7 @@ export class VNPayService {
     private readonly salaryService: SalaryService,
   ) { }
 
+  // Tạo URL thanh toán
   async createPaymentUrl(amount: number, bankCode: string, courseIds: string[], userId: string): Promise<string> {
     const date = new Date();
     const createDate = moment(date).format('YYYYMMDDHHmmss');
@@ -68,6 +69,7 @@ export class VNPayService {
     return paymentUrl;
   }
 
+  // Xác minh thanh toán
   verifyPayment(query: any): boolean {
     this.loggerService.log(`Verifying payment with query: ${JSON.stringify(query)}`); // Log dữ liệu để xác minh thanh toán
 
@@ -85,11 +87,14 @@ export class VNPayService {
     return secureHash === signed;
   }
 
+  // Lấy danh sách authorId từ danh sách courseId
   async getAuthorIdsFromCourseIds(courseIds: string[]): Promise<string[]> {
     const courses = await this.courseModel.find({ _id: { $in: courseIds } });
     const authorIds = courses.map(course => course.authorId);
     return [...new Set(authorIds)]; // Loại bỏ các authorId trùng lặp
   }
+
+  // Tạo đơn hàng mới
   async createOrder(
     orderId: string,
     userId: string,
@@ -102,12 +107,14 @@ export class VNPayService {
     this.loggerService.log(`Created order: ${JSON.stringify(newOrder)}`);
   }
 
+  // Lấy chi tiết đơn hàng
   async getOrderDetails(orderId: string): Promise<Order> {
     const orderDetails = await this.orderModel.findOne({ orderId }).exec();
     this.loggerService.log(`Fetched order details: ${JSON.stringify(orderDetails)}`);
     return orderDetails;
   }
 
+  // Lấy chi tiết khóa học
   async getCourseDetails(courseIds: string[], totalAmount: number): Promise<{ courseId: string; authorId: string; courseName: string; amount: number }[]> {
     const courses = await this.courseModel.find({ _id: { $in: courseIds } });
     const totalCoursePrices = courses.reduce((sum, course) => sum + course.price, 0);
@@ -115,17 +122,19 @@ export class VNPayService {
     return courses.map(course => ({
       courseId: course._id.toString(),
       authorId: course.authorId,
-      courseName: course.name, // Đảm bảo thêm trường courseName ở đây
+      courseName: course.name,
       amount: (course.price / totalCoursePrices) * totalAmount,
     }));
   }
 
+  // Lấy tất cả các đơn hàng
   async getAllOrders(): Promise<Order[]> {
     const orders = await this.orderModel.find().exec();
     this.loggerService.log(`Fetched all orders: ${JSON.stringify(orders)}`);
     return orders;
   }
 
+  // Ghi nhận doanh thu
   async recordRevenue(orderId: string, amount: number): Promise<void> {
     const orderDetails = await this.getOrderDetails(orderId);
     if (!orderDetails) return;
@@ -147,10 +156,11 @@ export class VNPayService {
       await revenue.save();
       this.loggerService.log(`Recorded revenue for order ${orderId} and course ${detail.courseId}: ${JSON.stringify(revenue)}`);
 
-      await this.salaryService.calculateSalary(orderId, detail.authorId, detail.courseId,  detail.amount, date);
+      await this.salaryService.calculateSalary(orderId, detail.authorId, detail.courseId, detail.amount, date);
     }
   }
 
+  // Sắp xếp đối tượng theo thứ tự bảng chữ cái của khóa
   private sortObject(obj: any): any {
     const sorted: any = {};
     const keys = Object.keys(obj).sort();

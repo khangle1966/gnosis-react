@@ -17,55 +17,51 @@ import { UpdateProfileDto } from './dto/update-profile.dto';
 import { Profile } from './entities/profile.entity';
 import { UserService } from 'src/user/user.service';
 import { UsergoogleService } from 'src/usergoogle/usergoogle.service';
+
 @Controller('v1/profile')
 export class ProfileController {
   constructor(
     private profileService: ProfileService,
     private userService: UserService,
     private userGoogleService: UsergoogleService,
-  ) { }
+  ) {}
 
-  @Get(':email')
+  // Kiểm tra email đã tồn tại hay chưa
+  @Get(':email')  
   async checkEmailExists(@Param('email') email: string): Promise<{ exists: boolean }> {
     const exists = await this.profileService.findByEmail(email);
     return { exists };
   }
-  // Thêm vào UserGoogleController
 
+  // Lấy thông tin thống kê của hồ sơ theo ID
+  @Get('stats/:id')
+  async getProfileStats(@Param('id') id: string) {
+    try {
+      const stats = await this.profileService.getProfileStats(id);
+      return stats;
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
+  // Tạo hồ sơ cho người dùng Google
   @Post('googleprofile')
   async createProfileForUserGoogle(@Body() createProfileDto: CreateProfileDto): Promise<Profile> {
     const requiredFields = ['id', 'email', 'userName'];
-    const missingFields = requiredFields.filter(
-      (field) => !createProfileDto[field],
-    );
+    const missingFields = requiredFields.filter(field => !createProfileDto[field]);
     if (missingFields.length > 0) {
-      throw new HttpException(
-        `Missing required fields: ${missingFields.join(', ')}`,
-        HttpStatus.BAD_REQUEST,
-      );
+      throw new HttpException(`Missing required fields: ${missingFields.join(', ')}`, HttpStatus.BAD_REQUEST);
     }
     try {
       const isExist = await this.profileService.findOne(createProfileDto.id);
       if (isExist) {
-        throw new HttpException(
-          'Profile already exists',
-          HttpStatus.BAD_REQUEST,
-        );
+        throw new HttpException('Profile already exists', HttpStatus.BAD_REQUEST);
       }
       const newProfile = await this.profileService.create(createProfileDto);
       if (!newProfile) {
-        try {
-          console.log('No profile');
-          await this.userGoogleService.remove(createProfileDto.id);
-        } catch (error) {
-          throw new Error(error);
-        }
+        await this.userGoogleService.remove(createProfileDto.id);
       } else {
-        console.log('Have profile');
-        this.userGoogleService.update(newProfile.id, {
-          profile: newProfile.id,
-        });
+        this.userGoogleService.update(newProfile.id, { profile: newProfile.id });
       }
       return newProfile;
     } catch (error) {
@@ -73,6 +69,7 @@ export class ProfileController {
     }
   }
 
+  // Tạo hồ sơ mới
   @Post()
   async create(@Body() createProfileDto: CreateProfileDto): Promise<Profile> {
     const requiredFields = ['id', 'email', 'userName'];
@@ -97,6 +94,7 @@ export class ProfileController {
     }
   }
 
+  // Tìm hồ sơ theo ID
   @Get('by-id/:id')
   async findOne(@Param('id') id: string) {
     try {
@@ -110,6 +108,7 @@ export class ProfileController {
     }
   }
 
+  // Lấy tất cả hồ sơ
   @Get()
   async findAll() {
     try {
@@ -119,6 +118,8 @@ export class ProfileController {
       throw error;
     }
   }
+
+  // Cập nhật hồ sơ theo ID
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateProfileDto: UpdateProfileDto): Promise<Profile> {
     try {
@@ -132,6 +133,7 @@ export class ProfileController {
     }
   }
 
+  // Xóa hồ sơ theo ID
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
@@ -145,6 +147,7 @@ export class ProfileController {
     }
   }
 
+  // Lấy tất cả khóa học của hồ sơ theo ID
   @Get(':id/courses')
   async getAllCourseOfProfile(@Param('id') id: string) {
     try {

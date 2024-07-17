@@ -6,12 +6,12 @@ import { CreateUserDto } from 'src/user/dto/create-user.dto';
 export class AuthController {
     constructor(private readonly authService: AuthService) { }
 
-
+    // Đăng nhập bằng email và mật khẩu
     @Post('login')
     async login(@Body() body: { email: string; password: string }) {
         const user = await this.authService.validateUser(body.email, body.password);
         if (!user) {
-            throw new UnauthorizedException('Login failed');
+            throw new UnauthorizedException('Login failed'); // Ném ngoại lệ nếu đăng nhập thất bại
         }
         const token = await this.authService.login(user);
         return {
@@ -21,7 +21,7 @@ export class AuthController {
         };
     }
 
-
+    // Đăng nhập bằng Google OAuth
     @Post('google-login')
     async googleLogin(@Body('access_token') access_token: string) {
         const googleUser = await this.authService.verifyGoogleToken(access_token);
@@ -33,6 +33,8 @@ export class AuthController {
             token,
         };
     }
+
+    // Đăng ký người dùng mới
     @Post('register')
     async register(@Body() createUserDto: CreateUserDto) {
         return this.authService.register(createUserDto);

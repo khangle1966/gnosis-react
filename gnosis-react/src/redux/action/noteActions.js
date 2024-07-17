@@ -1,6 +1,7 @@
 // src/redux/actions/noteActions.js
 import axios from '../../api/axios';
 
+// Hàm hành động để lấy các ghi chú của người dùng
 export const fetchNotes = (userId) => async (dispatch) => {
   try {
     dispatch({ type: 'NOTES_FETCH_REQUEST' });
@@ -14,6 +15,7 @@ export const fetchNotes = (userId) => async (dispatch) => {
   }
 };
 
+// Hàm hành động để thêm một ghi chú mới
 export const addNote = (noteData) => async (dispatch) => {
   try {
     dispatch({ type: 'NOTE_ADD_REQUEST' });
@@ -27,6 +29,7 @@ export const addNote = (noteData) => async (dispatch) => {
   }
 };
 
+// Hàm hành động để xóa một ghi chú
 export const deleteNote = (noteId) => async (dispatch) => {
   try {
     dispatch({ type: 'NOTE_DELETE_REQUEST' });
@@ -40,7 +43,7 @@ export const deleteNote = (noteId) => async (dispatch) => {
   }
 };
 
-
+// Hàm hành động để chỉnh sửa một ghi chú
 export const editNote = (noteId, noteData) => async (dispatch) => {
   try {
     dispatch({ type: 'NOTE_EDIT_REQUEST' });

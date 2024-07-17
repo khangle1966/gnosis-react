@@ -6,10 +6,9 @@ import { AppService } from './app.service';
 import { CourseModule } from './course/course.module';
 import { LessonModule } from './lesson/lesson.module';
 import { ProfileModule } from './profile/profile.module';
-import { QuestionModule } from './question/question.module';
+
 import { UserModule } from './user/user.module';
-import { QuizModule } from './quiz/quiz.module';
-import { QuizBankModule } from './quiz-bank/quiz-bank.module';
+
 import { AuthModule } from './auth/auth.module';
 import { UsergoogleModule } from './usergoogle/usergoogle.module';
 import { AuthorModule } from './author/author.module';
@@ -41,10 +40,9 @@ import { PaymentModule } from './payment/payment.module';
     CourseModule,
     LessonModule,
     ProfileModule,
-    QuestionModule,
+
     UserModule,
-    QuizModule,
-    QuizBankModule,
+  
     AuthModule,
     UsergoogleModule,
     AuthorModule,

@@ -11,7 +11,9 @@ import {
     PROFILE_FETCH_REQUEST,
     PROFILE_FETCH_SUCCESS,
     PROFILE_FETCH_FAILURE,
-
+    PROFILE_STATS_FETCH_REQUEST,
+    PROFILE_STATS_FETCH_SUCCESS,
+    PROFILE_STATS_FETCH_FAILURE,
 
 } from '../types/profileActionTypes';
 
@@ -19,6 +21,7 @@ const initialState = {
     profile: {
         completedCourse: [] // Khởi tạo completedCourse là một mảng trống
     },
+    stats: {},
     loading: false,
     error: null,
     isCheckingDuplicate: false,
@@ -28,8 +31,24 @@ const initialState = {
 const profileReducer = (state = initialState, action) => {
     switch (action.type) {
         case PROFILE_CREATE_REQUEST:
-
-
+        case PROFILE_STATS_FETCH_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            };
+        case PROFILE_STATS_FETCH_SUCCESS:
+            return {
+                ...state,
+                stats: action.payload,
+                loading: false,
+                error: null,
+            };
+        case PROFILE_STATS_FETCH_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload,
+            };
         case PROFILE_DELETE_REQUEST:
             return { ...state, loading: true, error: null };
         case PROFILE_CREATE_SUCCESS:

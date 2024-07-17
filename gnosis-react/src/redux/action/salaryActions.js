@@ -1,3 +1,4 @@
+// src/redux/actions/salaryActions.js
 import {
   FETCH_TOTAL_SALARY,
   FETCH_TOTAL_SALARY_SUCCESS,
@@ -23,6 +24,7 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3000';
 
+// Lấy tổng lương của tất cả giảng viên
 export const fetchTotalSalary = () => async (dispatch) => {
   dispatch({ type: FETCH_TOTAL_SALARY });
   try {
@@ -33,19 +35,21 @@ export const fetchTotalSalary = () => async (dispatch) => {
   }
 };
 
+// Lấy lương của giảng viên theo ID
 export const fetchInstructorSalaryById = (instructorId) => async (dispatch) => {
   dispatch({ type: FETCH_INSTRUCTOR_SALARY_BY_ID });
   try {
     const response = await axios.get(`${BASE_URL}/salary/instructor-salary/${instructorId}`);
     const data = response.data;
     dispatch({ type: FETCH_INSTRUCTOR_SALARY_BY_ID_SUCCESS, payload: data });
-    return data; // Trả về dữ liệu payload
+    return data;
   } catch (error) {
     dispatch({ type: FETCH_INSTRUCTOR_SALARY_BY_ID_FAILURE, payload: error });
-    throw error; // Ném lỗi ra ngoài
+    throw error;
   }
 };
 
+// Lấy lương của quản trị viên
 export const fetchAdminSalary = () => async (dispatch) => {
   dispatch({ type: FETCH_ADMIN_SALARY });
   try {
@@ -56,6 +60,7 @@ export const fetchAdminSalary = () => async (dispatch) => {
   }
 };
 
+// Lấy lương của tất cả giảng viên
 export const fetchInstructorsSalary = () => async (dispatch) => {
   dispatch({ type: FETCH_INSTRUCTORS_SALARY });
   try {
@@ -66,6 +71,7 @@ export const fetchInstructorsSalary = () => async (dispatch) => {
   }
 };
 
+// Lấy các khoản thanh toán của người dùng theo năm
 export const fetchPayments = (userId, year) => async (dispatch) => {
   dispatch({ type: FETCH_PAYMENTS });
   try {
@@ -75,6 +81,8 @@ export const fetchPayments = (userId, year) => async (dispatch) => {
     dispatch({ type: FETCH_PAYMENTS_FAILURE, payload: error });
   }
 };
+
+// Tạo một khoản thanh toán mới
 export const createPayment = (paymentData) => async (dispatch) => {
   dispatch({ type: CREATE_PAYMENT });
   try {
@@ -86,6 +94,7 @@ export const createPayment = (paymentData) => async (dispatch) => {
   }
 };
 
+// Cập nhật thanh toán thành công
 export const updatePaymentSuccess = (payment) => ({
   type: UPDATE_PAYMENT_SUCCESS,
   payload: payment,

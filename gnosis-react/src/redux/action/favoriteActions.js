@@ -11,6 +11,7 @@ import {
 } from '../types/favoriteTypes';
 import axios from 'axios';
 
+// Hàm hành động để thêm khóa học vào danh sách yêu thích
 export const addToFavorite = (userId, courseId) => async dispatch => {
     dispatch({ type: ADD_TO_FAVORITE_REQUEST });
     try {
@@ -27,6 +28,7 @@ export const addToFavorite = (userId, courseId) => async dispatch => {
     }
 };
 
+// Hàm hành động để xóa khóa học khỏi danh sách yêu thích
 export const removeFromFavorite = (userId, courseId) => async dispatch => {
     dispatch({ type: REMOVE_FROM_FAVORITE_REQUEST });
     try {
@@ -43,6 +45,7 @@ export const removeFromFavorite = (userId, courseId) => async dispatch => {
     }
 };
 
+// Hàm hành động để lấy danh sách yêu thích của người dùng
 export const fetchFavorites = (userId) => async dispatch => {
     dispatch({ type: FETCH_FAVORITES_REQUEST });
     try {

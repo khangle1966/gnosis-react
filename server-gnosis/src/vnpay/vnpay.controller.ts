@@ -1,4 +1,3 @@
-
 import { Controller, Get, Query, Res } from '@nestjs/common';
 import { VNPayService } from './vnpay.service';
 import { ProfileService } from '../profile/profile.service';
@@ -15,6 +14,7 @@ export class VNPayController {
     private readonly loggerService: LoggerService,
   ) { }
 
+  // Tạo URL thanh toán
   @Get('create-payment-url')
   async createPaymentUrl(
     @Query('amount') amount: number,
@@ -28,6 +28,7 @@ export class VNPayController {
     res.json({ paymentUrl });
   }
 
+  // Xử lý callback từ VNPay
   @Get('callback')
   async paymentCallback(
     @Query() query: any,
@@ -65,6 +66,7 @@ export class VNPayController {
     }
   }
 
+  // Lấy tất cả các đơn hàng
   @Get('order')
   async getAllOrders(): Promise<Order[]> {
     return this.vnpayService.getAllOrders();

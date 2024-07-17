@@ -1,5 +1,3 @@
-// src/redux/actions/lessonActions.js
-
 import axios from 'axios';
 import {
     FETCH_LESSONS_REQUEST,
@@ -16,6 +14,7 @@ import {
     FETCH_LESSONID_FAILURE,
 } from '../types/lessonTypes';
 
+// Hàm hành động để lấy danh sách bài học theo ID khóa học
 export const fetchLessonsByCourseId = (courseId) => async (dispatch) => {
     dispatch({ type: FETCH_LESSONS_REQUEST });
     try {
@@ -29,6 +28,7 @@ export const fetchLessonsByCourseId = (courseId) => async (dispatch) => {
     }
 };
 
+// Hàm hành động để lấy danh sách bài học theo ID chương
 export const fetchLessonsBychapterId = (chapterId) => async (dispatch) => {
     dispatch({ type: FETCH_LESSONS_REQUEST });
     try {
@@ -42,6 +42,7 @@ export const fetchLessonsBychapterId = (chapterId) => async (dispatch) => {
     }
 };
 
+// Hàm hành động để thêm một bài học mới
 export const addLesson = (lessonData) => async (dispatch) => {
     dispatch({ type: ADD_LESSON_REQUEST });
     try {
@@ -54,6 +55,8 @@ export const addLesson = (lessonData) => async (dispatch) => {
         });
     }
 };
+
+// Hàm hành động để xóa một bài học
 export const deleteLesson = (lessonId) => async (dispatch) => {
     dispatch({ type: DELETE_LESSON_REQUEST });
     try {
@@ -70,6 +73,7 @@ export const deleteLesson = (lessonId) => async (dispatch) => {
     }
 };
 
+// Hàm hành động để lấy chi tiết một bài học theo ID
 export const fetchLessonById = (lessonId) => async (dispatch) => {
     dispatch({ type: FETCH_LESSONID_REQUEST });
     try {

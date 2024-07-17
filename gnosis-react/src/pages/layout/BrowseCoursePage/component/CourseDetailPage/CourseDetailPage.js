@@ -1,104 +1,112 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import styles from './CourseDetailPage.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchLessonsByCourseId, fetchLessonsBychapterId, addLesson, deleteLesson } from '../../../../../redux/action/lessonActions';
-import { fetchChaptersByCourseId, addChapter, removeChapter, updateChapterTitle } from '../../../../../redux/action/chapterActions';
-import renderStars from './renderStars';
-import { fetchCourseDetail, updateCourseDetails } from '../../../../../redux/action/courseActions';
-import { useParams, useNavigate } from 'react-router-dom';
-import { addToCart } from '../../../../../redux/action/cartActions';  // Import addItemToCart from cartActions
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import { updateChapterOrder } from '../../../../../redux/action/chapterActions';
-import { ObjectId } from 'bson';
+import {
+    fetchLessonsByCourseId,
+    fetchLessonsBychapterId,
+    addLesson,
+    deleteLesson
+} from '../../../../../redux/action/lessonActions'; // Import các hành động liên quan đến bài học
+import {
+    fetchChaptersByCourseId,
+    addChapter,
+    removeChapter,
+    updateChapterTitle,
+    updateChapterOrder
+} from '../../../../../redux/action/chapterActions'; // Import các hành động liên quan đến chương
+import renderStars from './renderStars'; // Import hàm renderStars để hiển thị đánh giá bằng sao
+import {
+    fetchCourseDetail,
+    updateCourseDetails
+} from '../../../../../redux/action/courseActions'; // Import các hành động liên quan đến khóa học
+import { useParams, useNavigate } from 'react-router-dom'; // Import các hook để lấy tham số từ URL và điều hướng
+import { addToCart } from '../../../../../redux/action/cartActions'; // Import hành động thêm vào giỏ hàng
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'; // Import các thành phần để hỗ trợ kéo thả
+import { ObjectId } from 'bson'; // Import ObjectId từ thư viện bson để tạo ID mới
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // Import Link từ react-router-dom để tạo liên kết
 
-import LessonModal from './component/LessonModal'; // Đảm bảo rằng bạn đã import LessonModal đúng
+import LessonModal from './component/LessonModal'; // Import LessonModal
 import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css'; // Import the styles for ReactQuill
+import 'react-quill/dist/quill.snow.css'; // Import các kiểu dáng cho ReactQuill
 
 const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
-    return new Date(dateString).toLocaleDateString('vi-VN', options);
+    return new Date(dateString).toLocaleDateString('vi-VN', options); // Định dạng ngày tháng theo kiểu Việt Nam
 };
 
 export const CourseDetailPage = () => {
-    const { courseId, chapterId } = useParams();
-    const navigate = useNavigate();
+    const { courseId, chapterId } = useParams(); // Lấy các tham số từ URL
+    const navigate = useNavigate(); // Khởi tạo hook điều hướng
+    const dispatch = useDispatch(); // Khởi tạo hook dispatch để gửi hành động
 
-    const dispatch = useDispatch();
-    const { courseDetail, loading: loadingCourse } = useSelector(state => state.courseDetail);
-    console.log(courseDetail.authorId);
-    const { lessons, loading: loadingLessons } = useSelector(state => state.lessonDetail);
-    const { chapters, loadingChapters } = useSelector(state => state.chapterDetail || { chapters: [] });
+    const { courseDetail, loading: loadingCourse } = useSelector(state => state.courseDetail); // Lấy thông tin chi tiết khóa học từ Redux store
+    const { lessons, loading: loadingLessons } = useSelector(state => state.lessonDetail); // Lấy danh sách bài học từ Redux store
+    const { chapters, loadingChapters } = useSelector(state => state.chapterDetail || { chapters: [] }); // Lấy danh sách chương từ Redux store
+    const { user } = useSelector(state => state.auth); // Lấy thông tin người dùng từ Redux store
+    const { profile } = useSelector(state => state.profile); // Lấy thông tin profile từ Redux store
 
-
-    const { user } = useSelector(state => state.auth);
-    const { profile } = useSelector(state => state.profile);
-    const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0, courseId: courseId });
-    const [showModal, setShowModal] = useState(false);
-
-    const [groupedChapters, setGroupedChapters] = useState([]);
-    const [openChapters, setOpenChapters] = useState([]);
-
-    const [editableCourse, setEditableCourse] = useState({ ...courseDetail });
+    const [newLesson, setNewLesson] = useState({ title: '', description: '', duration: 0, courseId: courseId }); // State để lưu thông tin bài học mới
+    const [showModal, setShowModal] = useState(false); // State để kiểm soát hiển thị modal
+    const [groupedChapters, setGroupedChapters] = useState([]); // State để lưu các chương đã nhóm
+    const [openChapters, setOpenChapters] = useState([]); // State để lưu danh sách các chương đang mở
+    const [editableCourse, setEditableCourse] = useState({ ...courseDetail }); // State để lưu thông tin khóa học có thể chỉnh sửa
 
     const isCoursePurchased = useMemo(() => {
-        return profile && profile.courses && profile.courses.some(course => course._id === courseId);
+        return profile && profile.courses && profile.courses.some(course => course._id === courseId); // Kiểm tra xem khóa học đã được mua chưa
     }, [profile, courseId]);
 
     useEffect(() => {
-        const totalChapters = groupedChapters.length;
-        const totalLessons = groupedChapters.reduce((total, chapter) => total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0), 0);
-        console.log("Total chapters:", totalChapters, "Total lessons:", totalLessons);
+        const totalChapters = groupedChapters.length; // Tính tổng số chương
+        const totalLessons = groupedChapters.reduce((total, chapter) => total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0), 0); // Tính tổng số bài học
+        console.log("Total chapters:", totalChapters, "Total lessons:", totalLessons); // In ra tổng số chương và bài học
     }, [groupedChapters]);
 
-    const [selectedChapterId, setSelectedChapterId] = useState(null);
-    const [selectedChapter, setSelectedChapter] = useState(null);
-    const [editMode, setEditMode] = useState(false);
+    const [selectedChapterId, setSelectedChapterId] = useState(null); // State để lưu ID chương được chọn
+    const [selectedChapter, setSelectedChapter] = useState(null); // State để lưu chương được chọn
+    const [editMode, setEditMode] = useState(false); // State để lưu trạng thái chỉnh sửa
 
     const { totalChapters, totalLessons, formattedDuration } = useMemo(() => {
-        const totalChapters = groupedChapters.length;
+        const totalChapters = groupedChapters.length; // Tính tổng số chương
         const totalLessons = groupedChapters.reduce((total, chapter) => {
-            return total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0);
+            return total + (Array.isArray(chapter.lessons) ? chapter.lessons.length : 0); // Tính tổng số bài học
         }, 0);
 
         const totalDurationSeconds = groupedChapters.reduce((total, chapter) => {
             return total + (Array.isArray(chapter.lessons) ? chapter.lessons.reduce((chapterTotal, lesson) => {
-                return chapterTotal + ((typeof lesson.duration === 'number') ? lesson.duration : 0);
+                return chapterTotal + ((typeof lesson.duration === 'number') ? lesson.duration : 0); // Tính tổng thời gian của tất cả các bài học
             }, 0) : 0);
         }, 0);
 
-        // Format duration from seconds to a readable format
+        // Định dạng thời gian từ giây thành định dạng dễ đọc
         const hours = Math.floor(totalDurationSeconds / 3600);
         const minutes = Math.floor((totalDurationSeconds % 3600) / 60);
         const seconds = Math.floor(totalDurationSeconds % 60);
         const formattedDuration = `${hours} giờ ${minutes} phút ${seconds} giây`;
 
-        return { totalChapters, totalLessons, formattedDuration };
+        return { totalChapters, totalLessons, formattedDuration }; // Trả về tổng số chương, tổng số bài học và thời gian định dạng
     }, [groupedChapters]);
 
     useEffect(() => {
         if (courseId) {
-            dispatch(fetchCourseDetail(courseId));
-            dispatch(fetchLessonsByCourseId(courseId));
-            dispatch(fetchChaptersByCourseId(courseId));
+            dispatch(fetchCourseDetail(courseId)); // Lấy chi tiết khóa học
+            dispatch(fetchLessonsByCourseId(courseId)); // Lấy danh sách bài học của khóa học
+            dispatch(fetchChaptersByCourseId(courseId)); // Lấy danh sách chương của khóa học
             if (chapterId) {
-                dispatch(fetchLessonsBychapterId(chapterId));
+                dispatch(fetchLessonsBychapterId(chapterId)); // Lấy danh sách bài học của chương cụ thể nếu có
             }
         }
     }, [dispatch, courseId, chapterId]);
 
     useEffect(() => {
-        setEditableCourse({ ...courseDetail });
+        setEditableCourse({ ...courseDetail }); // Cập nhật thông tin khóa học có thể chỉnh sửa khi chi tiết khóa học thay đổi
     }, [courseDetail]);
 
     useEffect(() => {
-        // Kiểm tra chapters trước khi sử dụng
-        if (!chapters || !Array.isArray(chapters)) return;
+        if (!chapters || !Array.isArray(chapters)) return; // Kiểm tra chapters trước khi sử dụng
 
-        const sortedChapters = [...chapters].sort((a, b) => a.chapterNumber - b.chapterNumber);
+        const sortedChapters = [...chapters].sort((a, b) => a.chapterNumber - b.chapterNumber); // Sắp xếp các chương theo số thứ tự
         const chaptersMap = sortedChapters.reduce((acc, chapter) => {
             acc[chapter._id] = {
                 title: `${chapter.title}`,
@@ -111,19 +119,19 @@ export const CourseDetailPage = () => {
         if (lessons && lessons.length > 0) {
             lessons.forEach(lesson => {
                 if (chaptersMap[lesson.chapterId]) {
-                    chaptersMap[lesson.chapterId].lessons.push(lesson);
+                    chaptersMap[lesson.chapterId].lessons.push(lesson); // Thêm bài học vào chương tương ứng
                 }
             });
         }
 
-        setGroupedChapters(Object.values(chaptersMap));
+        setGroupedChapters(Object.values(chaptersMap)); // Cập nhật state groupedChapters
     }, [lessons, chapters]);
 
-    console.log('Grouped Chapters:', groupedChapters);
+    console.log('Grouped Chapters:', groupedChapters); // In ra các chương đã nhóm
 
     const onDragEnd = async (result) => {
         if (!editMode) {
-            return; // Không cho phép drag and drop nếu không ở chế độ chỉnh sửa
+            return; // Không cho phép kéo thả nếu không ở chế độ chỉnh sửa
         }
         const { source, destination } = result;
         if (!destination || (source.index === destination.index && source.droppableId === destination.droppableId)) {

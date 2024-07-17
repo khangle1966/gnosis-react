@@ -1,4 +1,4 @@
-// userGoogleActions.js
+// src/redux/actions/userGoogleActions.js
 import {
     FETCH_USERGOOGLE_REQUEST,
     FETCH_USERGOOGLE_SUCCESS,
@@ -18,6 +18,7 @@ import {
 } from '../types/userGoogleTypes';
 import axios from 'axios';
 
+// Lấy danh sách người dùng Google
 export const fetchUserGoogle = () => async (dispatch) => {
     dispatch({ type: FETCH_USERGOOGLE_REQUEST });
     try {
@@ -28,6 +29,18 @@ export const fetchUserGoogle = () => async (dispatch) => {
     }
 };
 
+// Lấy người dùng Google theo ID
+export const fetchUserGoogleById = (id) => async (dispatch) => {
+    dispatch({ type: FETCH_USERGOOGLE_REQUEST });
+    try {
+        const response = await axios.get(`http://localhost:3000/v1/usergoogle/${id}`);
+        dispatch({ type: FETCH_USERGOOGLE_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({ type: FETCH_USERGOOGLE_FAILURE, payload: error.message });
+    }
+};
+
+// Cấm người dùng Google
 export const banUserGoogle = (id) => async (dispatch) => {
     dispatch({ type: BAN_USERGOOGLE_REQUEST });
     try {
@@ -38,6 +51,7 @@ export const banUserGoogle = (id) => async (dispatch) => {
     }
 };
 
+// Hủy cấm người dùng Google
 export const unbanUserGoogle = (id) => async (dispatch) => {
     dispatch({ type: UNBAN_USERGOOGLE_REQUEST });
     try {
@@ -48,6 +62,7 @@ export const unbanUserGoogle = (id) => async (dispatch) => {
     }
 };
 
+// Cập nhật thông tin người dùng Google
 export const updateUserGoogle = (id, updateUserDto) => async (dispatch) => {
     dispatch({ type: UPDATE_USERGOOGLE_REQUEST });
     try {
@@ -58,13 +73,12 @@ export const updateUserGoogle = (id, updateUserDto) => async (dispatch) => {
     }
 };
 
+// Cập nhật URL ảnh đại diện người dùng Google
 export const updateUserGooglePicUrl = (id, picUrl) => async (dispatch, getState) => {
     dispatch({ type: UPDATE_USERGOOGLE_PICURL_REQUEST });
     try {
         const response = await axios.put(`http://localhost:3000/v1/usergoogle/update-picurl/${id}`, { picUrl });
         dispatch({ type: UPDATE_USERGOOGLE_PICURL_SUCCESS, payload: response.data });
-
-        // Cập nhật user object trong Redux state
         const { auth } = getState();
         const updatedUser = {
             ...auth.user,
@@ -76,18 +90,16 @@ export const updateUserGooglePicUrl = (id, picUrl) => async (dispatch, getState)
     }
 };
 
+// Tải lên ảnh đại diện người dùng Google
 export const uploadAvatar = (file, userId) => async (dispatch) => {
     try {
         const formData = new FormData();
         formData.append('avatar', file);
-
         const { data } = await axios.post('http://localhost:3000/upload/avatar', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
         });
-
-        // Sử dụng updateUserGooglePicUrl để cập nhật ảnh đại diện
         await dispatch(updateUserGooglePicUrl(userId, data.url));
     } catch (error) {
         dispatch({

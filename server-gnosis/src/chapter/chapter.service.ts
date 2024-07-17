@@ -1,5 +1,3 @@
-// src/chapter/chapter.service.ts
-
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model, Types } from "mongoose";
@@ -10,29 +8,33 @@ import { UpdateChapterDto } from "./dto/update-chapter.dto";
 
 @Injectable()
 export class ChapterService {
-
   constructor(
     @InjectModel(Chapter.name) private readonly chapterModel: Model<Chapter>,
-    @InjectModel(Lesson.name) private readonly lessonModel: Model<Lesson> // Thêm dòng này để inject Lesson model
+    @InjectModel(Lesson.name) private readonly lessonModel: Model<Lesson>
   ) { }
 
+  // Tạo chương mới
   async create(createChapterDto: CreateChapterDto): Promise<Chapter> {
     const newChapter = new this.chapterModel(createChapterDto);
     return await newChapter.save();
   }
 
-  // Hàm này sẽ lấy tất cả lessons có chapterId tương ứng
+  // Lấy tất cả bài học theo chapterId
   async findLessonsByChapterId(chapterId: Types.ObjectId): Promise<Lesson[]> {
-    return await this.lessonModel.find({ chapter: chapterId }).exec(); // Sửa lại 'chapterId' thành 'chapter' nếu đây là tên trường trong Lesson entity
+    return await this.lessonModel.find({ chapter: chapterId }).exec();
   }
+
+  // Lấy tất cả các chương
   async findAll(): Promise<Chapter[]> {
     return await this.chapterModel.find().exec();
   }
+
+  // Lấy chương theo courseId
   async findByCourseId(courseId: string): Promise<Chapter[]> {
-    return await this.chapterModel.find({ courseId: courseId }).exec();
+    return await this.chapterModel.find({ courseId }).exec();
   }
 
-  // Find a single chapter by ID
+  // Lấy thông tin chương theo ID
   async findOne(id: string): Promise<Chapter> {
     const chapter = await this.chapterModel.findById(id).exec();
     if (!chapter) {
@@ -41,7 +43,7 @@ export class ChapterService {
     return chapter;
   }
 
-  // Update a chapter by ID
+  // Cập nhật chương theo ID
   async update(id: string, updateChapterDto: UpdateChapterDto): Promise<Chapter> {
     const updatedChapter = await this.chapterModel.findByIdAndUpdate(id, updateChapterDto, { new: true }).exec();
     if (!updatedChapter) {
@@ -49,6 +51,8 @@ export class ChapterService {
     }
     return updatedChapter;
   }
+
+  // Cập nhật thứ tự các chương
   async updateChapterOrder(chapters: { id: string; chapterNumber: number }[]): Promise<any> {
     const session = await this.chapterModel.db.startSession();
     session.startTransaction();
@@ -67,7 +71,8 @@ export class ChapterService {
       session.endSession();
     }
   }
-  // Delete a chapter by ID
+
+  // Xóa chương theo ID
   async remove(id: string): Promise<Chapter> {
     const deletedChapter = await this.chapterModel.findByIdAndRemove(id).exec();
     if (!deletedChapter) {
@@ -75,6 +80,4 @@ export class ChapterService {
     }
     return deletedChapter;
   }
-
-  // ...Thêm các hàm khác nếu cần
 }

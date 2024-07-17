@@ -1,4 +1,5 @@
 // courseReducer.js
+
 import {
     UPDATE_COURSE,
     RESET_COURSE,
@@ -12,7 +13,10 @@ import {
     FETCH_COURSE_DETAIL_SUCCESS,
     FETCH_COURSE_DETAIL_FAILURE,
     UPDATE_COURSE_FAILURE,
-    APPROVE_COURSE_SUCCESS
+    APPROVE_COURSE_SUCCESS,
+    FETCH_COURSES_BY_AUTHOR_REQUEST,
+    FETCH_COURSES_BY_AUTHOR_SUCCESS,
+    FETCH_COURSES_BY_AUTHOR_FAILURE,
 } from '../types/courseType';
 
 const initialState = {
@@ -87,6 +91,24 @@ export const courseReducer = (state = initialState, action) => {
                 error: null
             };
         case FETCH_USER_COURSES_FAILURE:
+            return {
+                ...state,
+                loading: false,
+                error: action.payload
+            };
+        case FETCH_COURSES_BY_AUTHOR_REQUEST:
+            return {
+                ...state,
+                loading: true,
+            };
+        case FETCH_COURSES_BY_AUTHOR_SUCCESS:
+            return {
+                ...state,
+                courses: action.payload,
+                loading: false,
+                error: null
+            };
+        case FETCH_COURSES_BY_AUTHOR_FAILURE:
             return {
                 ...state,
                 loading: false,

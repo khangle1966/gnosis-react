@@ -13,6 +13,7 @@ export class UserService {
     @InjectModel(User.name) private userModel: Model<User>,
   ) { }
 
+  // Tạo người dùng mới
   async create(createUserDto: CreateUserDto): Promise<User> {
     console.log('hashedPassword khi tạo người dùng:', createUserDto.password);
 
@@ -22,11 +23,12 @@ export class UserService {
     return createdUser.save();
   }
 
-
+  // Tìm người dùng theo email
   async findOne(email: string): Promise<User | undefined> {
     return this.userModel.findOne({ email }).exec();
   }
 
+  // Cập nhật thông tin người dùng
   async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
     try {
       const updatedUser = await this.userModel.findOneAndUpdate(
@@ -40,11 +42,12 @@ export class UserService {
     }
   }
 
-
+  // Tìm người dùng theo email
   async findOneByEmail(email: string): Promise<User | null> {
     return await this.userModel.findOne({ email }).exec();
   }
 
+  // Xóa người dùng theo ID
   async remove(id: string): Promise<User | null> {
     try {
       return await this.userModel.findOneAndRemove({ uid: id });
@@ -53,6 +56,7 @@ export class UserService {
     }
   }
 
+  // Lấy tất cả người dùng
   async findAll(): Promise<User[]> {
     try {
       return this.userModel.find().exec();
@@ -61,6 +65,7 @@ export class UserService {
     }
   }
 
+  // Lấy dữ liệu người dùng theo tháng
   async getMonthlyData(): Promise<any[]> {
     const users = await this.userModel.find().exec();
     const monthlyData = {};
@@ -76,12 +81,15 @@ export class UserService {
     return Object.values(monthlyData);
   }
 
+  // Xóa người dùng theo UID
   async deleteByUid(uid: string): Promise<void> {
     const result = await this.userModel.findOneAndDelete({ uid }).exec();
     if (!result) {
       throw new NotFoundException(`User with UID "${uid}" not found`);
     }
   }
+
+  // Cấm người dùng
   async banUser(uid: string): Promise<User> {
     try {
       const bannedUser = await this.userModel.findOneAndUpdate(
@@ -95,6 +103,7 @@ export class UserService {
     }
   }
 
+  // Hủy cấm người dùng
   async unbanUser(uid: string): Promise<User> {
     try {
       const unbannedUser = await this.userModel.findOneAndUpdate(

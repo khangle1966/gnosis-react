@@ -19,43 +19,45 @@ import { fetchNotes } from '../../../../../redux/action/noteActions';
 import { completeCourse, fetchProfile } from '../../../../../redux/action/profileActions';
 import RatingModal from './components/RatingModal';
 import { fetchRatingsByCourseId, submitRating } from '../../../../../redux/action/ratingActions';
-
 export const LessonPage = () => {
-    const { lessonId, courseId } = useParams();
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const [expanded, setExpanded] = useState({});
-    const { videoURL, loading, error } = useSelector(state => state.uploadVideo);
-    const { courseDetail, loading: courseLoading } = useSelector(state => state.courseDetail);
-    const { user } = useSelector(state => state.auth);
-    const userId = user ? user.uid : null;
-    const [currentTime, setCurrentTime] = useState(0);
-    const playerRef = useRef(null);
-    const { chapters } = useSelector(state => state.chapterDetail);
-    const { lessons } = useSelector(state => state.lessonDetail);
-    const { lessonscomplete } = useSelector(state => state.lessonComplete);
+    const { lessonId, courseId } = useParams(); // Lấy lessonId và courseId từ URL
+    const navigate = useNavigate(); // Khởi tạo hook điều hướng
+    const dispatch = useDispatch(); // Khởi tạo hook dispatch để gửi hành động
 
-    const [activeSection, setActiveSection] = useState('overview');
-    const [showNoteModal, setShowNoteModal] = useState(false);
-    const [showNoteViewer, setShowNoteViewer] = useState(false);
-    const [currentNote] = useState('');
-    const [playing, setPlaying] = useState(true);
-    const [timeToSeek, setTimeToSeek] = useState(null);
-    const [playerReady, setPlayerReady] = useState(false);
-    const [key, setKey] = useState(0);
-    const { lesson, loading: lessonLoading, error: lessonError } = useSelector(state => state.lessonDetail);
-    const { notes } = useSelector(state => state.notesData);
-    const [showRatingModal, setShowRatingModal] = useState(false);
-    const { ratings } = useSelector(state => state.ratings);
-    const [userNames, setUserNames] = useState({}); // State to store user names
+    const [expanded, setExpanded] = useState({}); // Trạng thái để lưu trạng thái mở rộng của các chương
+    const { videoURL, loading, error } = useSelector(state => state.uploadVideo); // Lấy video URL và trạng thái tải video từ Redux
+    const { courseDetail, loading: courseLoading } = useSelector(state => state.courseDetail); // Lấy thông tin chi tiết khóa học từ Redux
+    const { user } = useSelector(state => state.auth); // Lấy thông tin người dùng từ Redux
+    const userId = user ? user.uid : null; // Lấy userId từ thông tin người dùng, nếu user tồn tại thì lấy user.uid, nếu không thì null
+    const [currentTime, setCurrentTime] = useState(0); // Trạng thái để lưu thời gian hiện tại của video
+    const playerRef = useRef(null); // Tham chiếu đến ReactPlayer
+    const { chapters } = useSelector(state => state.chapterDetail); // Lấy thông tin các chương từ Redux
+    const { lessons } = useSelector(state => state.lessonDetail); // Lấy thông tin các bài học từ Redux
+    const { lessonscomplete } = useSelector(state => state.lessonComplete); // Lấy thông tin các bài học đã hoàn thành từ Redux
 
+    const [activeSection, setActiveSection] = useState('overview'); // Trạng thái để lưu phần đang hoạt động
+    const [showNoteModal, setShowNoteModal] = useState(false); // Trạng thái để kiểm soát hiển thị modal ghi chú
+    const [showNoteViewer, setShowNoteViewer] = useState(false); // Trạng thái để kiểm soát hiển thị trình xem ghi chú
+    const [currentNote] = useState(''); // Trạng thái để lưu ghi chú hiện tại (không sử dụng, có thể bỏ đi)
+    const [playing, setPlaying] = useState(true); // Trạng thái để lưu trạng thái phát của video
+    const [timeToSeek, setTimeToSeek] = useState(null); // Thời gian để tìm kiếm trong video
+    const [playerReady, setPlayerReady] = useState(false); // Trạng thái để lưu trạng thái sẵn sàng của player
+    const [key, setKey] = useState(0); // Trạng thái để tạo khóa cho ReactPlayer, đảm bảo ReactPlayer được tái tạo khi bài học thay đổi
+    const { lesson, loading: lessonLoading, error: lessonError } = useSelector(state => state.lessonDetail); // Lấy thông tin bài học từ Redux
+    const { notes } = useSelector(state => state.notesData); // Lấy thông tin các ghi chú từ Redux
+    const [showRatingModal, setShowRatingModal] = useState(false); // Trạng thái để kiểm soát hiển thị modal đánh giá
+    const { ratings } = useSelector(state => state.ratings); // Lấy thông tin các đánh giá từ Redux
+    const [userNames, setUserNames] = useState({}); // Trạng thái để lưu tên người dùng
+
+    // Hàm để tính tổng số bài học và số bài học đã hoàn thành
     const getTotalAndCompletedLessons = () => {
-        const total = lessons.length;
-        const completed = lessonscomplete.length;
+        const total = lessons.length; // Tổng số bài học
+        const completed = lessonscomplete.length; // Số bài học đã hoàn thành
         return { total, completed };
     };
-    const { total, completed } = getTotalAndCompletedLessons();
+    const { total, completed } = getTotalAndCompletedLessons(); // Lấy tổng số bài học và số bài học đã hoàn thành
 
+    // useEffect để điều hướng đến bài học cuối cùng đã xem từ localStorage
     useEffect(() => {
         const lastViewedLesson = localStorage.getItem('lastViewedLesson');
         if (lastViewedLesson) {
@@ -63,28 +65,30 @@ export const LessonPage = () => {
         }
     }, [courseId, navigate]);
 
+    // useEffect để lấy dữ liệu khi trang được tải
     useEffect(() => {
         if (completed === total && total !== 0) {
-            dispatch(completeCourse(userId, courseId));
+            dispatch(completeCourse(userId, courseId)); // Hoàn thành khóa học nếu tất cả các bài học đã hoàn thành
         }
-        dispatch(fetchVideoUrl(lessonId));
-        dispatch(fetchChaptersByCourseId(courseId));
-        dispatch(fetchLessonsByCourseId(courseId));
-        dispatch(fetchCourseDetail(courseId));
-        dispatch(fetchRatingsByCourseId(courseId));
-        dispatch(fetchLessonComplete(courseId, userId));
-        dispatch(fetchNotes(userId));
+        dispatch(fetchVideoUrl(lessonId)); // Lấy URL video của bài học
+        dispatch(fetchChaptersByCourseId(courseId)); // Lấy danh sách chương của khóa học
+        dispatch(fetchLessonsByCourseId(courseId)); // Lấy danh sách bài học của khóa học
+        dispatch(fetchCourseDetail(courseId)); // Lấy thông tin chi tiết khóa học
+        dispatch(fetchRatingsByCourseId(courseId)); // Lấy các đánh giá của khóa học
+        dispatch(fetchLessonComplete(courseId, userId)); // Lấy thông tin bài học đã hoàn thành của người dùng
+        dispatch(fetchNotes(userId)); // Lấy các ghi chú của người dùng
     }, [dispatch, courseId, userId, lessonId, completed, total]);
 
+    // useEffect để lấy thông tin chi tiết của bài học khi lessonId thay đổi
     useEffect(() => {
         if (lessonId) {
-            dispatch(fetchLessonById(lessonId));
-            setKey(prevKey => prevKey + 1);
+            dispatch(fetchLessonById(lessonId)); // Lấy thông tin chi tiết của bài học
+            setKey(prevKey => prevKey + 1); // Cập nhật khóa của ReactPlayer để tái tạo lại player
         }
     }, [dispatch, lessonId]);
 
+    // useEffect để lấy thông tin profile của tất cả người dùng đã đánh giá
     useEffect(() => {
-        // Fetch profiles for all rating users
         ratings.forEach(rating => {
             if (!userNames[rating.userId]) {
                 dispatch(fetchProfile(rating.userId)).then(profileData => {
@@ -99,32 +103,35 @@ export const LessonPage = () => {
         });
     }, [ratings, dispatch]);
 
+    // Hàm để xử lý khi người dùng gửi đánh giá
     const handleRatingSubmit = (ratingData) => {
-        dispatch(submitRating(ratingData));
-        dispatch(updateCourseRating(courseId, ratingData.rating)); // cập nhật số lượng đánh giá
-        setShowRatingModal(false);
+        dispatch(submitRating(ratingData)); // Gửi đánh giá
+        dispatch(updateCourseRating(courseId, ratingData.rating)); // Cập nhật số lượng đánh giá của khóa học
+        setShowRatingModal(false); // Đóng modal đánh giá
     };
 
+    // Hàm để tính toán phần trăm đánh giá theo sao
     const calculateRatingBreakdown = (ratings) => {
-        const totalRatings = ratings.length;
+        const totalRatings = ratings.length; // Tổng số đánh giá
         const breakdown = [0, 0, 0, 0, 0];
 
         ratings.forEach((rating) => {
-            breakdown[rating.rating - 1] += 1;
+            breakdown[rating.rating - 1] += 1; // Tính toán số lượng đánh giá theo sao
         });
 
-        return breakdown.map((count) => Math.round((count / totalRatings) * 100));
+        return breakdown.map((count) => Math.round((count / totalRatings) * 100)); // Tính toán phần trăm đánh giá theo sao
     };
 
-    const ratingBreakdown = calculateRatingBreakdown(ratings);
+    const ratingBreakdown = calculateRatingBreakdown(ratings); // Tính toán phần trăm đánh giá theo sao
 
     if (!lesson) {
-        return <div>Loading lesson...</div>;
+        return <div>Loading lesson...</div>; // Hiển thị thông báo đang tải nếu bài học chưa tải xong
     }
-    if (lessonLoading || courseLoading) return <div>Loading...</div>;
-    if (lessonError) return <div>Error: {lessonError}</div>;
-    const currentLessonDescription = lessons.find(lesson => lesson._id === lessonId)?.description || "Loading lesson description...";
+    if (lessonLoading || courseLoading) return <div>Loading...</div>; // Hiển thị thông báo đang tải nếu bài học hoặc khóa học đang tải
+    if (lessonError) return <div>Error: {lessonError}</div>; // Hiển thị lỗi nếu có lỗi xảy ra
+    const currentLessonDescription = lessons.find(lesson => lesson._id === lessonId)?.description || "Loading lesson description..."; // Lấy mô tả của bài học hiện tại
 
+    // Hàm để định dạng thời gian từ giây thành định dạng dễ đọc
     const formatDurationFromSeconds = (seconds) => {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
@@ -137,67 +144,78 @@ export const LessonPage = () => {
         return formattedDuration;
     };
 
+    // Hàm để lấy chi tiết của chương (số bài học đã hoàn thành và tổng thời gian)
     const getChapterDetails = (chapter) => {
-        const chapterLessons = lessons.filter(lesson => lesson.chapterId === chapter._id);
-        const completedLessons = chapterLessons.filter(lesson => lessonscomplete.includes(lesson._id)).length;
-        const totalDuration = chapterLessons.reduce((sum, lesson) => sum + lesson.duration, 0);
+        const chapterLessons = lessons.filter(lesson => lesson.chapterId === chapter._id); // Lấy danh sách bài học của chương
+        const completedLessons = chapterLessons.filter(lesson => lessonscomplete.includes(lesson._id)).length; // Đếm số bài học đã hoàn thành của chương
+        const totalDuration = chapterLessons.reduce((sum, lesson) => sum + lesson.duration, 0); // Tính tổng thời gian của chương
         return {
             completed: `${completedLessons}/${chapterLessons.length}`,
             duration: formatDurationFromSeconds(totalDuration)
         };
     };
 
+    // Hàm để xử lý khi player đã sẵn sàng
     const handlePlayerReady = () => {
-        setPlayerReady(true);
+        setPlayerReady(true); // Đánh dấu player đã sẵn sàng
         if (timeToSeek !== null) {
-            playerRef.current.seekTo(timeToSeek);
+            playerRef.current.seekTo(timeToSeek); // Tìm đến thời gian đã lưu trước đó
             setTimeToSeek(null);
         }
     };
 
+    // Hàm để cập nhật thời gian hiện tại của video
     const handleProgress = (state) => {
-        setCurrentTime(state.playedSeconds);
+        setCurrentTime(state.playedSeconds); // Cập nhật thời gian hiện tại của video
         if (timeToSeek !== null && playerReady) {
-            playerRef.current.seekTo(timeToSeek);
+            playerRef.current.seekTo(timeToSeek); // Tìm đến thời gian đã lưu trước đó
             setTimeToSeek(null);
         }
     };
 
+    // Hàm để hiển thị modal ghi chú và tạm dừng video
     const handleNoteClick = () => {
-        setShowNoteModal(true);
-        setPlaying(false);
+        setShowNoteModal(true); // Hiển thị modal ghi chú
+        setPlaying(false); // Tạm dừng video
     };
 
+    // Hàm để đóng modal ghi chú và tiếp tục phát video
     const handleCloseModal = () => {
-        setShowNoteModal(false);
-        setPlaying(true);
+        setShowNoteModal(false); // Đóng modal ghi chú
+        setPlaying(true); // Tiếp tục phát video
     };
 
+    // Hàm để hiển thị trình xem ghi chú và tạm dừng video
     const handleViewNotes = () => {
-        setShowNoteViewer(true);
-        setPlaying(false);
+        setShowNoteViewer(true); // Hiển thị trình xem ghi chú
+        setPlaying(false); // Tạm dừng video
     };
 
+    // Hàm để đóng trình xem ghi chú và tiếp tục phát video
     const handleCloseViewer = () => {
-        setShowNoteViewer(false);
-        setPlaying(true);
+        setShowNoteViewer(false); // Đóng trình xem ghi chú
+        setPlaying(true); // Tiếp tục phát video
     };
 
+    // Hàm để lưu ghi chú và lấy lại các ghi chú của người dùng
     const handleSaveNote = (note) => {
-        setShowNoteModal(false);
-        dispatch(fetchNotes(userId));
+        setShowNoteModal(false); // Đóng modal ghi chú
+        dispatch(fetchNotes(userId)); // Lấy lại các ghi chú của người dùng
     };
 
+    // Hàm để điều hướng đến bài học đã chọn
     const handleLessonClick = (lessonId) => {
-        dispatch(fetchVideoUrl(lessonId));
-        localStorage.setItem('lastViewedLesson', lessonId);  // Lưu lessonId vào localStorage
-        navigate(`/course/${courseId}/lesson/${lessonId}`);
+        dispatch(fetchVideoUrl(lessonId)); // Lấy URL video của bài học
+        localStorage.setItem('lastViewedLesson', lessonId); // Lưu bài học cuối cùng đã xem vào localStorage
+        navigate(`/course/${courseId}/lesson/${lessonId}`); // Điều hướng đến bài học đã chọn
     };
 
+    // Hàm để điều hướng về trang chủ
     const handleBackclick = (courseId) => {
         navigate(`/home`);
     };
 
+    // Hàm để định dạng thời gian từ giây thành định dạng dễ đọc
     function formatDuration(seconds) {
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
@@ -208,26 +226,31 @@ export const LessonPage = () => {
         return `${paddedHours}:${paddedMinutes}:${paddedSeconds}`;
     }
 
+    // Hàm để mở hoặc đóng chương
     const toggleExpand = chapterId => {
         setExpanded(prev => ({ ...prev, [chapterId]: !prev[chapterId] }));
     };
 
+    // Hàm để xử lý khi video kết thúc
     const handleVideoEnded = () => {
         if (!lessonscomplete.includes(lessonId)) {
-            dispatch(completeLesson(lessonId, userId, courseId));
+            dispatch(completeLesson(lessonId, userId, courseId)); // Hoàn thành bài học khi video kết thúc
         }
     };
 
+    // Hàm để hiển thị modal đánh giá nếu người dùng chưa đánh giá
     const handleRatingClick = () => {
         if (completed > 0 && !ratings.some(rating => rating.userId === userId)) {
             setShowRatingModal(true);
         }
     };
 
+    // Hàm để đóng modal đánh giá
     const handleRatingModalClose = () => {
         setShowRatingModal(false);
     };
 
+    // Hàm để hiển thị các sao đánh giá
     const renderStars = (rating) => {
         const fullStars = Math.floor(rating);
         const halfStar = rating % 1 !== 0;

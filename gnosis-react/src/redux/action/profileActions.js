@@ -1,7 +1,6 @@
-// Trong profileActions.js
+// src/redux/actions/profileActions.js
 import axios from 'axios';
 import {
-
     PROFILE_CREATE_REQUEST,
     PROFILE_CREATE_SUCCESS,
     PROFILE_CREATE_FAILURE,
@@ -11,26 +10,32 @@ import {
     PROFILE_FETCH_REQUEST,
     PROFILE_FETCH_SUCCESS,
     PROFILE_FETCH_FAILURE,
-
+    PROFILE_STATS_FETCH_REQUEST,
+    PROFILE_STATS_FETCH_SUCCESS,
+    PROFILE_STATS_FETCH_FAILURE,
 } from '../types/profileActionTypes';
+
+// Kiểm tra yêu cầu hồ sơ trùng lặp
 export const checkDuplicateProfileRequest = () => {
     return { type: 'CHECK_DUPLICATE_PROFILE_REQUEST' };
 }
 
+// Thành công khi kiểm tra hồ sơ trùng lặp
 export const checkDuplicateProfileSuccess = (isDuplicate) => {
     return { type: 'CHECK_DUPLICATE_PROFILE_SUCCESS', payload: isDuplicate };
 }
 
+// Thất bại khi kiểm tra hồ sơ trùng lặp
 export const checkDuplicateProfileFailure = (error) => {
     return { type: 'CHECK_DUPLICATE_PROFILE_FAILURE', payload: error };
 }
 
+// Lấy thông tin hồ sơ theo userId
 export const fetchProfile = (userId) => async (dispatch) => {
     dispatch({ type: PROFILE_FETCH_REQUEST });
     try {
         const response = await axios.get(`http://localhost:3000/v1/profile/by-id/${userId}`);
-        console.log('Fetched profile data:', response.data); // Log dữ liệu nhận được
-
+        console.log('Fetched profile data:', response.data);
         dispatch({ type: PROFILE_FETCH_SUCCESS, payload: response.data });
         return response.data;
     } catch (error) {
@@ -41,6 +46,22 @@ export const fetchProfile = (userId) => async (dispatch) => {
     }
 };
 
+// Lấy thống kê hồ sơ theo userId
+export const fetchProfileStats = (userId) => async (dispatch) => {
+    dispatch({ type: PROFILE_STATS_FETCH_REQUEST });
+    try {
+        const response = await axios.get(`http://localhost:3000/v1/profile/stats/${userId}`);
+        console.log('Fetched profile stats:', response.data);
+        dispatch({ type: PROFILE_STATS_FETCH_SUCCESS, payload: response.data });
+    } catch (error) {
+        dispatch({
+            type: PROFILE_STATS_FETCH_FAILURE,
+            payload: error.response ? error.response.data.message : error.message
+        });
+    }
+};
+
+// Hoàn thành khóa học cho userId
 export const completeCourse = (userId, courseId) => async (dispatch, getState) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });
     try {
@@ -70,12 +91,12 @@ export const completeCourse = (userId, courseId) => async (dispatch, getState) =
     }
 };
 
-
+// Cập nhật hồ sơ cho userId
 export const updateProfile = (profileData, userId) => async (dispatch) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });
 
     try {
-        // Ensure that all ObjectIds are converted to strings
+        // Đảm bảo tất cả ObjectIds đều được chuyển đổi thành chuỗi
         const sanitizedProfileData = {
             ...profileData,
             ongoingCourse: profileData.ongoingCourse.map(id => (typeof id === 'object' && id._id ? id._id.toString() : id.toString())),
@@ -92,6 +113,8 @@ export const updateProfile = (profileData, userId) => async (dispatch) => {
         });
     }
 };
+
+// Cập nhật hồ sơ cho userId (cách 2)
 export const updateProfile2 = (profileData, userId) => async (dispatch) => {
     dispatch({ type: PROFILE_UPDATE_REQUEST });
     try {
@@ -106,7 +129,7 @@ export const updateProfile2 = (profileData, userId) => async (dispatch) => {
     }
 };
 
-
+// Tạo hồ sơ mới
 export const createProfile = (profileData) => async (dispatch) => {
     dispatch({ type: PROFILE_CREATE_REQUEST });
     try {
@@ -120,6 +143,8 @@ export const createProfile = (profileData) => async (dispatch) => {
         });
     }
 };
+
+// Tạo hồ sơ cho người dùng Google
 export const createProfileforUserGoogle = (profileData) => async (dispatch) => {
     dispatch({ type: PROFILE_CREATE_REQUEST });
     try {
@@ -134,6 +159,7 @@ export const createProfileforUserGoogle = (profileData) => async (dispatch) => {
     }
 };
 
+// Kiểm tra hồ sơ trùng lặp bằng email
 export const checkDuplicateProfile = (email) => async (dispatch) => {
     try {
         dispatch(checkDuplicateProfileRequest());

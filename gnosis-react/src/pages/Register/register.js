@@ -8,21 +8,30 @@ import { loginWithGoogleAction, register, resetRegisterSuccessMessage } from '..
 import { useGoogleLogin } from '@react-oauth/google';
 
 const Register = () => {
+    // Lấy trạng thái đăng nhập từ Redux store
     const isLoggedIn = useSelector(state => state.auth.isLoggedIn);
+    // Khởi tạo state để lưu email và mật khẩu
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    // Khởi tạo hook useDispatch để gửi action lên Redux store
     const dispatch = useDispatch();
+    // Khởi tạo hook useNavigate để điều hướng trang
     const navigate = useNavigate();
+    // Lấy trạng thái loading và lỗi từ Redux store
     const { loading, error } = useSelector(state => state.auth);
+    // Lấy thông báo thành công đăng ký từ Redux store
     const { registerSuccessMessage } = useSelector(state => state.auth);
+    // Khởi tạo state để lưu mật khẩu xác nhận
     const [confirmPassword, setConfirmPassword] = useState('');
 
+    // useEffect để điều hướng người dùng khi trạng thái đăng nhập thay đổi
     useEffect(() => {
         if (isLoggedIn) {
             navigate('/browsecourse');
         }
     }, [isLoggedIn, navigate]);
 
+    // useEffect để hiển thị thông báo khi đăng ký thành công
     useEffect(() => {
         if (registerSuccessMessage) {
             alert(registerSuccessMessage);
@@ -31,25 +40,28 @@ const Register = () => {
         }
     }, [registerSuccessMessage, navigate, dispatch]);
 
+    // useEffect để đặt lại thông báo khi rời khỏi trang đăng ký
     useEffect(() => {
         return () => {
             dispatch(resetRegisterSuccessMessage()); // Đặt lại thông báo khi rời khỏi trang
         };
     }, [dispatch]);
 
+    // Hàm đăng nhập với Google
     const loginWithGoogle = useGoogleLogin({
         onSuccess: async (response) => {
             dispatch(loginWithGoogleAction(response.access_token));
         },
     });
 
+    // Hàm xử lý khi người dùng nhấn nút đăng ký
     const handleRegister = async (e) => {
         e.preventDefault();
         if (password !== confirmPassword) {
-            alert('Passwords do not match.');
+            alert('Passwords do not match.'); // Kiểm tra nếu mật khẩu không khớp
             return;
         }
-        dispatch(register(email, password));
+        dispatch(register(email, password)); // Gửi action đăng ký với email và mật khẩu
     };
 
     return (
@@ -59,11 +71,11 @@ const Register = () => {
             </div>
             <div className={styles.rightSection}>
                 <div className={styles.logo}>
-                    <img src={logo} alt="Logo" />
+                    <img src={logo} alt="Logo" /> {/* Hiển thị logo */}
                 </div>
-                <p className={styles.textLogin}>Register</p>
+                <p className={styles.textLogin}>Register</p> {/* Văn bản "Register" */}
                 <div className={styles.loginForm}>
-                    <form onSubmit={handleRegister}>
+                    <form onSubmit={handleRegister}> {/* Form đăng ký */}
                         <div className={styles.formControl}>
                             <input
                                 className={styles.input}
@@ -94,12 +106,16 @@ const Register = () => {
                                 required
                             />
                         </div>
-                        {error && <p style={{ color: '#FF0000', fontWeight: 'bold', margin: '10px 0', borderRadius: '5px', textAlign: 'center', }}>{error} </p>}
+                        {error && (
+                            <p style={{ color: '#FF0000', fontWeight: 'bold', margin: '10px 0', borderRadius: '5px', textAlign: 'center' }}>
+                                {error} {/* Hiển thị thông báo lỗi nếu có */}
+                            </p>
+                        )}
                         <div className={styles.formControl}>
-                            <button type="submit" disabled={loading} className={styles.button}>Register</button>
+                            <button type="submit" disabled={loading} className={styles.button}>Register</button> {/* Nút đăng ký */}
                         </div>
                     </form>
-                    <div className={styles.separator}>OR</div>
+                    <div className={styles.separator}>OR</div> {/* Phân cách giữa các phương thức đăng nhập */}
                     <div className={styles.formControl}>
                         <button onClick={loginWithGoogle}
                             type="button"
@@ -110,12 +126,12 @@ const Register = () => {
                                 alt="Sign in with Google"
                                 style={{ marginRight: '1rem' }}
                             />
-                            Sign in with Google
+                            Sign in with Google {/* Nút đăng nhập với Google */}
                         </button>
                     </div>
                 </div>
                 <div className={styles.footer}>
-                    <p>Already have an account? <a href="/Login">Login here</a></p>
+                    <p>Already have an account? <a href="/Login">Login here</a></p> {/* Liên kết đến trang đăng nhập */}
                 </div>
             </div>
         </div>

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Controller,
   Get,
@@ -22,6 +21,7 @@ import { Course } from './entities/course.entity';
 export class CourseController {
   constructor(private courseService: CourseService) { }
 
+  // Tạo khóa học mới
   @Post()
   async create(@Body() createCourseDto: CreateCourseDto): Promise<Course> {
     const requiredFields = ['name'];
@@ -42,6 +42,18 @@ export class CourseController {
     }
   }
 
+  // Lấy tất cả khóa học của một tác giả
+  @Get('author/:authorId')
+  async findAllByAuthor(@Param('authorId') authorId: string): Promise<Course[]> {
+    try {
+      const courses = await this.courseService.findAllByAuthor(authorId);
+      return courses;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+  // Lấy tất cả khóa học
   @Get()
   async findAll(): Promise<Course[]> {
     try {
@@ -51,16 +63,21 @@ export class CourseController {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  // Lấy các khóa học theo danh sách courseIds
   @Post('userCourses')
   async getUserCourses(@Body('courseIds') courseIds: string[]) {
     const courses = await this.courseService.findCoursesByIds(courseIds);
     return courses;
   }
+
+  // Lấy thông tin khóa học theo ID
   @Get(':id')
   async getCourse(@Param('id') id: string): Promise<Course> {
     return this.courseService.getCourse(id);
   }
 
+  // Cập nhật đánh giá của khóa học
   @Patch(':id/rating')
   async updateRating(
     @Param('id') id: string,
@@ -73,7 +90,7 @@ export class CourseController {
     }
   }
 
-
+  // Cập nhật thông tin khóa học
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -87,6 +104,7 @@ export class CourseController {
     }
   }
 
+  // Xóa khóa học theo ID
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<Course> {
     try {
@@ -97,12 +115,11 @@ export class CourseController {
     }
   }
 
+  // Mua khóa học
   @Put(':id/buy')
   async buyCourse(
     @Param('id') courseId: string,
-    //id == ObjectId
     @Query('uid') userId: string,
-    //uid == idProfile
   ): Promise<Profile> {
     try {
       const profile = await this.courseService.buyCourse(courseId, userId);
@@ -112,6 +129,7 @@ export class CourseController {
     }
   }
 
+  // Lấy các khóa học của người dùng theo ID
   @Get('user/:id')
   async getProfileCourses(@Param('id') id: string): Promise<Course[]> {
     try {
@@ -122,10 +140,9 @@ export class CourseController {
     }
   }
 
+  // Phê duyệt khóa học
   @Put(':id/approve')
-  async approveCourse(
-    @Param('id') id: string,
-  ): Promise<Course> {
+  async approveCourse(@Param('id') id: string): Promise<Course> {
     try {
       const updateCourseDto: UpdateCourseDto = { isReleased: true };
       const course = await this.courseService.update(id, updateCourseDto);
@@ -134,5 +151,4 @@ export class CourseController {
       throw new HttpException(error.message, error.status);
     }
   }
-
 }

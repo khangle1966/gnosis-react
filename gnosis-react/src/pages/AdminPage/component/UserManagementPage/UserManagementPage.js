@@ -67,6 +67,7 @@ const UserManagementPage = () => {
     };
 
     const filterUsers = (users) => {
+        if (!Array.isArray(users)) return [];
         return users.filter(user => {
             const email = user.email || '';
             const name = user.name || '';

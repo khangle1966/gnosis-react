@@ -1,5 +1,3 @@
-// src/redux/actions/chapterActions.js
-
 import axios from 'axios';
 import {
     FETCH_CHAPTERS_REQUEST,
@@ -15,6 +13,7 @@ import {
     UPDATE_CHAPTER_ORDER_FAILURE,
 } from '../types/chapterTypes';
 
+// Hàm hành động để thêm một chương mới
 export const addChapter = (newChapter) => async (dispatch) => {
     try {
         const response = await axios.post(`http://localhost:3000/v1/chapter`, newChapter);
@@ -24,7 +23,7 @@ export const addChapter = (newChapter) => async (dispatch) => {
     }
 };
 
-
+// Hàm hành động để xóa một chương
 export const removeChapter = (chapterId) => async (dispatch) => {
     try {
         await axios.delete(`http://localhost:3000/v1/chapter/${chapterId}`);
@@ -33,12 +32,16 @@ export const removeChapter = (chapterId) => async (dispatch) => {
         console.error('Remove Chapter Failed:', error);
     }
 };
+
+// Hàm hành động để thiết lập ID chương
 export const setChapterId = (chapterId) => {
     return {
         type: 'SET_CHAPTER_ID',
         payload: chapterId,
     };
 };
+
+// Hàm hành động để lấy danh sách các chương dựa trên ID khóa học
 export const fetchChaptersByCourseId = (courseId) => async (dispatch) => {
     dispatch({ type: FETCH_CHAPTERS_REQUEST });
     try {
@@ -51,9 +54,8 @@ export const fetchChaptersByCourseId = (courseId) => async (dispatch) => {
         });
     }
 };
-// chapterActions.js
 
-
+// Hàm hành động để cập nhật tiêu đề chương
 export const updateChapterTitle = (chapterId, title) => async (dispatch) => {
     dispatch({ type: UPDATE_CHAPTER_REQUEST });
     try {
@@ -69,6 +71,8 @@ export const updateChapterTitle = (chapterId, title) => async (dispatch) => {
         });
     }
 };
+
+// Hàm hành động để cập nhật thứ tự chương
 export const updateChapterOrder = (chapters) => async (dispatch) => {
     dispatch({ type: UPDATE_CHAPTER_ORDER_REQUEST });
     try {

@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Toolbar, Typography, Collapse } from '@mui/material';
-import DashboardIcon from '@mui/icons-material/Dashboard';
+import React, { useState } from 'react'; // Import React và hook useState
+import { NavLink } from 'react-router-dom'; // Import NavLink để điều hướng
+import { Drawer, List, ListItem, ListItemText, ListItemIcon, Toolbar, Typography, Collapse } from '@mui/material'; // Import các component từ MUI
+import DashboardIcon from '@mui/icons-material/Dashboard'; // Import các biểu tượng từ MUI
 import PeopleIcon from '@mui/icons-material/People';
 import BookIcon from '@mui/icons-material/Book';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
@@ -9,10 +9,11 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import PersonIcon from '@mui/icons-material/Person';
 import ExpandLess from '@mui/icons-material/ExpandLess';
 import ExpandMore from '@mui/icons-material/ExpandMore';
-import { styled } from '@mui/material/styles';
+import { styled } from '@mui/material/styles'; // Import hàm styled để tùy chỉnh kiểu dáng
 
-const drawerWidth = 240;
+const drawerWidth = 240; // Đặt chiều rộng của ngăn kéo
 
+// Tùy chỉnh kiểu dáng của Drawer component
 const DrawerStyled = styled(Drawer)(({ theme }) => ({
     width: drawerWidth,
     flexShrink: 0,
@@ -24,6 +25,7 @@ const DrawerStyled = styled(Drawer)(({ theme }) => ({
     },
 }));
 
+// Tùy chỉnh kiểu dáng của NavLink component
 const NavLinkStyled = styled(NavLink)(({ theme }) => ({
     textDecoration: 'none',
     color: 'inherit',
@@ -36,19 +38,24 @@ const NavLinkStyled = styled(NavLink)(({ theme }) => ({
     },
 }));
 
+// Tùy chỉnh kiểu dáng của ListItemText component
 const ListItemTextStyled = styled(ListItemText)(({ theme }) => ({
     '& .MuiTypography-root': {
         color: '#ffffff',
     },
 }));
 
+// Tạo component AdminSidebar
 const AdminSidebar = () => {
-    const [openUser, setOpenUser] = useState(false);
-    const [openInstructor, setOpenInstructor] = useState(false);
+    const [openUser, setOpenUser] = useState(false); // Khai báo state để điều khiển mở rộng của phần quản lý người dùng
+    const [openInstructor, setOpenInstructor] = useState(false); // Khai báo state để điều khiển mở rộng của phần giảng viên
 
+    // Hàm để xử lý việc mở rộng phần quản lý người dùng
     const handleClickOpenUser = () => {
         setOpenUser(!openUser);
     };
+
+    // Hàm để xử lý việc mở rộng phần giảng viên
     const handleClickOpenInstructor = () => {
         setOpenInstructor(!openInstructor);
     };
@@ -100,14 +107,8 @@ const AdminSidebar = () => {
                                 <ListItemTextStyled primary="Salary" />
                             </ListItem>
                         </NavLinkStyled>
-
                     </List>
                 </Collapse>
-
-
-
-
-
             </List>
         </DrawerStyled>
     );

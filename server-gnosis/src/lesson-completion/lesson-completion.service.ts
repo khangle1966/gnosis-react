@@ -1,6 +1,4 @@
-// src/lesson-completion/lesson-completion.service.ts
-
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { LessonCompletion, LessonCompletionDocument } from './entities/lesson-completion.entity';
@@ -12,11 +10,13 @@ export class LessonCompletionService {
     @InjectModel(LessonCompletion.name) private lessonCompletionModel: Model<LessonCompletionDocument>
   ) { }
 
+  // Tạo bản ghi hoàn thành bài học mới
   async create(createDto: CreateLessonCompletionDto): Promise<LessonCompletion> {
     const newRecord = new this.lessonCompletionModel(createDto);
     return newRecord.save();
   }
 
+  // Đánh dấu bài học là đã hoàn thành
   async markAsComplete(lessonId: string, userId: string, courseId: string): Promise<LessonCompletion> {
     const existingRecord = await this.lessonCompletionModel.findOne({ lessonId, userId, courseId });
 
@@ -34,10 +34,12 @@ export class LessonCompletionService {
     }
   }
 
+  // Lấy các bản ghi hoàn thành bài học của người dùng theo userId
   async findByUserId(userId: string): Promise<LessonCompletion[]> {
     return this.lessonCompletionModel.find({ userId }).exec();
   }
 
+  // Lấy các bản ghi hoàn thành bài học của người dùng theo courseId và userId
   async getLessonCompletion(courseId: string, userId: string): Promise<LessonCompletion[]> {
     return this.lessonCompletionModel.find({ courseId, userId }).exec();
   }

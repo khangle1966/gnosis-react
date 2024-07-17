@@ -13,6 +13,7 @@ export class SalaryService {
     private readonly loggerService: LoggerService, // Inject LoggerService
   ) { }
 
+  // Tính toán và lưu trữ lương cho giảng viên và admin
   async calculateSalary(orderId: string, authorId: string, courseId: string, amount: number, date: Date): Promise<void> {
     const user = await this.userModel.findOne({ uid: authorId });
     if (!user) {
@@ -64,6 +65,7 @@ export class SalaryService {
     this.loggerService.log(`Calculated salary for order ${orderId}, author ${authorId}, course ${courseId}`);
   }
 
+  // Lấy tất cả các khoản lương
   async findAll(): Promise<Salary[]> {
     this.loggerService.log('Fetching all salaries');
     const result = await this.salaryModel.find().exec();
@@ -71,6 +73,7 @@ export class SalaryService {
     return result;
   }
 
+  // Lấy các khoản lương của người dùng theo userId
   async findByUserId(userId: string): Promise<Salary[]> {
     this.loggerService.log(`Fetching salaries for user ${userId}`);
     const result = await this.salaryModel.find({ userId }).exec();
@@ -78,6 +81,7 @@ export class SalaryService {
     return result;
   }
 
+  // Lấy các khoản lương theo tháng và năm
   async findByMonthAndYear(month: number, year: number): Promise<Salary[]> {
     this.loggerService.log(`Fetching salaries for month ${month} and year ${year}`);
     const result = await this.salaryModel.find({ month, year }).exec();
@@ -85,6 +89,7 @@ export class SalaryService {
     return result;
   }
 
+  // Lấy tổng lương của giảng viên theo tháng và năm
   async getTotalInstructorSalary(): Promise<{ month: number, year: number, total: number }[]> {
     this.loggerService.log('Starting getTotalInstructorSalary');
     const result = await this.salaryModel.aggregate([
@@ -111,6 +116,7 @@ export class SalaryService {
     return result;
   }
 
+  // Lấy tổng lương của admin theo tháng và năm
   async getTotalAdminSalary(): Promise<{ month: number, year: number, total: number }[]> {
     this.loggerService.log('Starting getTotalAdminSalary');
     const result = await this.salaryModel.aggregate([
@@ -137,6 +143,7 @@ export class SalaryService {
     return result;
   }
 
+  // Lấy tổng lương của giảng viên theo instructorId
   async getTotalInstructorSalaryById(instructorId: string): Promise<{ month: number, year: number, total: number }[]> {
     this.loggerService.log(`Starting getTotalInstructorSalaryById for instructor ${instructorId}`);
     const result = await this.salaryModel.aggregate([
@@ -162,7 +169,6 @@ export class SalaryService {
     this.loggerService.log(`getTotalInstructorSalaryById aggregation pipeline result: ${JSON.stringify(result)}`);
     return result;
   }
-
 }
 
 export default SalaryService;

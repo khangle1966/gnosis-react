@@ -8,6 +8,7 @@ import {
     FETCH_LESSON_COMPLETE_FAILURE
 } from '../types/lessonCompleteTypes';
 
+// Hàm hành động để đánh dấu bài học là hoàn thành
 export const completeLesson = (lessonId, userId, courseId) => async (dispatch) => {
     dispatch({ type: COMPLETE_LESSON_REQUEST });
     try {
@@ -19,6 +20,7 @@ export const completeLesson = (lessonId, userId, courseId) => async (dispatch) =
     }
 };
 
+// Hàm hành động để lấy danh sách bài học hoàn thành của người dùng trong khóa học
 export const fetchLessonComplete = (courseId, userId) => async (dispatch) => {
     dispatch({ type: FETCH_LESSON_COMPLETE_REQUEST });
     try {

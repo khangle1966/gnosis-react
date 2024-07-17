@@ -26,11 +26,13 @@ export class UsergoogleController {
     private profileService: ProfileService,
   ) { }
 
+  // Tạo người dùng mới
   @Post()
   async create(@Body() createUserDto: CreateUsergoogleDto) {
     return this.usergoogleService.create(createUserDto);
   }
 
+  // Lấy tất cả người dùng
   @Get()
   async findAllUser() {
     try {
@@ -40,6 +42,8 @@ export class UsergoogleController {
       throw error;
     }
   }
+
+  // Lấy dữ liệu người dùng theo tháng
   @Get('monthly/monthly-data')
   async getMonthlyDataUser() {
     try {
@@ -48,6 +52,8 @@ export class UsergoogleController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  // Tìm người dùng theo ID
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<Usergoogle> {
     try {
@@ -60,11 +66,15 @@ export class UsergoogleController {
       throw error;
     }
   }
+
+  // Cập nhật cấp độ giảng viên
   @Get('update-instructor-level/:uid')
   async updateInstructorLevel(@Param('uid') uid: string) {
     await this.usergoogleService.updateInstructorLevel(uid);
     return this.usergoogleService.findByUid(uid);
   }
+
+  // Cập nhật thông tin người dùng
   @Put(':id')
   async update(
     @Param('id') id: string,
@@ -81,6 +91,7 @@ export class UsergoogleController {
     }
   }
 
+  // Xóa người dùng
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
@@ -99,20 +110,26 @@ export class UsergoogleController {
       throw error;
     }
   }
+
+  // Lấy tất cả giảng viên
   @Get('getintstructor/instructors')
   async getAllInstructors() {
     return this.usergoogleService.findAllInstructors();
   }
 
-
+  // Lấy dữ liệu khóa học theo tháng của người dùng
   @Get('monthly-data/:uid')
   async getMonthlyData(@Param('uid') uid: string) {
     return this.usergoogleService.getMonthlyData(uid);
   }
+
+  // Lấy cấp độ giảng viên của người dùng
   @Get('instructor-level/:uid')
   async getInstructorLevel(@Param('uid') uid: string) {
     return this.usergoogleService.getInstructorLevel(uid);
   }
+
+  // Cập nhật URL ảnh của người dùng
   @Put('update-picurl/:id')
   async updatePicUrl(
     @Param('id') id: string,
@@ -124,11 +141,13 @@ export class UsergoogleController {
     return this.usergoogleService.updatePicUrl(id, picUrl);
   }
 
+  // Cấm người dùng
   @Put('ban/:id')
   async banUser(@Param('id') id: string) {
     return this.usergoogleService.banUser(id);
   }
 
+  // Hủy cấm người dùng
   @Put('unban/:id')
   async unbanUser(@Param('id') id: string) {
     return this.usergoogleService.unbanUser(id);

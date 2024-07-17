@@ -8,16 +8,12 @@ import { Chapter, ChapterDocument } from '../chapter/entities/chapter.entity';
 
 @Injectable()
 export class LessonService {
-
   constructor(
     @InjectModel(Lesson.name) private lessonModel: Model<Lesson>,
-    @InjectModel(Chapter.name) private chapterModel: Model<Chapter> // Inject Chapter model here
+    @InjectModel(Chapter.name) private chapterModel: Model<Chapter>,
   ) { }
-  // src/lesson/lesson.service.ts
 
-
-
-
+  // Tạo bài học mới
   async create(createLessonDto: CreateLessonDto): Promise<Lesson> {
     const { chapterId, ...lessonDetails } = createLessonDto;
 
@@ -27,10 +23,9 @@ export class LessonService {
         throw new NotFoundException(`Chapter with ID ${chapterId} not found`);
       }
 
-      // Include chapterId in the lesson creation to ensure it's saved in the database
       const lesson = new this.lessonModel({
         ...lessonDetails,
-        chapterId: chapter._id // Ensuring chapterId is saved with the lesson
+        chapterId: chapter._id, // Đảm bảo lưu chapterId với bài học
       });
 
       chapter.lessons.push(lesson._id);
@@ -42,8 +37,7 @@ export class LessonService {
     }
   }
 
-
-
+  // Lấy bài học theo ID
   async getById(id: string): Promise<Lesson> {
     try {
       return await this.lessonModel.findById(id).exec();
@@ -52,6 +46,7 @@ export class LessonService {
     }
   }
 
+  // Lấy tất cả các bài học
   async getAll(): Promise<Lesson[]> {
     try {
       return await this.lessonModel.find().exec();
@@ -60,6 +55,7 @@ export class LessonService {
     }
   }
 
+  // Cập nhật bài học theo ID
   async update(id: string, updateLessonDto: UpdateLessonDto): Promise<Lesson> {
     try {
       return this.lessonModel.findByIdAndUpdate(
@@ -72,6 +68,7 @@ export class LessonService {
     }
   }
 
+  // Xóa bài học theo ID
   async delete(id: string): Promise<Lesson> {
     try {
       const deletedLesson = await this.lessonModel.findByIdAndDelete(id);
@@ -81,58 +78,52 @@ export class LessonService {
     }
   }
 
+  // Lấy các bài học theo courseId
   async getLessonsByCourseId(courseId: string): Promise<Lesson[]> {
     try {
-      //populate nestjs object mongoose
-      return await this.lessonModel.find({ courseId: courseId }).exec();
+      return await this.lessonModel.find({ courseId }).exec();
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  // Lấy các bài học theo chapterId
   async getLessonsByChapterId(chapterId: string): Promise<Lesson[]> {
     try {
-      //populate nestjs object mongoose
-      return await this.lessonModel.find({ chapterId: chapterId }).exec();
+      return await this.lessonModel.find({ chapterId }).exec();
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
 
-
-  //how to get all lessons by given ordinal number
+  // Lấy các bài học theo ordinal number
   async getLessonsByOrdinalNumber(ordinalnumber: number): Promise<Lesson[]> {
     try {
-      return await this.lessonModel
-        .find({ ordinalnumber: ordinalnumber })
-        .populate('courseId')
-        .exec();
+      return await this.lessonModel.find({ ordinalnumber }).populate('courseId').exec();
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
-  //else
-  async getLessonsByCourseIdAndOrdinalNumber(
-    courseId: string,
-    ordinalnumber: number,
-  ): Promise<Lesson[]> {
+
+  // Lấy các bài học theo courseId và ordinal number
+  async getLessonsByCourseIdAndOrdinalNumber(courseId: string, ordinalnumber: number): Promise<Lesson[]> {
     try {
-      return await this.lessonModel
-        .find({ courseId: courseId, ordinalnumber: ordinalnumber })
-        .populate('courseId')
-        .exec();
+      return await this.lessonModel.find({ courseId, ordinalnumber }).populate('courseId').exec();
     } catch (error) {
       throw new HttpException(error.message, error.status);
     }
   }
+
+  // Lấy URL video của bài học theo lessonId
   async getVideoUrl(lessonId: string): Promise<string> {
     try {
-        const lesson = await this.lessonModel.findById(lessonId);
-        if (!lesson) {
-            throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
-        }
-        return lesson.videoUrl;
+      const lesson = await this.lessonModel.findById(lessonId);
+      if (!lesson) {
+        throw new NotFoundException(`Lesson with ID ${lessonId} not found`);
+      }
+      return lesson.videoUrl;
     } catch (error) {
-        throw new HttpException(error.message, error.status);
+      throw new HttpException(error.message, error.status);
     }
-}
+  }
 }

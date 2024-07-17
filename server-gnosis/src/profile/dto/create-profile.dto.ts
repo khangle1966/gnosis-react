@@ -13,5 +13,6 @@ export class CreateProfileDto {
         public notifications: string[],
         public completedCourse: string[],
         public ongoingCourse: string[],
+        public description: string,
     ) { }
 }

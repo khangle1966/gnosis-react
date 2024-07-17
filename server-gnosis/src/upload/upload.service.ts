@@ -1,19 +1,18 @@
 import * as firebaseAdmin from 'firebase-admin';
-import { Bucket } from '@google-cloud/storage'; // Nhập khẩu Bucket từ @google-cloud/storage
+import { Bucket } from '@google-cloud/storage';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Image } from './entities/image.entity';
 import { Video } from './entities/video.entity';
+
 @Injectable()
 export class UploadService {
-  private bucket: Bucket; // Sử dụng kiểu Bucket từ @google-cloud/storage
+  private bucket: Bucket;
 
   constructor(
     @InjectModel(Image.name) private readonly imageModel: Model<Image>,
-    @InjectModel(Video.name) private readonly videoModel: Model<Video> // Inject Video model
-
-
+    @InjectModel(Video.name) private readonly videoModel: Model<Video>
   ) {
     const firebaseParams = {
       type: "service_account",
@@ -28,9 +27,10 @@ export class UploadService {
         storageBucket: 'gnosis-reactjs.appspot.com'
       });
     }
-    this.bucket = firebaseAdmin.storage().bucket(); // Lấy bucket từ Firebase
+    this.bucket = firebaseAdmin.storage().bucket();
   }
 
+  // Tải file lên Firebase
   async uploadToFirebase(file: Express.Multer.File, directory: string = 'uploads'): Promise<string> {
     if (!file || !file.buffer) {
       throw new Error("File is undefined or does not have a buffer.");
@@ -54,8 +54,7 @@ export class UploadService {
     }
   }
 
-
-
+  // Tạo bản ghi hình ảnh
   async createImageRecord(file: Express.Multer.File): Promise<any> {
     if (!file) throw new Error("File is not provided.");
 
@@ -70,6 +69,7 @@ export class UploadService {
     return { url: imageUrl };
   }
 
+  // Tạo bản ghi video
   async createVideoRecord(file: Express.Multer.File): Promise<any> {
     if (!file) throw new Error("File is not provided.");
 
@@ -83,5 +83,4 @@ export class UploadService {
     await newVideo.save();
     return { url: videoUrl };
   }
-
 }
